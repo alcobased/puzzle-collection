@@ -1,0 +1,51 @@
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+}
+
+#controlPanel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: orange;
+}
+
+#grid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background-color: grey;
+}
+
+#grid img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+}
+
+#grid #cells {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#grid #cells .cell {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+}
