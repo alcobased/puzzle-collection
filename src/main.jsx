@@ -4,10 +4,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import App from "./App";
 import imageReducer from "./reducers/imageReducer";
+import cellReducer from "./reducers/cellReducer";
 
 const store = configureStore({
   reducer: {
     image: imageReducer,
+    cells: cellReducer,
   },
 });
 

@@ -1,22 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  data: null,
+  position: { x: 0, y: 0 },
+  dimensions: { width: 0, height: 0 },
+}
+
 const imageSlice = createSlice({
   name: "image",
-  initialState: {
-    image: null,
-    position: { x: 0, y: 0 },
-    dimensions: { width: 0, height: 0 },
-  },
+  initialState,
   reducers: {
     setImage: (state, action) => {
-      state.image = action.payload;
+      state.data = action.payload;
     },
     clearImage: (state) => {
-      state.image = null;
+      state.data = null;
     },
     setPositionAndDimensions: (state, action) => {
-      state.position = action.payload.position;
-      state.dimensions = action.payload.dimensions;
+      state.position.x = action.payload.x;
+      state.position.y = action.payload.y;
+      state.dimensions.width = action.payload.width;
+      state.dimensions.height = action.payload.height;
     },
   },
 });

@@ -41,11 +41,13 @@ html, body, #root {
     left: 0;
     right: 0;
     bottom: 0;
+    pointer-events: none;
 }
 
 #grid #cells .cell {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: red;
+    width: 20px;
+    height: 20px;
+    background-color: #ccc;
+    border: 1px solid black;
 }

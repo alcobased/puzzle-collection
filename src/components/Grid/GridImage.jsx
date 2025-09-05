@@ -1,38 +1,53 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef, useEffect } from "react";
 import { setPositionAndDimensions } from "../../reducers/imageReducer";
+import { addCell } from "../../reducers/cellReducer"
 
 const GridImage = () => {
-  const { image } = useSelector((state) => state.image);
+  const { data, position, dimensions } = useSelector((state) => state.image);
   const imageRef = useRef(null);
 
   const dispatch = useDispatch();
 
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      const { x, y, width, height } = imageRef.current.getBoundingClientRect();
+      dispatch(
+        setPositionAndDimensions({ x, y, width, height })
+      );
+    }
+  };
+
+  const handleImageClick = (e) => {
+    const relativeX = e.clientX - position.x;
+    const relativeY = e.clientY - position.y;
+
+    const normalizedX = relativeX / dimensions.width;
+    const normalizedY = relativeY / dimensions.height;
+
+    const id = crypto.randomUUID();
+    dispatch(addCell({ id: id, normalizedPosition: { x: normalizedX, y: normalizedY } }))
+  };
+
   useEffect(() => {
-    console.log("image changed");
-    const setImage = () => {
-      console.log("set position and dimensions");
+    // We only need to listen for resizes after the image has loaded.
+    // The handleImageLoad function handles the initial setup.
+    const setImageOnResize = () => {
       if (imageRef.current) {
-        const { x, y, width, height } =
-          imageRef.current.getBoundingClientRect();
-        console.log("imageRef.current", { x, y, width, height });
+        const { x, y, width, height } = imageRef.current.getBoundingClientRect();
         dispatch(
-          setPositionAndDimensions({
-            position: { x, y },
-            dimensions: { width, height },
-          })
+          setPositionAndDimensions({ x, y, width, height })
         );
       }
     };
-    setImage();
-    window.addEventListener("resize", setImage);
+    window.addEventListener("resize", setImageOnResize);
     return () => {
-      window.removeEventListener("resize", setImage);
+      window.removeEventListener("resize", setImageOnResize);
     };
-  }, [image, dispatch]);
+  }, [dispatch]); // Removed 'data' from dependency array to avoid redundant listeners
 
   return (
-    <>{image && <img ref={imageRef} src={image} alt="image goes here" />}</>
+    <>{data && <img ref={imageRef} src={data} alt="image goes here" onLoad={handleImageLoad} onClick={handleImageClick} />}</>
   );
 };
 
