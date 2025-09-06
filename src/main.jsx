@@ -1,22 +1,26 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { configureStore } from "@reduxjs/toolkit";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import App from "./App";
-import imageReducer from "./reducers/imageReducer";
-import cellReducer from "./reducers/cellReducer";
+import { configureStore } from "@reduxjs/toolkit";
+import App from "./App.jsx";
+import "./App.css";
+
+import imageReducer from "./reducers/imageReducer.js";
+import cellReducer from "./reducers/cellReducer.js";
+import uiReducer from "./reducers/uiReducer.js";
 
 const store = configureStore({
   reducer: {
     image: imageReducer,
     cells: cellReducer,
+    ui: uiReducer,
   },
 });
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </StrictMode>
+  </React.StrictMode>
 );

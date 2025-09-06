@@ -1,30 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  data: null,
-  position: { x: 0, y: 0 },
-  dimensions: { width: 0, height: 0 },
-}
+  src: null,
+  naturalDimensions: { width: 0, height: 0 },
+  rendered: {
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0,
+  },
+};
 
 const imageSlice = createSlice({
   name: "image",
   initialState,
   reducers: {
-    setImage: (state, action) => {
-      state.data = action.payload;
+    setSrc(state, action) {
+      state.src = action.payload.src;
+      state.naturalDimensions = action.payload.dimensions;
+      // Reset rendered geometry when a new image is set
+      state.rendered = initialState.rendered;
     },
-    clearImage: (state) => {
-      state.data = null;
+    setRendered(state, action) {
+      state.rendered = action.payload;
     },
-    setPositionAndDimensions: (state, action) => {
-      state.position.x = action.payload.x;
-      state.position.y = action.payload.y;
-      state.dimensions.width = action.payload.width;
-      state.dimensions.height = action.payload.height;
+    unloadImage() {
+      // Return the initial state to clear everything
+      return initialState;
     },
   },
 });
 
-export const { setImage, clearImage, setPositionAndDimensions } =
-  imageSlice.actions;
+export const { setSrc, setRendered, unloadImage } = imageSlice.actions;
 export default imageSlice.reducer;

@@ -1,27 +1,40 @@
 import { useDispatch } from "react-redux";
-import { setImage, clearImage } from "../../reducers/imageReducer";
+import { setSrc, unloadImage } from "../../reducers/imageReducer";
 
 const ControlsImage = () => {
   const dispatch = useDispatch();
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          dispatch(
+            setSrc({
+              src: event.target.result,
+              dimensions: {
+                width: img.width,
+                height: img.height,
+              },
+            })
+          );
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUnloadImage = () => {
+    dispatch(unloadImage());
+  };
+
   return (
     <div>
-      <h2>ControlsImage</h2>
-      <input
-        type="file"
-        name="imgLoader"
-        id="imgLoader"
-        accept="image/*"
-        onChange={(e) => {
-          const file = e.target.files[0];
-          const reader = new FileReader();
-          reader.onload = () => {
-            dispatch(setImage(reader.result));
-          };
-          reader.readAsDataURL(file);
-        }}
-      />
-      <button onClick={() => dispatch(clearImage())}>Clear</button>
+      <input type="file" onChange={handleImageChange} accept="image/*" />
+      <button onClick={handleUnloadImage}>Unload Image</button>
     </div>
   );
 };
