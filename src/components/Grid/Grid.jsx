@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRendered } from "../../reducers/imageReducer";
 import GridCells from "./GridCells";
 import GridImage from "./GridImage";
+import './Grid.css';
 
 const Grid = () => {
   const gridRef = useRef(null);

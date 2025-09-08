@@ -8,12 +8,14 @@ import "./App.css";
 import imageReducer from "./reducers/imageReducer.js";
 import cellReducer from "./reducers/cellReducer.js";
 import uiReducer from "./reducers/uiReducer.js";
+import wordReducer from "./reducers/wordReducer.js";
 
 const store = configureStore({
   reducer: {
     image: imageReducer,
     cells: cellReducer,
     ui: uiReducer,
+    words: wordReducer,
   },
 });
 

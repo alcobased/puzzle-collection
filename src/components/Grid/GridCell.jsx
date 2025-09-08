@@ -1,18 +1,23 @@
+import React from "react";
 import { useDispatch } from "react-redux";
 import { setActiveCell } from "../../reducers/cellReducer";
 import { openModal } from "../../reducers/uiReducer";
 
-const GridCell = ({ id, style, char }) => {
+const GridCell = ({ id, style, char, className }) => {
   const dispatch = useDispatch();
 
   const handleClick = (e) => {
-    e.stopPropagation(); // Prevent the click from bubbling up to the GridCells container
+    e.stopPropagation(); // Prevent the grid from creating a new cell
     dispatch(setActiveCell(id));
-    dispatch(openModal());
+    dispatch(openModal({ modalType: 'CELL_PROPERTIES' }));
   };
 
   return (
-    <div className="cell" style={style} onClick={handleClick}>
+    <div
+      className={className}
+      style={style}
+      onClick={handleClick}
+    >
       {char}
     </div>
   );

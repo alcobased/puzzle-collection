@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import Cell from "./GridCell";
+import GridCell from "./GridCell";
 import { addCell, enqueue } from "../../reducers/cellReducer";
 
 const GridCells = () => {
@@ -37,31 +37,31 @@ const GridCells = () => {
       id="cells"
       onClick={handleClick}
       style={{
+        position: "absolute",
         width: `${width}px`,
         height: `${height}px`,
         top: `${top}px`,
         left: `${left}px`,
       }}
     >
-      {cellSet.map((cell) => {
+      {Object.values(cellSet).map((cell) => {
         const individualCellStyle = {
-          ...cellStyle,
+          width: cellStyle.width,
+          height: cellStyle.height,
+          position: "absolute",
           left: cell.normalizedPosition.x * width - cellStyle.width / 2,
           top: cell.normalizedPosition.y * height - cellStyle.height / 2,
         };
 
-        // Apply a different style if the cell is active
-        if (cell.id === activeCell) {
-          individualCellStyle.border = "2px solid blue";
-          individualCellStyle.zIndex = 1; // Ensure active cell is on top
-        }
+        const className = `grid-cell ${cell.id === activeCell ? "active" : ""}`;
 
         return (
-          <Cell
+          <GridCell
             key={cell.id}
             id={cell.id}
             style={individualCellStyle}
             char={cell.char}
+            className={className}
           />
         );
       })}

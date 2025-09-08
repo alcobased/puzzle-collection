@@ -3,6 +3,7 @@ import ControlsWords from "./ControlsWords";
 import ControlsImage from "./ControlsImage";
 import ControlsStorage from "./ControlsStorage";
 import ControlsStatus from "./ControlsStatus";
+import './Controls.css';
 
 const ControlPanel = () => {
   return (

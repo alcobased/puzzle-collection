@@ -6,7 +6,12 @@ const CellPropertiesModal = () => {
   const dispatch = useDispatch();
   const { activeCell, cellSet } = useSelector((state) => state.cells);
 
-  const activeCellData = cellSet.find((cell) => cell.id === activeCell);
+  // This should not happen if rendered correctly, but it's a good safeguard.
+  if (!activeCell) {
+    return null;
+  }
+  
+  const activeCellData = cellSet[activeCell];
   const [charInput, setCharInput] = useState("");
 
   useEffect(() => {
@@ -16,7 +21,7 @@ const CellPropertiesModal = () => {
   }, [activeCellData]);
 
   if (!activeCellData) {
-    return <div>No cell selected.</div>;
+    return <div>Cell not found. This can happen if the cell was just deleted.</div>;
   }
 
   const handleAddToQueue = () => {
@@ -24,27 +29,25 @@ const CellPropertiesModal = () => {
   };
 
   const handleCharChange = (e) => {
-    const newChar = e.target.value.slice(-1);
+    const newChar = e.target.value.slice(0, 1).toUpperCase();
     setCharInput(newChar);
     dispatch(assignChar({ cellId: activeCell, char: newChar }));
   };
 
   return (
     <div>
-      <h2>Cell Properties (ID: ...{activeCell.slice(-6)})</h2>
-      <div>
-        <label htmlFor="char-input">Character: </label>
-        <input
-          id="char-input"
-          type="text"
-          value={charInput}
-          onChange={handleCharChange}
-          maxLength="1"
-          style={{ width: "30px", textAlign: "center" }}
-        />
+      <h3>Cell Properties (ID: {activeCell.substring(0, 8)}...)</h3>
+      <div className="cell-properties-controls">
+          <span>Character:</span>
+          <input
+            type="text"
+            value={charInput}
+            onChange={handleCharChange}
+            maxLength="1"
+            className="char-input"
+          />
+          <button onClick={handleAddToQueue}>Add to Queue</button>
       </div>
-      <br />
-      <button onClick={handleAddToQueue}>Add to Queue</button>
     </div>
   );
 };

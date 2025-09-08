@@ -9,42 +9,20 @@ html, body, #root {
     flex-direction: column;
 }
 
-#controlPanel {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: orange;
-}
-
-#grid {
-    flex: 1;
+.app-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+}
+
+.grid-container {
+    flex: 1;
+    display: flex;
     overflow: hidden;
     position: relative;
-    background-color: grey;
+    background-color: #6b7280; /* A more neutral grey */
 }
 
-#grid img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-}
-
-#grid #cells {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-#grid #cells .cell {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: #ccc;
-    border: 1px solid black;
+.controls-container {
+    flex-shrink: 0; /* Prevent controls from shrinking */
 }

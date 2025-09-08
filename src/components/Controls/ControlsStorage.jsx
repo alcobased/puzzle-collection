@@ -17,11 +17,13 @@ const ControlsStorage = () => {
   };
 
   return (
-    <div>
-      <button onClick={handleSave}>Save</button>
-      <button onClick={handleLoad}>Load</button>
-    </div>
-  );
+    <fieldset>
+        <legend>Storage</legend>
+        <button onClick={handleSave}>Save</button>
+        <button onClick={handleLoad}>Load</button>
+    </fieldset>
+);
+
 };
 
 export default ControlsStorage;

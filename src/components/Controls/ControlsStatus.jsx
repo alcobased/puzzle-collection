@@ -1,13 +1,31 @@
-import { useSelector } from "react-redux"
-import { current } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
 const ControlsStatus = () => {
-    const imageState = useSelector((state) => state.image)
-    
-    if (!imageState.data) {
-        return <div>No image set</div>
-    }
-    return <div>Dimensions: {imageState.dimensions.width}x{imageState.dimensions.height}</div>
-}
+    const { data: imageData, dimensions } = useSelector((state) => state.image);
+    const { cellSet, activeQueue, queueSet } = useSelector((state) => state.cells);
+    const { activeWordSet, wordSet } = useSelector((state) => state.words);
 
-export default ControlsStatus
+    const totalCells = Object.keys(cellSet).length;
+    const totalQueues = Object.keys(queueSet).length;
+    const totalWordSets = Object.keys(wordSet).length;
+
+    return (
+        <fieldset>
+            <legend>Status</legend>
+            <div>
+                Image: {imageData ? `${dimensions.width}x${dimensions.height}` : "Not Loaded"}
+            </div>
+            <div>
+                Cells: <strong>{totalCells}</strong>
+            </div>
+            <div>
+                Active Queue: <strong>{activeQueue || 'None'}</strong>
+            </div>
+            <div>
+                Active Word Set: <strong>{activeWordSet || 'None'}</strong>
+            </div>
+        </fieldset>
+    );
+};
+
+export default ControlsStatus;

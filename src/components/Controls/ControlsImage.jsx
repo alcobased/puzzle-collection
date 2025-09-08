@@ -4,16 +4,16 @@ import { setSrc, unloadImage } from "../../reducers/imageReducer";
 const ControlsImage = () => {
   const dispatch = useDispatch();
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           dispatch(
             setSrc({
-              src: event.target.result,
+              src: e.target.result,
               dimensions: {
                 width: img.width,
                 height: img.height,
@@ -21,7 +21,7 @@ const ControlsImage = () => {
             })
           );
         };
-        img.src = event.target.result;
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -32,10 +32,19 @@ const ControlsImage = () => {
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleImageChange} accept="image/*" />
+    <fieldset>
+      <legend>Image</legend>
+      <label className="file-upload-label">
+        Load Image
+        <input
+            type="file"
+            onChange={handleImageChange}
+            accept="image/*"
+            style={{ display: 'none' }}
+        />
+      </label>
       <button onClick={handleUnloadImage}>Unload Image</button>
-    </div>
+    </fieldset>
   );
 };
 
