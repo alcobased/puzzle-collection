@@ -3,6 +3,7 @@ import ControlsWords from "./ControlsWords";
 import ControlsImage from "./ControlsImage";
 import ControlsStorage from "./ControlsStorage";
 import ControlsStatus from "./ControlsStatus";
+import ControlsSolver from "./ControlsSolver";
 import './Controls.css';
 
 const ControlPanel = () => {
@@ -13,6 +14,7 @@ const ControlPanel = () => {
       <ControlsWords />
       <ControlsImage />
       <ControlsStorage />
+      <ControlsSolver />
     </div>
   );
 };

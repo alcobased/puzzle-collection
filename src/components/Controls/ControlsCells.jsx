@@ -9,7 +9,8 @@ const ControlsCells = () => {
 
   const handleSizeChange = (e) => {
     const size = parseInt(e.target.value, 10);
-    dispatch(setCellStyle({ width: size, height: size }));
+    const fontSize = Math.floor(size * 0.8);
+    dispatch(setCellStyle({ width: size, height: size, fontSize: fontSize }));
   };
 
   const handleManageQueues = () => {
@@ -26,8 +27,9 @@ const ControlsCells = () => {
         </div>
         <input
           type="range"
-          min="15"
-          max="40"
+          min="20"
+          max="50"
+          step="2"
           value={cellStyle.width}
           onChange={handleSizeChange}
         />

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { enqueue, assignChar } from "../../reducers/cellReducer";
+import { closeModal } from "../../reducers/uiReducer";
 
 const CellPropertiesModal = () => {
   const dispatch = useDispatch();
   const { activeCell, cellSet } = useSelector((state) => state.cells);
+  const charInputRef = useRef(null);
 
   // This should not happen if rendered correctly, but it's a good safeguard.
   if (!activeCell) {
@@ -18,6 +20,9 @@ const CellPropertiesModal = () => {
     if (activeCellData) {
       setCharInput(activeCellData.char || "");
     }
+    if (charInputRef.current) {
+      charInputRef.current.focus();
+    }
   }, [activeCellData]);
 
   if (!activeCellData) {
@@ -26,12 +31,16 @@ const CellPropertiesModal = () => {
 
   const handleAddToQueue = () => {
     dispatch(enqueue(activeCell));
+    dispatch(closeModal());
   };
 
   const handleCharChange = (e) => {
     const newChar = e.target.value.slice(0, 1).toUpperCase();
     setCharInput(newChar);
     dispatch(assignChar({ cellId: activeCell, char: newChar }));
+    if (newChar) {
+      dispatch(closeModal());
+    }
   };
 
   return (
@@ -45,6 +54,7 @@ const CellPropertiesModal = () => {
             onChange={handleCharChange}
             maxLength="1"
             className="char-input"
+            ref={charInputRef}
           />
           <button onClick={handleAddToQueue}>Add to Queue</button>
       </div>

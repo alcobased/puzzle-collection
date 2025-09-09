@@ -48,6 +48,7 @@ const GridCells = () => {
         const individualCellStyle = {
           width: cellStyle.width,
           height: cellStyle.height,
+          fontSize: `${cellStyle.fontSize}px`,
           position: "absolute",
           left: cell.normalizedPosition.x * width - cellStyle.width / 2,
           top: cell.normalizedPosition.y * height - cellStyle.height / 2,

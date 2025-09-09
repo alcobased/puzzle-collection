@@ -29,7 +29,7 @@
     justify-content: center;
     color: black;
     font-weight: bold;
-    text-shadow: 1px 1px 2px black;
+    /* text-shadow: 1px 1px 2px black; */
     cursor: pointer;
     box-sizing: border-box; /* Ensures padding/border are included in width/height */
     

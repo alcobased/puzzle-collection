@@ -4,8 +4,8 @@ import { openModal } from '../../reducers/uiReducer';
 
 const ControlsWords = () => {
   const dispatch = useDispatch();
-  const { activeWordSet, wordSet } = useSelector(state => state.words);
-  const activeWords = wordSet[activeWordSet] || [];
+  const { activeList, lists } = useSelector(state => state.words);
+  const activeWords = lists[activeList] || [];
 
   const handleManageWords = () => {
     dispatch(openModal({ modalType: 'WORD_MANAGER' }));
@@ -14,7 +14,7 @@ const ControlsWords = () => {
   return (
     <fieldset>
       <legend>Words</legend>
-      <div>Active Set: <strong>{activeWordSet}</strong></div>
+      <div>Active List: <strong>{activeList}</strong></div>
       <div>Word Count: {activeWords.length}</div>
       <button onClick={handleManageWords}>Manage Words</button>
     </fieldset>

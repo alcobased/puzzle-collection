@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 const ControlsStatus = () => {
     const { data: imageData, dimensions } = useSelector((state) => state.image);
     const { cellSet, activeQueue, queueSet } = useSelector((state) => state.cells);
-    const { activeWordSet, wordSet } = useSelector((state) => state.words);
+    const { activeList, lists } = useSelector((state) => state.words);
 
     const totalCells = Object.keys(cellSet).length;
     const totalQueues = Object.keys(queueSet).length;
-    const totalWordSets = Object.keys(wordSet).length;
+    const totalLists = Object.keys(lists).length;
 
     return (
         <fieldset>
@@ -19,10 +19,16 @@ const ControlsStatus = () => {
                 Cells: <strong>{totalCells}</strong>
             </div>
             <div>
+                Queues: <strong>{totalQueues}</strong>
+            </div>
+            <div>
                 Active Queue: <strong>{activeQueue || 'None'}</strong>
             </div>
             <div>
-                Active Word Set: <strong>{activeWordSet || 'None'}</strong>
+                Word Lists: <strong>{totalLists}</strong>
+            </div>
+            <div>
+                Active List: <strong>{activeList || 'None'}</strong>
             </div>
         </fieldset>
     );

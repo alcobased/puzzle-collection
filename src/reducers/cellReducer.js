@@ -17,6 +17,7 @@ const cellSlice = createSlice({
     cellStyle: {
       width: 20, // px
       height: 20, // px
+      fontSize: 16, // px
     },
     // The ID of the currently active/selected cell
     activeCell: null,
