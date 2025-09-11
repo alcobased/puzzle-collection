@@ -3,19 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRendered } from "../../reducers/imageReducer";
 import GridCells from "./GridCells";
 import GridImage from "./GridImage";
+import GridLine from "./GridLine"; // Import the new component
 import './Grid.css';
 
 const Grid = () => {
   const gridRef = useRef(null);
   const dispatch = useDispatch();
-  const { src, naturalDimensions } = useSelector((state) => state.image);
+  const { src, naturalDimensions, rendered } = useSelector((state) => state.image);
+  const { cellSet, queueSet, activeQueue } = useSelector((state) => state.cells);
 
   const measureAndDispatch = useCallback(() => {
     const gridElement = gridRef.current;
     if (!gridElement) return;
 
     if (src && naturalDimensions.width > 0) {
-      // If image exists and we have its dimensions, calculate its rendered size
       const containerWidth = gridElement.offsetWidth;
       const containerHeight = gridElement.offsetHeight;
       const { width: naturalWidth, height: naturalHeight } = naturalDimensions;
@@ -26,13 +27,11 @@ const Grid = () => {
       let renderedWidth, renderedHeight, renderedTop, renderedLeft;
 
       if (imageRatio > containerRatio) {
-        // Image is wider than container aspect ratio, constrained by width
         renderedWidth = containerWidth;
         renderedHeight = renderedWidth / imageRatio;
         renderedTop = (containerHeight - renderedHeight) / 2;
         renderedLeft = 0;
       } else {
-        // Image is taller or same aspect ratio, constrained by height
         renderedHeight = containerHeight;
         renderedWidth = renderedHeight * imageRatio;
         renderedLeft = (containerWidth - renderedWidth) / 2;
@@ -48,7 +47,6 @@ const Grid = () => {
         })
       );
     } else if (!src) {
-      // If no image src, measure the grid container to fill the space
       dispatch(
         setRendered({
           width: gridElement.offsetWidth,
@@ -60,7 +58,6 @@ const Grid = () => {
     }
   }, [src, naturalDimensions, dispatch]);
 
-  // Set up a ResizeObserver to automatically measure when the grid size changes.
   useEffect(() => {
     const gridElement = gridRef.current;
     if (!gridElement) return;
@@ -68,19 +65,17 @@ const Grid = () => {
     const observer = new ResizeObserver(measureAndDispatch);
     observer.observe(gridElement);
 
-    measureAndDispatch(); // Initial measurement
+    measureAndDispatch();
 
     return () => {
       observer.unobserve(gridElement);
     };
   }, [measureAndDispatch]);
 
-  // Set up an event listener to measure the image once it has loaded.
   useEffect(() => {
     const imgElement = document.getElementById("image");
     if (!imgElement) return;
 
-    // The image might already be loaded (e.g., from cache)
     if (imgElement.complete) {
       measureAndDispatch();
     } else {
@@ -92,8 +87,45 @@ const Grid = () => {
     };
   }, [src, measureAndDispatch]);
 
+  const lines = [];
+  const currentQueue = queueSet[activeQueue] || [];
+
+  if (currentQueue.length > 1 && rendered.width && rendered.height) {
+    for (let i = 0; i < currentQueue.length - 1; i++) {
+      const fromCellId = currentQueue[i];
+      const toCellId = currentQueue[i + 1];
+
+      const fromCell = cellSet[fromCellId];
+      const toCell = cellSet[toCellId];
+
+      if (fromCell && toCell) {
+        const from = {
+          x: fromCell.normalizedPosition.x * rendered.width,
+          y: fromCell.normalizedPosition.y * rendered.height,
+        };
+        const to = {
+          x: toCell.normalizedPosition.x * rendered.width,
+          y: toCell.normalizedPosition.y * rendered.height,
+        };
+        lines.push({ from, to, id: `${fromCellId}-${toCellId}` });
+      }
+    }
+  }
+
+  const gridStyle = {
+    "--rendered-width": `${rendered.width}px`,
+    "--rendered-height": `${rendered.height}px`,
+    "--rendered-top": `${rendered.top}px`,
+    "--rendered-left": `${rendered.left}px`,
+  };
+
   return (
-    <div id="grid" ref={gridRef}>
+    <div id="grid" ref={gridRef} style={gridStyle}>
+      <svg className="grid-lines">
+        {lines.map((line) => (
+          <GridLine key={line.id} from={line.from} to={line.to} />
+        ))}
+      </svg>
       <GridImage />
       <GridCells />
     </div>

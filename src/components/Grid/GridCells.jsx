@@ -4,7 +4,7 @@ import GridCell from "./GridCell";
 import { addCell, enqueue } from "../../reducers/cellReducer";
 
 const GridCells = () => {
-  const { cellSet, cellStyle, activeCell } = useSelector(
+  const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
     (state) => state.cells
   );
   const { width, height, top, left } = useSelector(
@@ -32,6 +32,8 @@ const GridCells = () => {
     dispatch(enqueue(newCellId));
   };
 
+  const activeQueueCells = activeQueue ? queueSet[activeQueue] || [] : [];
+
   return (
     <div
       id="cells"
@@ -54,7 +56,11 @@ const GridCells = () => {
           top: cell.normalizedPosition.y * height - cellStyle.height / 2,
         };
 
-        const className = `grid-cell ${cell.id === activeCell ? "active" : ""}`;
+        const isActive = cell.id === activeCell;
+        const inActiveQueue = activeQueueCells.includes(cell.id);
+        const className = `grid-cell ${isActive ? "active" : ""} ${
+          inActiveQueue ? "in-active-queue" : ""
+        }`;
 
         return (
           <GridCell
@@ -63,6 +69,7 @@ const GridCells = () => {
             style={individualCellStyle}
             char={cell.char}
             className={className}
+            solutionChar={cell.solutionChar}
           />
         );
       })}

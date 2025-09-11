@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { setActiveQueue, addQueue, removeQueue } from '../../reducers/cellReducer';
+import { setActiveQueue, addQueue, removeQueue, popFromActiveQueue } from '../../reducers/cellReducer';
 
 const QueueManagerModal = () => {
     const dispatch = useDispatch();
     const { queueSet, activeQueue } = useSelector((state) => state.cells);
     const queueIds = Object.keys(queueSet);
+    const activeQueueItems = queueSet[activeQueue] || [];
 
     const handleSetActiveQueue = (e) => {
         dispatch(setActiveQueue(e.target.value));
@@ -18,9 +19,13 @@ const QueueManagerModal = () => {
     };
 
     const handleRemoveQueue = (queueId) => {
-        if (window.confirm(`Are you sure you want to delete queue "${queueId}"?`)) {
+        if (window.confirm(`Are you sure you want to delete queue \"${queueId}\"?`)) {
             dispatch(removeQueue(queueId));
         }
+    };
+
+    const handlePopFromQueue = () => {
+        dispatch(popFromActiveQueue());
     };
 
     return (
@@ -36,8 +41,14 @@ const QueueManagerModal = () => {
                     </select>
                 </label>
             </div>
-            <div style={{ marginBottom: '10px' }}>
+            <div style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
                 <button onClick={handleAddQueue}>Add New Queue</button>
+                <button 
+                    onClick={handlePopFromQueue}
+                    disabled={activeQueueItems.length === 0}
+                >
+                    Pop Last Cell
+                </button>
             </div>
             <div>
                 <h4>All Queues:</h4>

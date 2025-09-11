@@ -28,8 +28,12 @@ const imageSlice = createSlice({
       // Return the initial state to clear everything
       return initialState;
     },
+    setImageState(state, action) {
+      return action.payload;
+    },
   },
 });
 
-export const { setSrc, setRendered, unloadImage } = imageSlice.actions;
+export const { setSrc, setRendered, unloadImage, setImageState } =
+  imageSlice.actions;
 export default imageSlice.reducer;

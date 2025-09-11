@@ -1,24 +1,45 @@
 /* --- Main Control Panel Container --- */
 #controlPanel {
     display: flex;
+    flex-direction: column; /* Changed to column for better layout control */
+    background-color: var(--background-content-alt);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-color-primary);
+    position: relative;
+    transition: max-height 0.5s ease-in-out;
+    overflow: hidden; /* Hide the content when collapsed */
+  }
+
+  .controls-content {
+    display: flex;
     flex-direction: row;
-    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
     padding: 10px;
-    background-color: #f0f2f5;
-    border-top: 1px solid #ccc;
-    gap: 10px; /* Space between fieldsets */
-    color: #333;
+    gap: 10px;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  #controlPanel.collapsed .controls-content {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;    
+  }
+
+  .toggle-visibility-btn {
+    align-self: flex-end; /* Position button to the right */
+    margin: 5px;
+    padding: 5px 10px;
   }
   
   /* --- Fieldset Styling --- */
   #controlPanel fieldset {
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 12px 15px;
     margin: 0;
-    background-color: #ffffff;
+    background-color: var(--background-content);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
@@ -30,7 +51,7 @@
   #controlPanel legend {
     font-weight: 600;
     padding: 0 6px;
-    color: #1f2937;
+    color: var(--text-color-primary);
     font-size: 1em;
   }
   
@@ -40,7 +61,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.9em;
-    color: #4b5563;
+    color: var(--text-color-secondary);
     gap: 8px;
   }
   
@@ -49,7 +70,7 @@
   #controlPanel input[type="number"] {
     width: 60px; /* A fixed width for number inputs looks tidy */
     padding: 6px 8px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.9em;
     text-align: right;
@@ -58,8 +79,8 @@
   
   #controlPanel input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color-transparent);
   }
   
   /* --- Button Styling --- */
@@ -68,8 +89,8 @@
     padding: 8px 12px;
     font-size: 0.9em;
     font-weight: 500;
-    color: #fff;
-    background-color: #3b82f6;
+    color: var(--text-on-primary);
+    background-color: var(--primary-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -80,22 +101,22 @@
   
   #controlPanel button:hover,
   #controlPanel .file-upload-label:hover {
-    background-color: #2563eb;
+    background-color: var(--primary-color-darker);
   }
   
   #controlPanel button:disabled {
-    background-color: #9ca3af;
+    background-color: var(--background-main);
     cursor: not-allowed;
   }
   
   /* --- General Info/Status Div Styling --- */
   #controlPanel fieldset div {
       font-size: 0.9em;
-      color: #4b5563;
+      color: var(--text-color-secondary);
   }
   
   #controlPanel fieldset div strong {
-      color: #1f2937;
+      color: var(--text-color-primary);
       font-weight: 600;
   }
   

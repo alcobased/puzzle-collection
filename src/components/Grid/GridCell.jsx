@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setActiveCell } from "../../reducers/cellReducer";
 import { openModal } from "../../reducers/uiReducer";
 
-const GridCell = ({ id, style, char, className }) => {
+const GridCell = ({ id, style, char, className, solutionChar }) => {
   const dispatch = useDispatch();
 
   const handleClick = (e) => {
@@ -18,7 +18,7 @@ const GridCell = ({ id, style, char, className }) => {
       style={style}
       onClick={handleClick}
     >
-      {char}
+      {solutionChar || char}
     </div>
   );
 };

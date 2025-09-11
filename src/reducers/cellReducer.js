@@ -30,16 +30,41 @@ const cellSlice = createSlice({
         id: id,
         normalizedPosition: { x, y },
         char: null,
+        solutionChar: null,
       };
     },
     // Reducer for replacing the entire cellSet
     setCells(state, action) {
       state.cellSet = action.payload;
     },
+    setCellState(state, action) {
+      return action.payload;
+    },
     // Reducer for adding a cell ID to the active queue
     enqueue(state, action) {
       if (state.activeQueue && state.queueSet[state.activeQueue]) {
         state.queueSet[state.activeQueue].push(action.payload);
+      }
+    },
+    popFromActiveQueue(state) {
+      const activeQueueId = state.activeQueue;
+      if (activeQueueId && state.queueSet[activeQueueId]) {
+        const queue = state.queueSet[activeQueueId];
+        if (queue.length > 0) {
+          const poppedCellId = queue.pop();
+
+          // Check if the popped cell is still in any other queue
+          const isCellInAnyQueue = Object.values(state.queueSet).some(q => q.includes(poppedCellId));
+
+          // If not, remove the cell from the cellSet
+          if (!isCellInAnyQueue) {
+            delete state.cellSet[poppedCellId];
+            // Also, if the popped cell was the active cell, reset it
+            if (state.activeCell === poppedCellId) {
+                state.activeCell = null;
+            }
+          }
+        }
       }
     },
     // Reducer for replacing the entire queueSet
@@ -52,6 +77,7 @@ const cellSlice = createSlice({
         if (state.queueSet[id] === undefined) {
             state.queueSet[id] = [];
         }
+        state.activeQueue = id;
     },
     // Reducer for removing a queue
     removeQueue(state, action) {
@@ -98,13 +124,27 @@ const cellSlice = createSlice({
         cellToUpdate.char = char ? char.toUpperCase() : char;
       }
     },
+    setSolutionChar(state, action) {
+      const { cellId, char } = action.payload;
+      const cellToUpdate = state.cellSet[cellId];
+      if (cellToUpdate) {
+        cellToUpdate.solutionChar = char;
+      }
+    },
+    clearSolutionChars(state) {
+      for (const cellId in state.cellSet) {
+        state.cellSet[cellId].solutionChar = null;
+      }
+    },
   },
 });
 
 export const {
   addCell,
   setCells,
+  setCellState,
   enqueue,
+  popFromActiveQueue,
   setQueueSet,
   addQueue,
   removeQueue,
@@ -112,6 +152,8 @@ export const {
   setActiveCell,
   setCellStyle,
   assignChar,
+  setSolutionChar,
+  clearSolutionChars,
 } = cellSlice.actions;
 
 export default cellSlice.reducer;

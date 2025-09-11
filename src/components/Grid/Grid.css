@@ -6,7 +6,7 @@
     justify-content: center;
     overflow: hidden;
     position: relative;
-    background-color: grey;
+    background-color: var(--background-main);
 }
 
 #grid img {
@@ -20,27 +20,41 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 10; /* Ensure cells are on top of lines */
     /* background-color: rgba(0, 0, 0, 0.5); */
+}
+
+.grid-lines {
+    position: absolute;
+    top: var(--rendered-top, 0);
+    left: var(--rendered-left, 0);
+    width: var(--rendered-width, 100%);
+    height: var(--rendered-height, 100%);
+    pointer-events: none;
+    z-index: 5; /* Should be behind cells (z-index 10) */
+    overflow: visible;
 }
 
 .grid-cell {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: black;
+    color: var(--text-color-primary);
     font-weight: bold;
     /* text-shadow: 1px 1px 2px black; */
     cursor: pointer;
     box-sizing: border-box; /* Ensures padding/border are included in width/height */
     
     /* Static styles moved from Redux state */
-    border: 1px solid black;
-    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    border: 1px solid var(--text-color-primary);
+    background-color: var(--cell-background); /* Semi-transparent white */
     transition: background-color 0.2s, border-color 0.2s;
 }
 
 .grid-cell.active {
-    border: 2px solid #3b82f6; /* Use consistent blue from controls */
-    background-color: rgba(255, 255, 255, 1); /* Slightly more opaque */
-    z-index: 10; /* Ensure active cell is on top */
+    box-shadow: 0 0 5px 2px var(--primary-color-transparent);
+}
+
+.grid-cell.in-active-queue {
+    background-color: var(--cell-background-active-queue);
 }
