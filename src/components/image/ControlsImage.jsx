@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { setSrc, unloadImage } from "../../reducers/imageReducer";
+import { setSrc, unloadImage } from "../../features/image/imageSlice.js";
 
 const ControlsImage = () => {
   const dispatch = useDispatch();

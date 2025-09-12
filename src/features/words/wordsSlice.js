@@ -7,7 +7,7 @@ const wordSlice = createSlice({
   name: "words",
   initialState: {
     lists: {
-      [defaultListId]: ["HELLO", "WORLD"],
+      [defaultListId]: [],
     },
     activeList: defaultListId,
   },

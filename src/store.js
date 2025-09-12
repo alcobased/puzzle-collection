@@ -1,6 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createListenerMiddleware,
+  isAnyOf,
+} from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
 
-import imageReducer from "./reducers/imageReducer.js";
+import imageReducer from "./features/image/imageSlice.js";
 import cellReducer, {
   addCell,
   setCells,
@@ -11,8 +16,8 @@ import cellReducer, {
   addQueue,
   removeQueue,
   assignChar,
-} from "./reducers/cellReducer.js";
-import uiReducer from "./reducers/uiReducer.js";
+} from "./features/pathfinder/pathfinderSlice.js";
+import uiReducer from "./features/ui/uiSlice.js";
 import wordReducer, {
   addList,
   removeList,
@@ -21,45 +26,57 @@ import wordReducer, {
   removeWord,
   setWords,
   setWordsState,
-} from "./reducers/wordReducer.js";
-import solverReducer, { clearSolution } from "./reducers/solverReducer.js";
+} from "./features/words/wordsSlice.js";
+import solverReducer, {
+  clearSolution,
+} from "./features/pathfinder/solverSlice.js";
 
-const solutionClearingActions = [
-  addCell.type,
-  setCells.type,
-  setCellState.type,
-  enqueue.type,
-  popFromActiveQueue.type,
-  setQueueSet.type,
-  addQueue.type,
-  removeQueue.type,
-  assignChar.type,
-  addList.type,
-  removeList.type,
-  addWord.type,
-  addWords.type,
-  removeWord.type,
-  setWords.type,
-  setWordsState.type,
-];
+const pathfinderReducer = combineReducers({
+  cells: cellReducer,
+  solver: solverReducer,
+});
 
-const solutionClearerMiddleware = (store) => (next) => (action) => {
-  if (solutionClearingActions.includes(action.type)) {
-    store.dispatch(clearSolution());
-  }
-  return next(action);
-};
+const puzzlesReducer = combineReducers({
+  pathfinder: pathfinderReducer,
+});
+
+const rootReducer = combineReducers({
+  image: imageReducer,
+  words: wordReducer,
+  puzzles: puzzlesReducer,
+  ui: uiReducer,
+});
+
+const listenerMiddleware = createListenerMiddleware();
+
+listenerMiddleware.startListening({
+  matcher: isAnyOf(
+    addCell,
+    setCells,
+    setCellState,
+    enqueue,
+    popFromActiveQueue,
+    setQueueSet,
+    addQueue,
+    removeQueue,
+    assignChar,
+    addList,
+    removeList,
+    addWord,
+    addWords,
+    removeWord,
+    setWords,
+    setWordsState
+  ),
+  effect: (action, listenerApi) => {
+    listenerApi.dispatch(clearSolution());
+  },
+});
 
 const store = configureStore({
-  reducer: {
-    image: imageReducer,
-    cells: cellReducer,
-    ui: uiReducer,
-    words: wordReducer,
-    solver: solverReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(solutionClearerMiddleware),
+    getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 });
 
 export default store;

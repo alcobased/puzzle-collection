@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCellStyle } from '../../reducers/cellReducer';
-import { openModal } from '../../reducers/uiReducer';
+import { setCellStyle } from '../../features/pathfinder/pathfinderSlice.js';
+import { openModal } from '../../features/ui/uiSlice.js';
 
 const ControlsCells = () => {
   const dispatch = useDispatch();
-  const cellStyle = useSelector(state => state.cells.cellStyle);
+  const cellStyle = useSelector(state => state.puzzles.pathfinder.cells.cellStyle);
 
   const handleSizeChange = (e) => {
     const size = parseInt(e.target.value, 10);

@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import GridCell from "./GridCell";
-import { addCell, enqueue } from "../../reducers/cellReducer";
+import { addCell, enqueue } from "../../features/pathfinder/pathfinderSlice.js";
 
 const GridCells = () => {
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
-    (state) => state.cells
+    (state) => state.puzzles.pathfinder.cells
   );
   const { width, height, top, left } = useSelector(
     (state) => state.image.rendered

@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { clearNotification } from '../reducers/uiReducer';
+import { clearNotification } from '../../features/ui/uiSlice';
 import { useEffect } from 'react';
 
 const Notification = () => {

@@ -2,19 +2,22 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { findPaths, generateConnections, solveAllQueues } from "../../lib/solver.js";
 import {
+  setSolutionChar,
+  clearSolutionChars
+} from "../../features/pathfinder/pathfinderSlice.js";
+import {
   setConnections,
   setPaths,
   toggleSolution,
   nextSolution,
   previousSolution,
-} from "../../reducers/solverReducer";
-import { setSolutionChar, clearSolutionChars } from "../../reducers/cellReducer";
+} from "../../features/pathfinder/solverSlice.js";
 
 const ControlsSolver = () => {
   const dispatch = useDispatch();
   const { lists } = useSelector((state) => state.words);
-  const { connections, paths, solutionVisible, currentSolutionIndex } = useSelector((state) => state.solver);
-  const { cellSet, queueSet, activeQueue } = useSelector((state) => state.cells);
+  const { connections, paths, solutionVisible, currentSolutionIndex } = useSelector((state) => state.puzzles.pathfinder.solver);
+  const { cellSet, queueSet, activeQueue } = useSelector((state) => state.puzzles.pathfinder.cells);
 
   useEffect(() => {
     dispatch(clearSolutionChars());

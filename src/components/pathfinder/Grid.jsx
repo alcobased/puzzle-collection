@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setRendered } from "../../reducers/imageReducer";
+import { setRendered } from "../../features/image/imageSlice.js";
 import GridCells from "./GridCells";
-import GridImage from "./GridImage";
+import GridImage from "../image/GridImage";
 import GridLine from "./GridLine"; // Import the new component
 import './Grid.css';
 
@@ -10,7 +10,7 @@ const Grid = () => {
   const gridRef = useRef(null);
   const dispatch = useDispatch();
   const { src, naturalDimensions, rendered } = useSelector((state) => state.image);
-  const { cellSet, queueSet, activeQueue } = useSelector((state) => state.cells);
+  const { cellSet, queueSet, activeQueue } = useSelector((state) => state.puzzles.pathfinder.cells);
 
   const measureAndDispatch = useCallback(() => {
     const gridElement = gridRef.current;

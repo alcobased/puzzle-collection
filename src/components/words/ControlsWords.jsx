@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from '../../reducers/uiReducer';
+import { openModal } from '../../features/ui/uiSlice.js';
 
 const ControlsWords = () => {
   const dispatch = useDispatch();

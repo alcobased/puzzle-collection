@@ -1,26 +1,26 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setCellState } from "../../reducers/cellReducer";
-import { setWordsState } from "../../reducers/wordReducer";
-import { setImageState } from "../../reducers/imageReducer";
-import { setNotification } from "../../reducers/uiReducer";
+import { setCellState } from "../../features/pathfinder/pathfinderSlice.js";
+import { setWordsState } from "../../features/words/wordsSlice.js";
+import { setImageState } from "../../features/image/imageSlice.js";
+import { setNotification } from "../../features/ui/uiSlice.js";
 
 const ControlsStorage = () => {
-  const cells = useSelector((state) => state.cells);
+  const pathfinder = useSelector((state) => state.puzzles.pathfinder);
   const words = useSelector((state) => state.words);
   const image = useSelector((state) => state.image);
   const dispatch = useDispatch();
 
   const handleSaveToLocalStorage = () => {
-    localStorage.setItem("crossword-builder-cells", JSON.stringify(cells));
+    localStorage.setItem("crossword-builder-pathfinder", JSON.stringify(pathfinder));
     localStorage.setItem("crossword-builder-words", JSON.stringify(words));
     localStorage.setItem("crossword-builder-image", JSON.stringify(image));
     dispatch(setNotification("Crossword saved to local storage!"));
   };
 
   const handleLoadFromLocalStorage = () => {
-    const savedCells = localStorage.getItem("crossword-builder-cells");
-    if (savedCells) {
-      dispatch(setCellState(JSON.parse(savedCells)));
+    const savedPathfinder = localStorage.getItem("crossword-builder-pathfinder");
+    if (savedPathfinder) {
+      dispatch(setCellState(JSON.parse(savedPathfinder)));
     }
     const savedWords = localStorage.getItem("crossword-builder-words");
     if (savedWords) {
@@ -37,7 +37,7 @@ const ControlsStorage = () => {
 
   const handleSaveToFile = () => {
     const data = {
-      cells,
+      pathfinder,
       words,
       image,
     };
@@ -61,8 +61,8 @@ const ControlsStorage = () => {
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        if (data.cells) {
-          dispatch(setCellState(data.cells));
+        if (data.pathfinder) {
+          dispatch(setCellState(data.pathfinder));
         }
         if (data.words) {
           dispatch(setWordsState(data.words));
@@ -84,7 +84,10 @@ const ControlsStorage = () => {
       <button onClick={handleSaveToLocalStorage}>Save to Local Storage</button>
       <button onClick={handleLoadFromLocalStorage}>Load from Local Storage</button>
       <button onClick={handleSaveToFile}>Save to File</button>
-      <input type="file" accept=".json" onChange={handleLoadFromFile} />
+      <label className="file-upload-label">
+        Load from File
+        <input type="file" accept=".json" onChange={handleLoadFromFile} style={{ display: 'none' }}/>
+      </label>
     </fieldset>
   );
 };

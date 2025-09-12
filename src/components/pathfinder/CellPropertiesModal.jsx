@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { enqueue, assignChar } from "../../reducers/cellReducer";
-import { closeModal } from "../../reducers/uiReducer";
+import { enqueue, assignChar } from "../../features/pathfinder/pathfinderSlice.js";
+import { closeModal } from "../../features/ui/uiSlice.js";
 
 const CellPropertiesModal = () => {
   const dispatch = useDispatch();
-  const { activeCell, cellSet } = useSelector((state) => state.cells);
+  const { activeCell, cellSet } = useSelector((state) => state.puzzles.pathfinder.cells);
   const charInputRef = useRef(null);
 
   // This should not happen if rendered correctly, but it's a good safeguard.

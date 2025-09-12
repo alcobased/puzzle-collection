@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import ControlsCells from "./ControlsCells";
-import ControlsWords from "./ControlsWords";
-import ControlsImage from "./ControlsImage";
-import ControlsStorage from "./ControlsStorage";
-import ControlsStatus from "./ControlsStatus";
-import ControlsSolver from "./ControlsSolver";
+import ControlsCells from "../pathfinder/ControlsCells";
+import ControlsWords from "../words/ControlsWords";
+import ControlsImage from "../image/ControlsImage";
+import ControlsStorage from "../ui/ControlsStorage";
+import ControlsStatus from "../ui/ControlsStatus";
+import ControlsSolver from "../pathfinder/ControlsSolver";
 import './Controls.css';
 
 const ControlPanel = () => {

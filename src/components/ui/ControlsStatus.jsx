@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 
 const ControlsStatus = () => {
     const { data: imageData, dimensions } = useSelector((state) => state.image);
-    const { cellSet, activeQueue, queueSet } = useSelector((state) => state.cells);
+    const { cellSet, activeQueue, queueSet } = useSelector((state) => state.puzzles.pathfinder.cells);
     const { activeList, lists } = useSelector((state) => state.words);
 
     const totalCells = Object.keys(cellSet).length;

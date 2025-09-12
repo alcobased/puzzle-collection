@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css'
-import Controls from './components/Controls/Controls'
-import Grid from './components/Grid/Grid'
-import Modal from './components/Modal/Modal';
-import Notification from './components/Notification';
+import Controls from './components/layout/Controls'
+import Grid from './components/pathfinder/Grid'
+import Modal from './components/ui/Modal';
+import Notification from './components/ui/Notification';
 
 function App() {
 
