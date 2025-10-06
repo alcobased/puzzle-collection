@@ -5,23 +5,30 @@ import { setImageState } from "../../features/image/imageSlice.js";
 import { setNotification } from "../../features/ui/uiSlice.js";
 
 const ControlsStorage = () => {
-  const pathfinder = useSelector((state) => state.puzzles.pathfinder);
+  const cells = useSelector((state) => state.puzzles.pathfinder.cells);
   const words = useSelector((state) => state.words);
   const image = useSelector((state) => state.image);
   const dispatch = useDispatch();
 
   const handleSaveToLocalStorage = () => {
-    localStorage.setItem("crossword-builder-pathfinder", JSON.stringify(pathfinder));
+    localStorage.setItem(
+      "crossword-builder-pathfinder-cells",
+      JSON.stringify(cells)
+    );
     localStorage.setItem("crossword-builder-words", JSON.stringify(words));
     localStorage.setItem("crossword-builder-image", JSON.stringify(image));
     dispatch(setNotification("Crossword saved to local storage!"));
   };
 
   const handleLoadFromLocalStorage = () => {
-    const savedPathfinder = localStorage.getItem("crossword-builder-pathfinder");
-    if (savedPathfinder) {
-      dispatch(setCellState(JSON.parse(savedPathfinder)));
+    const savedPathfinderCells = localStorage.getItem(
+      "crossword-builder-pathfinder-cells"
+    );
+    if (savedPathfinderCells) {
+      const parsedPathfinderCells = JSON.parse(savedPathfinderCells);
+      dispatch(setCellState(parsedPathfinderCells));
     }
+
     const savedWords = localStorage.getItem("crossword-builder-words");
     if (savedWords) {
       const parsedWords = JSON.parse(savedWords);
@@ -37,7 +44,6 @@ const ControlsStorage = () => {
 
   const handleSaveToFile = () => {
     const data = {
-      pathfinder,
       words,
       image,
     };
@@ -82,11 +88,18 @@ const ControlsStorage = () => {
     <fieldset>
       <legend>Storage</legend>
       <button onClick={handleSaveToLocalStorage}>Save to Local Storage</button>
-      <button onClick={handleLoadFromLocalStorage}>Load from Local Storage</button>
+      <button onClick={handleLoadFromLocalStorage}>
+        Load from Local Storage
+      </button>
       <button onClick={handleSaveToFile}>Save to File</button>
       <label className="file-upload-label">
         Load from File
-        <input type="file" accept=".json" onChange={handleLoadFromFile} style={{ display: 'none' }}/>
+        <input
+          type="file"
+          accept=".json"
+          onChange={handleLoadFromFile}
+          style={{ display: "none" }}
+        />
       </label>
     </fieldset>
   );
