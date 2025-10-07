@@ -1,37 +1,25 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { closeModal } from '../../features/ui/uiSlice';
-import CellPropertiesModal from '../pathfinder/CellPropertiesModal';
-import QueueManagerModal from '../pathfinder/QueueManagerModal';
-import WordManagerModal from '../words/WordManagerModal';
+import React, { lazy, Suspense } from 'react';
+import { useSelector } from 'react-redux';
 
-const MODAL_COMPONENTS = {
-  CELL_PROPERTIES: CellPropertiesModal,
-  QUEUE_MANAGER: QueueManagerModal,
-  WORD_MANAGER: WordManagerModal,
+const modalComponents = {
+  CELL_PROPERTIES: lazy(() => import('../../puzzles/pathfinder/CellPropertiesModal')),
+  QUEUE_MANAGER: lazy(() => import('../../puzzles/pathfinder/QueueManagerModal')),
+  WORD_MANAGER: lazy(() => import('../../puzzles/words/WordManagerModal')),
 };
 
 const ModalManager = () => {
-  const dispatch = useDispatch();
-  const { modalType, modalProps } = useSelector((state) => state.ui.modal);
+  const { modalType, modalProps } = useSelector((state) => state.ui);
 
   if (!modalType) {
     return null;
   }
 
-  const SpecificModal = MODAL_COMPONENTS[modalType];
-
-  const handleClose = () => {
-    dispatch(closeModal());
-  };
+  const SpecificModal = modalComponents[modalType];
 
   return (
-    <div className="modal-backdrop" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-button" onClick={handleClose}>X</button>
-        <SpecificModal {...modalProps} />
-      </div>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      {SpecificModal ? <SpecificModal {...modalProps} /> : null}
+    </Suspense>
   );
 };
 
