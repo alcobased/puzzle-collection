@@ -3,14 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRendered } from "../../features/image/imageSlice.js";
 import GridCells from "./GridCells";
 import GridImage from "../image/GridImage";
-import GridLine from "./GridLine"; // Import the new component
+import GridLines from "./GridLines";
 import './Grid.css';
 
 const Grid = () => {
   const gridRef = useRef(null);
   const dispatch = useDispatch();
   const { src, naturalDimensions, rendered } = useSelector((state) => state.image);
-  const { cellSet, queueSet, activeQueue } = useSelector((state) => state.puzzles.pathfinder.cells);
 
   const measureAndDispatch = useCallback(() => {
     const gridElement = gridRef.current;
@@ -87,31 +86,6 @@ const Grid = () => {
     };
   }, [src, measureAndDispatch]);
 
-  const lines = [];
-  const currentQueue = queueSet[activeQueue] || [];
-
-  if (currentQueue.length > 1 && rendered.width && rendered.height) {
-    for (let i = 0; i < currentQueue.length - 1; i++) {
-      const fromCellId = currentQueue[i];
-      const toCellId = currentQueue[i + 1];
-
-      const fromCell = cellSet[fromCellId];
-      const toCell = cellSet[toCellId];
-
-      if (fromCell && toCell) {
-        const from = {
-          x: fromCell.normalizedPosition.x * rendered.width,
-          y: fromCell.normalizedPosition.y * rendered.height,
-        };
-        const to = {
-          x: toCell.normalizedPosition.x * rendered.width,
-          y: toCell.normalizedPosition.y * rendered.height,
-        };
-        lines.push({ from, to, id: `${fromCellId}-${toCellId}` });
-      }
-    }
-  }
-
   const gridStyle = {
     "--rendered-width": `${rendered.width}px`,
     "--rendered-height": `${rendered.height}px`,
@@ -121,11 +95,7 @@ const Grid = () => {
 
   return (
     <div id="grid" ref={gridRef} style={gridStyle}>
-      <svg className="grid-lines">
-        {lines.map((line) => (
-          <GridLine key={line.id} from={line.from} to={line.to} />
-        ))}
-      </svg>
+      <GridLines />
       <GridImage />
       <GridCells />
     </div>
