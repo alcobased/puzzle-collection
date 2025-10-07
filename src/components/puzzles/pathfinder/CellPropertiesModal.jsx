@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { enqueue, assignChar } from "../../features/pathfinder/pathfinderSlice.js";
-import { closeModal } from "../../features/ui/uiSlice.js";
+import { enqueue, assignChar } from "../../../features/pathfinder/pathfinderSlice.js";
+import { closeModal } from "../../../features/ui/uiSlice.js";
 
 const CellPropertiesModal = () => {
   const dispatch = useDispatch();

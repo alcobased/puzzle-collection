@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setRendered } from "../../features/image/imageSlice.js";
-import GridCells from "./GridCells";
-import GridImage from "../image/GridImage";
-import GridLines from "./GridLines";
+import { setRendered } from "../../../features/image/imageSlice.js";
+import GridCells from "./GridCells.jsx";
+import GridImage from "../../common/image/GridImage.jsx";
+import GridLines from "./GridLines.jsx";
 import './Grid.css';
 
 const Grid = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCellStyle } from '../../features/pathfinder/pathfinderSlice.js';
-import { openModal } from '../../features/ui/uiSlice.js';
+import { setCellStyle } from '../../../features/pathfinder/pathfinderSlice.js';
+import { openModal } from '../../../features/ui/uiSlice.js';
 
 const ControlsCells = () => {
   const dispatch = useDispatch();

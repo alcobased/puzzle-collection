@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { findPaths, generateConnections, solveAllQueues } from "../../lib/solver.js";
+import { findPaths, generateConnections, solveAllQueues } from "../../../lib/solver.js";
 import {
   setSolutionChar,
   clearSolutionChars
-} from "../../features/pathfinder/pathfinderSlice.js";
+} from "../../../features/pathfinder/pathfinderSlice.js";
 import {
   setConnections,
   setPaths,
   toggleSolution,
   nextSolution,
   previousSolution,
-} from "../../features/pathfinder/solverSlice.js";
+} from "../../../features/pathfinder/solverSlice.js";
 
 const ControlsSolver = () => {
   const dispatch = useDispatch();

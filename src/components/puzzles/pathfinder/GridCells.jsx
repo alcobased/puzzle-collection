@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import GridCell from "./GridCell";
-import { addCell, enqueue } from "../../features/pathfinder/pathfinderSlice.js";
+import { addCell, enqueue } from "../../../features/pathfinder/pathfinderSlice.js";
 
 const GridCells = () => {
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(

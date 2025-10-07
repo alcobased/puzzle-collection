@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setActiveCell } from "../../features/pathfinder/pathfinderSlice";
-import { openModal } from "../../features/ui/uiSlice";
+import { setActiveCell } from "../../../features/pathfinder/pathfinderSlice";
+import { openModal } from "../../../features/ui/uiSlice";
 
 const GridCell = ({ id, style, char, className, solutionChar }) => {
   const dispatch = useDispatch();

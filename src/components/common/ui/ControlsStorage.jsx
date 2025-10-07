@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setCellState } from "../../features/pathfinder/pathfinderSlice.js";
-import { setWordsState } from "../../features/words/wordsSlice.js";
-import { setImageState } from "../../features/image/imageSlice.js";
-import { setNotification } from "../../features/ui/uiSlice.js";
+import { setCellState } from "../../../features/pathfinder/pathfinderSlice.js";
+import { setWordsState } from "../../../features/words/wordsSlice.js";
+import { setImageState } from "../../../features/image/imageSlice.js";
+import { setNotification } from "../../../features/ui/uiSlice.js";
 
 const ControlsStorage = () => {
   const cells = useSelector((state) => state.puzzles.pathfinder.cells);

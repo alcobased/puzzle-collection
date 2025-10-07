@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { setActiveQueue, addQueue, removeQueue, popFromActiveQueue } from '../../features/pathfinder/pathfinderSlice.js';
+import { setActiveQueue, addQueue, removeQueue, popFromActiveQueue } from '../../../features/pathfinder/pathfinderSlice.js';
 
 const QueueManagerModal = () => {
     const dispatch = useDispatch();
