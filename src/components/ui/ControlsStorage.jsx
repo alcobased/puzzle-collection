@@ -44,6 +44,7 @@ const ControlsStorage = () => {
 
   const handleSaveToFile = () => {
     const data = {
+      cells,
       words,
       image,
     };
@@ -67,8 +68,8 @@ const ControlsStorage = () => {
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        if (data.pathfinder) {
-          dispatch(setCellState(data.pathfinder));
+        if (data.cells) {
+          dispatch(setCellState(data.cells));
         }
         if (data.words) {
           dispatch(setWordsState(data.words));
