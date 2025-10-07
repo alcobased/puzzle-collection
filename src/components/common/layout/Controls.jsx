@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Controls.css';
-import PathfinderControls from '../pathfinder/PathfinderControls';
+import PathfinderControls from '../puzzles/pathfinder/PathfinderControls';
 
 const ControlPanel = () => {
   const [isVisible, setIsVisible] = useState(true);

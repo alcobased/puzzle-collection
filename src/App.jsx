@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
-import Modal from "./components/ui/Modal";
-import Notification from "./components/ui/Notification";
-import NavigationBar from "./components/ui/NavigationBar";
-import AppRoutes from "./components/ui/AppRoutes";
+import Modal from "./components/common/ui/Modal";
+import Notification from "./components/common/ui/Notification";
+import NavigationBar from "./components/common/ui/NavigationBar";
+import AppRoutes from "./components/common/ui/AppRoutes";
 import { BrowserRouter } from "react-router-dom";
 
 const App = () => {

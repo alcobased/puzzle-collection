@@ -1,5 +1,5 @@
-import Grid from "../components/pathfinder/Grid";
-import Controls from "../components/layout/Controls";
+import Grid from "../puzzles/pathfinder/Grid";
+import Controls from "../common/layout/Controls";
 
 const PathfinderPage = () => {
   return (

@@ -7,7 +7,7 @@ import {
     addWord,
     addWords,
     removeWord,
-} from '../../features/words/wordsSlice.js';
+} from '../../../features/words/wordsSlice.js';
 
 const WordManagerModal = () => {
     const dispatch = useDispatch();

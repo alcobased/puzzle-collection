@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { closeModal } from '../../features/ui/uiSlice.js';
-import { setActiveCell } from '../../features/pathfinder/pathfinderSlice.js';
-import CellPropertiesModal from '../pathfinder/CellPropertiesModal';
-import QueueManagerModal from '../pathfinder/QueueManagerModal';
-import WordManagerModal from '../words/WordManagerModal';
+import { closeModal } from '../../../features/ui/uiSlice.js';
+import { setActiveCell } from '../../../features/pathfinder/pathfinderSlice.js';
+import CellPropertiesModal from '../../puzzles/pathfinder/CellPropertiesModal'
+import QueueManagerModal from '../../puzzles/pathfinder/QueueManagerModal';
+import WordManagerModal from '../../puzzles/words/WordManagerModal';
 import './Modal.css';
 
 const ModalContent = () => {
