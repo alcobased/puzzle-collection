@@ -1,5 +1,6 @@
 import Grid from "../puzzles/pathfinder/Grid";
-import Controls from "../common/layout/Controls";
+import Controls from "../common/Controls/Controls";
+import PathfinderControls from "../puzzles/pathfinder/ControlsPathfinder";
 
 const PathfinderPage = () => {
   return (
@@ -8,7 +9,9 @@ const PathfinderPage = () => {
         <Grid />
       </div>
       <div className="controls-container">
-        <Controls />
+        <Controls>
+          <PathfinderControls />
+        </Controls>
       </div>
     </>
   );

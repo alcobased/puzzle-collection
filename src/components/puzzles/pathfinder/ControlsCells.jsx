@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCellStyle } from '../../../features/pathfinder/pathfinderSlice.js';
-import { openModal } from '../../../features/ui/uiSlice.js';
+import { setModal } from '../../../features/ui/uiSlice.js';
 
 const ControlsCells = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const ControlsCells = () => {
   };
 
   const handleManageQueues = () => {
-      dispatch(openModal({ modalType: 'QUEUE_MANAGER' }));
+      dispatch(setModal('QUEUE_MANAGER'));
   }
 
   return (

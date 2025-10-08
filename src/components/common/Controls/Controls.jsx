@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './Controls.css';
-import PathfinderControls from '../../puzzles/pathfinder/PathfinderControls';
+import PathfinderControls from '../../puzzles/pathfinder/ControlsPathfinder';
 
-const ControlPanel = () => {
+const ControlPanel = (props) => {
   const [isVisible, setIsVisible] = useState(true);
 
   return (
@@ -13,7 +13,7 @@ const ControlPanel = () => {
       >
         {isVisible ? 'Hide' : 'Show'}
       </button>
-      <PathfinderControls/>
+      {props.children}
     </div>
   );
 };

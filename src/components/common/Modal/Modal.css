@@ -25,11 +25,23 @@
   color: var(--text-color-primary);
 }
 
+/* --- Modal Header --- */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: var(--text-color-primary);
+  font-size: 1.25em;
+  margin: 0;
+}
+
 /* --- Close Button --- */
 .modal-close-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   border: none;
   background: transparent;
   font-size: 1.5rem;
@@ -62,14 +74,6 @@
 }
 
 /* --- Generic Modal Elements (to match Controls.css) --- */
-
-.modal-content h3 {
-  font-weight: 600;
-  color: var(--text-color-primary);
-  font-size: 1.25em;
-  margin-top: 0;
-  margin-bottom: 20px;
-}
 
 .modal-content fieldset {
   border: 1px solid var(--border-color);

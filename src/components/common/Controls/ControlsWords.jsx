@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from '../../../features/ui/uiSlice.js';
+import { setModal } from '../../../features/ui/uiSlice.js';
 
 const ControlsWords = () => {
   const dispatch = useDispatch();
@@ -8,7 +8,7 @@ const ControlsWords = () => {
   const activeWords = lists[activeList] || [];
 
   const handleManageWords = () => {
-    dispatch(openModal({ modalType: 'WORD_MANAGER' }));
+    dispatch(setModal('WORD_MANAGER'));
   };
 
   return (

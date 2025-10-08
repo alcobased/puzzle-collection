@@ -3,19 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 const uiSlice = createSlice({
   name: 'ui',
   initialState: {
-    isModalOpen: false,
-    modalType: null, // This will determine which modal content to show
+    modal: null, // This will determine which modal content to show, null means no modal (closed)
     notification: null,
   },
   reducers: {
-    openModal(state, action) {
-      state.isModalOpen = true;
-      state.modalType = action.payload.modalType;
+    setModal(state, action) {
+      state.modal = action.payload;
     },
-    closeModal(state) {
-      state.isModalOpen = false;
-      state.modalType = null;
-      // We also clear activeCell when any modal closes to avoid confusion
+    clearModal(state) {
+      state.modal = null;
     },
     setNotification(state, action) {
       state.notification = action.payload;
@@ -26,5 +22,5 @@ const uiSlice = createSlice({
   },
 });
 
-export const { openModal, closeModal, setNotification, clearNotification } = uiSlice.actions;
+export const { setModal, clearModal, setNotification, clearNotification } = uiSlice.actions;
 export default uiSlice.reducer;

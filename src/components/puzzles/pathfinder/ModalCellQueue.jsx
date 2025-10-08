@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { setActiveQueue, addQueue, removeQueue, popFromActiveQueue } from '../../../features/pathfinder/pathfinderSlice.js';
 
-const QueueManagerModal = () => {
+const ModalCellQueue = () => {
     const dispatch = useDispatch();
     const { queueSet, activeQueue } = useSelector((state) => state.puzzles.pathfinder.cells);
     const queueIds = Object.keys(queueSet);
@@ -30,7 +30,6 @@ const QueueManagerModal = () => {
 
     return (
         <div>
-            <h3>Queue Manager</h3>
             <div style={{ marginBottom: '10px' }}>
                 <label>
                     Active Queue:
@@ -70,4 +69,4 @@ const QueueManagerModal = () => {
     );
 };
 
-export default QueueManagerModal;
+export default ModalCellQueue;

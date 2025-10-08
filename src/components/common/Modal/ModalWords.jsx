@@ -9,7 +9,7 @@ import {
     removeWord,
 } from '../../../features/words/wordsSlice.js';
 
-const WordManagerModal = () => {
+const ModalWords = () => {
     const dispatch = useDispatch();
     const { lists, activeList } = useSelector((state) => state.words);
     const listIds = Object.keys(lists);
@@ -54,7 +54,6 @@ const WordManagerModal = () => {
 
     return (
         <div>
-            <h3>Word Manager</h3>
             {/* Word List Management */}
             <fieldset style={{ marginBottom: '15px' }}>
                 <legend>Word Lists</legend>
@@ -118,4 +117,4 @@ const WordManagerModal = () => {
     );
 };
 
-export default WordManagerModal;
+export default ModalWords;

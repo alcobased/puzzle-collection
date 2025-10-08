@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { enqueue, assignChar } from "../../../features/pathfinder/pathfinderSlice.js";
-import { closeModal } from "../../../features/ui/uiSlice.js";
+import { clearModal } from "../../../features/ui/uiSlice.js";
 
-const CellPropertiesModal = () => {
+const ModalCellProperties = () => {
   const dispatch = useDispatch();
   const { activeCell, cellSet } = useSelector((state) => state.puzzles.pathfinder.cells);
   const charInputRef = useRef(null);
@@ -31,7 +31,7 @@ const CellPropertiesModal = () => {
 
   const handleAddToQueue = () => {
     dispatch(enqueue(activeCell));
-    dispatch(closeModal());
+    dispatch(clearModal());
   };
 
   const handleCharChange = (e) => {
@@ -39,13 +39,12 @@ const CellPropertiesModal = () => {
     setCharInput(newChar);
     dispatch(assignChar({ cellId: activeCell, char: newChar }));
     if (newChar) {
-      dispatch(closeModal());
+      dispatch(clearModal());
     }
   };
 
   return (
     <div>
-      <h3>Cell Properties (ID: {activeCell.substring(0, 8)}...)</h3>
       <div className="cell-properties-controls">
           <span>Character:</span>
           <input
@@ -62,4 +61,4 @@ const CellPropertiesModal = () => {
   );
 };
 
-export default CellPropertiesModal;
+export default ModalCellProperties;
