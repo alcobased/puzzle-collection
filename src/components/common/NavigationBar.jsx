@@ -4,9 +4,7 @@ import './NavigationBar.css';
 const NavigationBar = () => {
   return (
     <nav className="navigation-bar">
-      <div className="logo">
-        <NavLink to="/">Word Games</NavLink>
-      </div>
+      <NavLink to="/" className="logo">Word Games</NavLink>
       <ul>
         <li>
           <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>Home</NavLink>

@@ -4,13 +4,15 @@
     justify-content: space-between;
     align-items: center;
     background-color: var(--background-content);
-    padding: 0.5rem 1rem;
+    padding: 1rem 2rem;
     border-bottom: 1px solid var(--border-color);
 }
 
 .navigation-bar .logo {
+    font-size: 1.5rem;
     font-weight: bold;
     color: var(--text-color-primary);
+    text-decoration: none;
 }
 
 .navigation-bar ul {
@@ -18,19 +20,28 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    gap: 1.5rem;
 }
 
 .navigation-bar li {
-    margin-left: 1.5rem;
+    margin-left: 0;
 }
 
 .navigation-bar a {
     text-decoration: none;
     color: var(--text-color-secondary);
-    transition: color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.25rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-bottom-color 0.3s ease;
 }
 
-.navigation-bar a:hover,
+.navigation-bar a:hover {
+    color: var(--text-color-primary);
+}
+
 .navigation-bar a.active {
     color: var(--text-color-primary);
+    border-bottom-color: var(--primary-color);
 }
