@@ -1,12 +1,10 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setRendered } from "../../../features/image/imageSlice.js";
-import GridCells from "./GridCells.jsx";
 import GridImage from "../../common/GridImage.jsx";
-import GridLines from "./GridLines.jsx";
 import './Grid.css';
 
-const Grid = () => {
+const Grid = (props) => {
   const gridRef = useRef(null);
   const dispatch = useDispatch();
   const { src, naturalDimensions, rendered } = useSelector((state) => state.image);
@@ -95,9 +93,8 @@ const Grid = () => {
 
   return (
     <div id="grid" ref={gridRef} style={gridStyle}>
-      <GridLines />
+      {props.children}
       <GridImage />
-      <GridCells />
     </div>
   );
 };
