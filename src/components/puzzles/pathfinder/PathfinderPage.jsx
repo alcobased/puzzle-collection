@@ -1,17 +1,17 @@
-import Grid from "../common/Grid/Grid";
-import GridCells from "../puzzles/pathfinder/GridCells";
-import GridLines from "../puzzles/pathfinder/GridLines";
-import Controls from "../common/Controls/Controls";
-import PathfinderControls from "../puzzles/pathfinder/ControlsPathfinder";
+import PuzzleViewport from "../../common/PuzzleViewport/PuzzleViewport";
+import GridCells from "./GridCells";
+import GridLines from "./GridLines";
+import Controls from "../../common/Controls/Controls";
+import PathfinderControls from "./ControlsPathfinder";
 
 const PathfinderPage = () => {
   return (
     <>
       <div className="grid-container">
-        <Grid>
+        <PuzzleViewport>
           <GridCells />
           <GridLines />
-        </Grid>
+        </PuzzleViewport>
       </div>
       <div className="controls-container">
         <Controls>

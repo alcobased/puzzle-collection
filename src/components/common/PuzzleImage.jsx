@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
 
-const GridImage = () => {
+const PuzzleImage = () => {
   const src = useSelector((state) => state.image.src);
 
   if (!src) {
     return null;
   }
 
-  return <img id="image" src={src} alt="grid background" />;
+  return <img id="image" src={src} alt="puzzle background" />;
 };
 
-export default GridImage;
+export default PuzzleImage;

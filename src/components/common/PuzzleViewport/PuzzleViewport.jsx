@@ -1,21 +1,21 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setRendered } from "../../../features/image/imageSlice.js";
-import GridImage from "../../common/GridImage.jsx";
-import './Grid.css';
+import PuzzleImage from "../../common/PuzzleImage.jsx";
+import './PuzzleViewport.css';
 
-const Grid = (props) => {
-  const gridRef = useRef(null);
+const PuzzleViewport = (props) => {
+  const viewportRef = useRef(null);
   const dispatch = useDispatch();
   const { src, naturalDimensions, rendered } = useSelector((state) => state.image);
 
   const measureAndDispatch = useCallback(() => {
-    const gridElement = gridRef.current;
-    if (!gridElement) return;
+    const viewportElement = viewportRef.current;
+    if (!viewportElement) return;
 
     if (src && naturalDimensions.width > 0) {
-      const containerWidth = gridElement.offsetWidth;
-      const containerHeight = gridElement.offsetHeight;
+      const containerWidth = viewportElement.offsetWidth;
+      const containerHeight = viewportElement.offsetHeight;
       const { width: naturalWidth, height: naturalHeight } = naturalDimensions;
 
       const containerRatio = containerWidth / containerHeight;
@@ -46,8 +46,8 @@ const Grid = (props) => {
     } else if (!src) {
       dispatch(
         setRendered({
-          width: gridElement.offsetWidth,
-          height: gridElement.offsetHeight,
+          width: viewportElement.offsetWidth,
+          height: viewportElement.offsetHeight,
           top: 0,
           left: 0,
         })
@@ -56,16 +56,16 @@ const Grid = (props) => {
   }, [src, naturalDimensions, dispatch]);
 
   useEffect(() => {
-    const gridElement = gridRef.current;
-    if (!gridElement) return;
+    const viewportElement = viewportRef.current;
+    if (!viewportElement) return;
 
     const observer = new ResizeObserver(measureAndDispatch);
-    observer.observe(gridElement);
+    observer.observe(viewportElement);
 
     measureAndDispatch();
 
     return () => {
-      observer.unobserve(gridElement);
+      observer.unobserve(viewportElement);
     };
   }, [measureAndDispatch]);
 
@@ -84,7 +84,7 @@ const Grid = (props) => {
     };
   }, [src, measureAndDispatch]);
 
-  const gridStyle = {
+  const viewportStyle = {
     "--rendered-width": `${rendered.width}px`,
     "--rendered-height": `${rendered.height}px`,
     "--rendered-top": `${rendered.top}px`,
@@ -92,11 +92,11 @@ const Grid = (props) => {
   };
 
   return (
-    <div id="grid" ref={gridRef} style={gridStyle}>
+    <div id="viewport" ref={viewportRef} style={viewportStyle}>
       {props.children}
-      <GridImage />
+      <PuzzleImage />
     </div>
   );
 };
 
-export default Grid;
+export default PuzzleViewport;
