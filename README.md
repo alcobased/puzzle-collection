@@ -1,12 +1,34 @@
-# React + Vite
+# Word Chains
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a word chain puzzle game where the objective is to find a path of words from a starting word to an ending word, where each adjacent word in the path differs by only one letter.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   React
+*   Redux
+*   Vite
+*   Jest
 
-## Expanding the ESLint configuration
+## Available Scripts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+In the project directory, you can run:
+
+### `npm run dev`
+
+Runs the app in development mode.
+
+### `npm run build`
+
+Builds the app for production.
+
+### `npm run test`
+
+Runs the test suite.
+
+### `npm run lint`
+
+Lints the project files.
+
+### `npm run preview`
+
+Serves the production build locally for preview.
