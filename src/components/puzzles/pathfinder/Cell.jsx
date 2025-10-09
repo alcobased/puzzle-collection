@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setActiveCell } from "../../../features/pathfinder/pathfinderSlice";
 import { setModal } from "../../../features/ui/uiSlice";
 
-const GridCell = ({ id, style, char, className, solutionChar }) => {
+const Cell = ({ id, style, char, className, solutionChar }) => {
   const dispatch = useDispatch();
 
   const handleClick = (e) => {
@@ -23,4 +23,4 @@ const GridCell = ({ id, style, char, className, solutionChar }) => {
   );
 };
 
-export default GridCell;
+export default Cell;

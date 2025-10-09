@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import GridLine from "./GridLine";
+import Line from "./Line";
 
-const GridLines = () => {
+const Lines = () => {
   const { rendered } = useSelector((state) => state.image);
   const { cellSet, queueSet, activeQueue } = useSelector(
     (state) => state.puzzles.pathfinder.cells
@@ -33,12 +33,12 @@ const GridLines = () => {
   }
 
   return (
-    <svg className="grid-lines">
+    <svg className="lines">
       {lines.map((line) => (
-        <GridLine key={line.id} from={line.from} to={line.to} />
+        <Line key={line.id} from={line.from} to={line.to} />
       ))}
     </svg>
   );
 };
 
-export default GridLines;
+export default Lines;

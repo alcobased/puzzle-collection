@@ -1,16 +1,16 @@
 import PuzzleViewport from "../../common/PuzzleViewport/PuzzleViewport";
-import GridCells from "./GridCells";
-import GridLines from "./GridLines";
+import Cells from "./Cells";
+import Lines from "./Lines";
 import Controls from "../../common/Controls/Controls";
 import PathfinderControls from "./ControlsPathfinder";
 
 const PathfinderPage = () => {
   return (
     <>
-      <div className="grid-container">
+      <div className="puzzle-container">
         <PuzzleViewport>
-          <GridCells />
-          <GridLines />
+          <Cells />
+          <Lines />
         </PuzzleViewport>
       </div>
       <div className="controls-container">

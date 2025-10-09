@@ -24,7 +24,7 @@
     /* background-color: rgba(0, 0, 0, 0.5); */
 }
 
-.grid-lines {
+.lines {
     position: absolute;
     top: var(--rendered-top, 0);
     left: var(--rendered-left, 0);
@@ -35,7 +35,7 @@
     overflow: visible;
 }
 
-.grid-cell {
+.cell {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,10 +51,10 @@
     transition: background-color 0.2s, border-color 0.2s;
 }
 
-.grid-cell.active {
+.cell.active {
     box-shadow: 0 0 5px 2px var(--primary-color-transparent);
 }
 
-.grid-cell.in-active-queue {
+.cell.in-active-queue {
     background-color: var(--cell-background-active-queue);
 }

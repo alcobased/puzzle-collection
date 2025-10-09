@@ -47,7 +47,7 @@ html, body, #root {
     height: 100%;
 }
 
-.grid-container {
+.puzzle-container {
     flex: 1;
     display: flex;
     overflow: hidden;

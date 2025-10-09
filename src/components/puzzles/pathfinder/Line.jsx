@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GridLine = ({ from, to }) => {
+const Line = ({ from, to }) => {
   return (
     <line
       x1={from.x}
@@ -13,4 +13,4 @@ const GridLine = ({ from, to }) => {
   );
 };
 
-export default GridLine;
+export default Line;

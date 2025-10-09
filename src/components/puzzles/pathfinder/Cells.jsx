@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import GridCell from "./GridCell";
+import Cell from "./Cell";
 import { addCell, enqueue } from "../../../features/pathfinder/pathfinderSlice.js";
 
-const GridCells = () => {
+const Cells = () => {
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
     (state) => state.puzzles.pathfinder.cells
   );
@@ -58,12 +58,12 @@ const GridCells = () => {
 
         const isActive = cell.id === activeCell;
         const inActiveQueue = activeQueueCells.includes(cell.id);
-        const className = `grid-cell ${isActive ? "active" : ""} ${
+        const className = `cell ${isActive ? "active" : ""} ${
           inActiveQueue ? "in-active-queue" : ""
         }`;
 
         return (
-          <GridCell
+          <Cell
             key={cell.id}
             id={cell.id}
             style={individualCellStyle}
@@ -77,4 +77,4 @@ const GridCells = () => {
   );
 };
 
-export default GridCells;
+export default Cells;
