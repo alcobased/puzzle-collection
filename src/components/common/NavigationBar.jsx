@@ -13,7 +13,7 @@ const NavigationBar = () => {
           <NavLink to="/pathfinder" className={({ isActive }) => (isActive ? 'active' : '')}>Pathfinder</NavLink>
         </li>
         <li>
-          <NavLink to="/word-chains" className={({ isActive }) => (isActive ? 'active' : '')}>Word Chains</NavLink>
+          <NavLink to="/domino" className={({ isActive }) => (isActive ? 'active' : '')}>Domino</NavLink>
         </li>
         <li>
           <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>About</NavLink>
