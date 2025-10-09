@@ -1,19 +1,19 @@
 import PuzzleViewport from "../../common/PuzzleViewport/PuzzleViewport";
 import Controls from "../../common/Controls/Controls";
-import ControlsDomino from "./ControlsDomino";
-import Dominoes from "./Dominoes";
+import DominoControls from "./DominoControls";
+import DominoGrid from "./DominoGrid";
 
 const DominoPage = () => {
   return (
     <>
       <div className="puzzle-container">
         <PuzzleViewport>
-          <Dominoes />
+          <DominoGrid />
         </PuzzleViewport>
       </div>
       <div className="controls-container">
         <Controls>
-          <ControlsDomino />
+          <DominoControls />
         </Controls>
       </div>
     </>

@@ -1,35 +1,16 @@
 import {
   configureStore,
-  createListenerMiddleware,
-  isAnyOf,
 } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 
 import imageReducer from "./features/image/imageSlice.js";
-import cellReducer, {
-  addCell,
-  setCells,
-  setCellState,
-  enqueue,
-  popFromActiveQueue,
-  setQueueSet,
-  addQueue,
-  removeQueue,
-  assignChar,
-} from "./features/pathfinder/pathfinderSlice.js";
+import cellReducer from "./features/pathfinder/pathfinderSlice.js";
 import uiReducer from "./features/ui/uiSlice.js";
-import wordReducer, {
-  addList,
-  removeList,
-  addWord,
-  addWords,
-  removeWord,
-  setWords,
-  setWordsState,
-} from "./features/words/wordsSlice.js";
-import solverReducer, {
-  clearSolution,
-} from "./features/pathfinder/solverSlice.js";
+import wordReducer from "./features/words/wordsSlice.js";
+import solverReducer from "./features/pathfinder/solverSlice.js";
+import dominoReducer from "./features/domino/dominoSlice.js";
+
+import { listenerMiddleware } from "./middleware/listenerMiddleware.js";
 
 const pathfinderReducer = combineReducers({
   cells: cellReducer,
@@ -38,6 +19,7 @@ const pathfinderReducer = combineReducers({
 
 const puzzlesReducer = combineReducers({
   pathfinder: pathfinderReducer,
+  domino: dominoReducer,
 });
 
 const rootReducer = combineReducers({
@@ -45,32 +27,6 @@ const rootReducer = combineReducers({
   words: wordReducer,
   puzzles: puzzlesReducer,
   ui: uiReducer,
-});
-
-const listenerMiddleware = createListenerMiddleware();
-
-listenerMiddleware.startListening({
-  matcher: isAnyOf(
-    addCell,
-    setCells,
-    setCellState,
-    enqueue,
-    popFromActiveQueue,
-    setQueueSet,
-    addQueue,
-    removeQueue,
-    assignChar,
-    addList,
-    removeList,
-    addWord,
-    addWords,
-    removeWord,
-    setWords,
-    setWordsState
-  ),
-  effect: (action, listenerApi) => {
-    listenerApi.dispatch(clearSolution());
-  },
 });
 
 const store = configureStore({
