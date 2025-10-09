@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { findPaths, generateConnections, solveAllQueues } from "../../../lib/solver.js";
+import { findPaths, generateConnections, solveAllQueues } from "./lib/solver.js";
 import {
   setSolutionChar,
   clearSolutionChars
