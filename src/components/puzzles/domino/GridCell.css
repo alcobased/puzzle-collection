@@ -1,0 +1,41 @@
+
+.grid-cell {
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  border: 1px solid #eee;
+  background-color: var(--cell-background);
+}
+
+.grid-cell.occupied {
+  background-color: var(--background-content);
+}
+
+.grid-cell.selected {
+  background-color: rgba(100, 100, 255, 0.4);
+}
+
+.grid-cell.selected.invalid {
+  background-color: rgba(255, 100, 100, 0.4);
+}
+
+.grid-cell.border-top {
+  border-top: 2px solid #333;
+}
+
+.grid-cell.border-bottom {
+  border-bottom: 2px solid #333;
+}
+
+.grid-cell.border-left {
+  border-left: 2px solid #333;
+}
+
+.grid-cell.border-right {
+  border-right: 2px solid #333;
+}
