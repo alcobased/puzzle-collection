@@ -1,6 +1,29 @@
-import React from 'react';
 
-const GridCell = ({ cellX, cellY, group }) => {
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  startSelection,
+  updateSelection,
+} from '../../../features/domino/dominoSlice';
+
+const GridCell = ({ cellX, cellY, group, isSelected, isSelectionValid }) => {
+  const dispatch = useDispatch();
+
+  const handleMouseDown = () => {
+    dispatch(startSelection({ x: cellX, y: cellY }));
+  };
+
+  const handleMouseEnter = () => {
+    dispatch(updateSelection({ x: cellX, y: cellY }));
+  };
+
+  let backgroundColor = 'transparent';
+  if (isSelected) {
+    backgroundColor = isSelectionValid 
+      ? 'rgba(100, 100, 255, 0.3)' // Valid selection: light blue
+      : 'rgba(255, 100, 100, 0.3)'; // Invalid selection: light red
+  }
+
   const cellStyle = {
     width: '50px',
     height: '50px',
@@ -10,7 +33,11 @@ const GridCell = ({ cellX, cellY, group }) => {
     alignItems: 'center',
     fontSize: '1.2em',
     fontWeight: 'bold',
-    border: '1px solid #eee', // Default thin border
+    borderTop: '1px solid #eee',
+    borderBottom: '1px solid #eee',
+    borderLeft: '1px solid #eee',
+    borderRight: '1px solid #eee',
+    backgroundColor,
   };
 
   if (group) {
@@ -33,7 +60,11 @@ const GridCell = ({ cellX, cellY, group }) => {
   }
 
   return (
-    <div style={cellStyle}>
+    <div
+      style={cellStyle}
+      onMouseDown={handleMouseDown}
+      onMouseEnter={handleMouseEnter}
+    >
       {/* Cell content will be added later */}
     </div>
   );
