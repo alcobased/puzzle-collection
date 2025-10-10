@@ -3,6 +3,7 @@ import ControlsWords from "../../common/Controls/ControlsWords";
 import ControlsImage from "../../common/Controls/ControlsImage";
 import ControlsStorage from "../../common/Controls/ControlsStorage";
 import GroupControls from "./GroupControls";
+import GridControls from "./GridControls";
 
 // Common controls only for now
 // Domino specific controls will be added later
@@ -14,6 +15,7 @@ const DominoControls = () => {
       <ControlsStorage />
       <ControlsWords />
       <GroupControls />
+      <GridControls />
     </div>
   );
 };

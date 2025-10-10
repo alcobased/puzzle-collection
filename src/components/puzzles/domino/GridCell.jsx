@@ -7,7 +7,7 @@ import {
 } from '../../../features/domino/dominoSlice';
 import './GridCell.css';
 
-const GridCell = ({ cellX, cellY, group, isSelected, isSelectionValid }) => {
+const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid }) => {
   const dispatch = useDispatch();
 
   const handleMouseDown = () => {
@@ -44,11 +44,17 @@ const GridCell = ({ cellX, cellY, group, isSelected, isSelectionValid }) => {
     }
   }
 
+  const style = {
+    width: `${cellSize}px`,
+    height: `${cellSize}px`,
+  };
+
   return (
     <div
       className={classNames.join(' ')}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
+      style={style}
     >
       {/* Cell content will be added later */}
     </div>

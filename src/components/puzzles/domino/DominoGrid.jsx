@@ -11,7 +11,7 @@ const DominoGrid = () => {
     return null;
   }
 
-  const { data, width, height, groups } = grid;
+  const { data, width, height, cellSize, groups } = grid;
   const { groupList, selection } = groups;
 
   const handleMouseUp = () => {
@@ -26,11 +26,11 @@ const DominoGrid = () => {
 
   const gridStyle = {
     display: 'grid',
-    gridTemplateColumns: `repeat(${width || 0}, 50px)`,
-    gridTemplateRows: `repeat(${height || 0}, 50px)`,
+    gridTemplateColumns: `repeat(${width || 0}, ${cellSize}px)`,
+    gridTemplateRows: `repeat(${height || 0}, ${cellSize}px)`,
     border: '1px solid #ccc',
-    width: `${(width || 0) * 50}px`,
-    height: `${(height || 0) * 50}px`,
+    width: `${(width || 0) * cellSize}px`,
+    height: `${(height || 0) * cellSize}px`,
     userSelect: 'none',
   };
 
@@ -70,6 +70,7 @@ const DominoGrid = () => {
             key={`${x}-${y}`}
             cellX={x}
             cellY={y}
+            cellSize={cellSize}
             group={group}
             isSelected={selected}
             isSelectionValid={selection.isValid}
