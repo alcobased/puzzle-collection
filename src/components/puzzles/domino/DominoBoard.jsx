@@ -1,18 +1,19 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import GridCell from './GridCell';
 import { endSelection } from '../../../features/domino/dominoSlice';
 
-const DominoBoard = () => {
+const DominoBoard = ({ rendered }) => {
   const dispatch = useDispatch();
   const { grid } = useSelector((state) => state.puzzles.domino);
 
-  if (!grid) {
+  if (!rendered || !grid) {
     return null;
   }
 
-  const { data, width, height, cellSize, groups } = grid;
+  const { data, width, height, groups } = grid;
   const { groupList, selection } = groups;
+
+  const cellSize = Math.min(rendered.width / width, rendered.height / height);
 
   const handleMouseUp = () => {
     dispatch(endSelection());

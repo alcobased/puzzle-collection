@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 const defaultGrid = Array(10).fill(null).map(() => Array(10).fill(null));
 const initialWidth = 10;
 const initialHeight = 10;
-const initialCellSize = 50;
 
 const initialGroupList = [
   { x: 0, y: 0, width: 2, height: 3 },
@@ -30,7 +29,6 @@ const initialState = {
     data: defaultGrid,
     width: initialWidth,
     height: initialHeight,
-    cellSize: initialCellSize,
     occupiedCells: createOccupiedCells(initialWidth, initialHeight, initialGroupList),
     groups: {
       groupList: initialGroupList,
@@ -70,10 +68,9 @@ const dominoSlice = createSlice({
   initialState,
   reducers: {
     setGridDimensions: (state, action) => {
-      const { width, height, cellSize } = action.payload;
+      const { width, height } = action.payload;
       state.grid.width = width;
       state.grid.height = height;
-      state.grid.cellSize = cellSize;
 
       // Reset groups and regenerate grids
       state.grid.groups.groupList = [];

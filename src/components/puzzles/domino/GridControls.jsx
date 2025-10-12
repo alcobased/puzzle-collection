@@ -5,59 +5,43 @@ import './GridControls.css';
 
 const GridControls = () => {
   const dispatch = useDispatch();
-  const { width, height, cellSize } = useSelector((state) => state.puzzles.domino.grid);
+  const { width, height } = useSelector((state) => state.puzzles.domino.grid);
 
   const handleDimensionChange = (e) => {
     const { name, value } = e.target;
     const newDimensions = {
       width,
       height,
-      cellSize,
       [name]: parseInt(value, 10),
     };
     dispatch(setGridDimensions(newDimensions));
   };
 
   return (
-    <fieldset>
-      <legend>Grid</legend>
+    <div className="grid-controls">
       <div className="control-group">
-        <label htmlFor="width">Width: {width}</label>
+        <label htmlFor="width">Width</label>
         <input
-          type="range"
+          type="number"
           id="width"
           name="width"
-          min="5"
-          max="50"
-          value={width}
+          value={width || ''}
           onChange={handleDimensionChange}
+          min="1"
         />
       </div>
       <div className="control-group">
-        <label htmlFor="height">Height: {height}</label>
+        <label htmlFor="height">Height</label>
         <input
-          type="range"
+          type="number"
           id="height"
           name="height"
-          min="5"
-          max="50"
-          value={height}
+          value={height || ''}
           onChange={handleDimensionChange}
+          min="1"
         />
       </div>
-      <div className="control-group">
-        <label htmlFor="cellSize">Cell Size: {cellSize}</label>
-        <input
-          type="range"
-          id="cellSize"
-          name="cellSize"
-          min="10"
-          max="100"
-          value={cellSize}
-          onChange={handleDimensionChange}
-        />
-      </div>
-    </fieldset>
+    </div>
   );
 };
 
