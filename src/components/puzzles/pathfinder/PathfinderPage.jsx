@@ -1,5 +1,5 @@
 import PuzzleViewport from "../../common/PuzzleViewport/PuzzleViewport";
-import Cells from "./Cells";
+import PathfinderBoard from "./PathfinderBoard";
 import Lines from "./Lines";
 import Controls from "../../common/Controls/Controls";
 import PathfinderControls from "./ControlsPathfinder";
@@ -9,7 +9,7 @@ const PathfinderPage = () => {
     <>
       <div className="puzzle-container">
         <PuzzleViewport>
-          <Cells />
+          <PathfinderBoard />
           <Lines />
         </PuzzleViewport>
       </div>

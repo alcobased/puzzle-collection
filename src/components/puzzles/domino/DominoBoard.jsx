@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import GridCell from './GridCell';
 import { endSelection } from '../../../features/domino/dominoSlice';
 
-const DominoGrid = () => {
+const DominoBoard = () => {
   const dispatch = useDispatch();
   const { grid } = useSelector((state) => state.puzzles.domino);
 
@@ -92,4 +92,4 @@ const DominoGrid = () => {
   );
 };
 
-export default DominoGrid;
+export default DominoBoard;

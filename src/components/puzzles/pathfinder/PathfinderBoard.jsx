@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Cell from "./Cell";
 import { addCell, enqueue } from "../../../features/pathfinder/pathfinderSlice.js";
 
-const Cells = () => {
+const PathfinderBoard = () => {
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
     (state) => state.puzzles.pathfinder.cells
   );
@@ -77,4 +77,4 @@ const Cells = () => {
   );
 };
 
-export default Cells;
+export default PathfinderBoard;
