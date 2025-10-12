@@ -3,14 +3,16 @@ import { v4 as uuidv4 } from "uuid";
 import Cell from "./Cell";
 import { addCell, enqueue } from "../../../features/pathfinder/pathfinderSlice.js";
 
-const PathfinderBoard = () => {
+const PathfinderBoard = ({ rendered }) => {
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
     (state) => state.puzzles.pathfinder.cells
   );
-  const { width, height, top, left } = useSelector(
-    (state) => state.image.rendered
-  );
   const dispatch = useDispatch();
+
+  if (!rendered) {
+    return null;
+  }
+  const { width, height } = rendered;
 
   const handleClick = (e) => {
     // Only add a cell if the click is on the container itself, not on a child cell.
@@ -36,15 +38,8 @@ const PathfinderBoard = () => {
 
   return (
     <div
-      id="cells"
       onClick={handleClick}
-      style={{
-        position: "absolute",
-        width: `${width}px`,
-        height: `${height}px`,
-        top: `${top}px`,
-        left: `${left}px`,
-      }}
+      style={{ position: "absolute", width: "100%", height: "100%" }}
     >
       {Object.values(cellSet).map((cell) => {
         const individualCellStyle = {
