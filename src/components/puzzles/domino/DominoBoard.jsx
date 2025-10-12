@@ -1,8 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
 import GridCell from './GridCell';
-import { endSelection } from '../../../features/domino/dominoSlice';
+import {
+  startSelection,
+  updateSelection,
+  endSelection
+} from '../../../features/domino/dominoSlice';
 
 const DominoBoard = ({ rendered }) => {
+  console.log('DominoBoard rendered');
+  
   const dispatch = useDispatch();
   const { grid } = useSelector((state) => state.puzzles.domino);
 
@@ -14,6 +20,29 @@ const DominoBoard = ({ rendered }) => {
   const { groupList, selection } = groups;
 
   const cellSize = Math.min(rendered.width / width, rendered.height / height);
+
+  const getCellCoords = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cellX = Math.floor(x / cellSize);
+    const cellY = Math.floor(y / cellSize);
+    return { x: cellX, y: cellY };
+  };
+
+  const handleMouseDown = (e) => {
+    const coords = getCellCoords(e);
+    dispatch(startSelection(coords));
+  };
+
+  const handleMouseMove = (e) => {
+    if (selection.isActive) {
+      const coords = getCellCoords(e);
+      if (selection.end?.x !== coords.x || selection.end?.y !== coords.y) {
+        dispatch(updateSelection(coords));
+      }
+    }
+  };
 
   const handleMouseUp = () => {
     dispatch(endSelection());
@@ -85,6 +114,8 @@ const DominoBoard = ({ rendered }) => {
   return (
     <div
       style={gridStyle}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
     >

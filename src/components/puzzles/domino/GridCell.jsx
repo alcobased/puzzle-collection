@@ -1,23 +1,7 @@
-
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  startSelection,
-  updateSelection,
-} from '../../../features/domino/dominoSlice';
 import './GridCell.css';
 
 const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid }) => {
-  const dispatch = useDispatch();
-
-  const handleMouseDown = () => {
-    dispatch(startSelection({ x: cellX, y: cellY }));
-  };
-
-  const handleMouseEnter = () => {
-    dispatch(updateSelection({ x: cellX, y: cellY }));
-  };
-
   const classNames = ['grid-cell'];
 
   if (group) {
@@ -52,8 +36,6 @@ const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid 
   return (
     <div
       className={classNames.join(' ')}
-      onMouseDown={handleMouseDown}
-      onMouseEnter={handleMouseEnter}
       style={style}
     >
       {/* Cell content will be added later */}
@@ -61,4 +43,4 @@ const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid 
   );
 };
 
-export default GridCell;
+export default React.memo(GridCell);
