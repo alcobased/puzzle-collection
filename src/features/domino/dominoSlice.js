@@ -5,9 +5,9 @@ const initialWidth = 10;
 const initialHeight = 10;
 
 const initialGroupList = [
-  { x: 0, y: 0, width: 2, height: 3 },
-  { x: 5, y: 2, width: 3, height: 4 },
-  { x: 2, y: 5, width: 2, height: 2 },
+  { x: 0, y: 0, width: 2, height: 3, startCell: null },
+  { x: 5, y: 2, width: 3, height: 4, startCell: null },
+  { x: 2, y: 5, width: 2, height: 2, startCell: null },
 ];
 
 const createOccupiedCells = (width, height, groupList) => {
@@ -121,6 +121,7 @@ const dominoSlice = createSlice({
           y: Math.min(y1, y2),
           width: Math.abs(x1 - x2) + 1,
           height: Math.abs(y1 - y2) + 1,
+          startCell: null,
         };
 
         state.grid.groups.groupList.push(newGroup);
@@ -140,6 +141,26 @@ const dominoSlice = createSlice({
       selection.end = null;
       selection.isValid = true;
     },
+    toggleStartCell: (state, action) => {
+      const { x, y } = action.payload;
+    
+      // Find the group that contains the cell (x, y)
+      const groupIndex = state.grid.groups.groupList.findIndex(group => 
+        x >= group.x && x < group.x + group.width &&
+        y >= group.y && y < group.y + group.height
+      );
+    
+      if (groupIndex !== -1) {
+        const group = state.grid.groups.groupList[groupIndex];
+        // If the start cell is already this cell, toggle it off.
+        if (group.startCell && group.startCell.x === x && group.startCell.y === y) {
+          state.grid.groups.groupList[groupIndex].startCell = null;
+        } else {
+          // Otherwise, set it as the new start cell for that group.
+          state.grid.groups.groupList[groupIndex].startCell = { x, y };
+        }
+      }
+    },
   },
 });
 
@@ -151,6 +172,7 @@ export const {
   startSelection,
   updateSelection,
   endSelection,
+  toggleStartCell,
 } = dominoSlice.actions;
 
 export default dominoSlice.reducer;

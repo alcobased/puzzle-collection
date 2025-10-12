@@ -1,7 +1,7 @@
 import React from 'react';
 import './GridCell.css';
 
-const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid }) => {
+const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid, isStartCell, onCellClick }) => {
   const classNames = ['grid-cell'];
 
   if (group) {
@@ -28,15 +28,24 @@ const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid 
     }
   }
 
+  if (isStartCell) {
+    classNames.push('start-cell');
+  }
+
   const style = {
     width: `${cellSize}px`,
     height: `${cellSize}px`,
+  };
+
+  const handleClick = () => {
+    onCellClick(cellX, cellY);
   };
 
   return (
     <div
       className={classNames.join(' ')}
       style={style}
+      onClick={handleClick}
     >
       {/* Cell content will be added later */}
     </div>

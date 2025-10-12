@@ -3,12 +3,11 @@ import GridCell from './GridCell';
 import {
   startSelection,
   updateSelection,
-  endSelection
+  endSelection,
+  toggleStartCell,
 } from '../../../features/domino/dominoSlice';
 
 const DominoBoard = ({ rendered }) => {
-  console.log('DominoBoard rendered');
-  
   const dispatch = useDispatch();
   const { grid } = useSelector((state) => state.puzzles.domino);
 
@@ -16,7 +15,7 @@ const DominoBoard = ({ rendered }) => {
     return null;
   }
 
-  const { data, width, height, groups } = grid;
+  const { data, width, height, occupiedCells, groups } = grid;
   const { groupList, selection } = groups;
 
   const cellSize = Math.min(rendered.width / width, rendered.height / height);
@@ -32,7 +31,10 @@ const DominoBoard = ({ rendered }) => {
 
   const handleMouseDown = (e) => {
     const coords = getCellCoords(e);
-    dispatch(startSelection(coords));
+    // Only start selection if the cell is not occupied
+    if (!occupiedCells[coords.y][coords.x]) {
+      dispatch(startSelection(coords));
+    }
   };
 
   const handleMouseMove = (e) => {
@@ -45,12 +47,21 @@ const DominoBoard = ({ rendered }) => {
   };
 
   const handleMouseUp = () => {
-    dispatch(endSelection());
+    if (selection.isActive) {
+      dispatch(endSelection());
+    }
   };
 
   const handleMouseLeave = () => {
     if (selection.isActive) {
       dispatch(endSelection());
+    }
+  };
+
+  const handleCellClick = (x, y) => {
+    // If the cell is occupied, toggle its start cell status
+    if (occupiedCells[y][x]) {
+      dispatch(toggleStartCell({ x, y }));
     }
   };
 
@@ -95,6 +106,8 @@ const DominoBoard = ({ rendered }) => {
       for (let x = 0; x < (width || 0); x++) {
         const group = findGroupForCell(x, y);
         const selected = isCellSelected(x, y);
+        const isStart = group && group.startCell && group.startCell.x === x && group.startCell.y === y;
+
         cells.push(
           <GridCell
             key={`${x}-${y}`}
@@ -104,6 +117,8 @@ const DominoBoard = ({ rendered }) => {
             group={group}
             isSelected={selected}
             isSelectionValid={selection.isValid}
+            isStartCell={isStart}
+            onCellClick={handleCellClick}
           />
         );
       }
