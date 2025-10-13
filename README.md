@@ -1,6 +1,6 @@
-# Word Chains
+# Puzzle Collection
 
-This project is a word chain puzzle game where the objective is to find a path of words from a starting word to an ending word, where each adjacent word in the path differs by only one letter.
+This project is a collection of puzzles.
 
 ## Technologies Used
 
