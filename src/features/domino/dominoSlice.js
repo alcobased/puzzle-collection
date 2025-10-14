@@ -40,6 +40,7 @@ const initialState = {
       },
     },
   },
+  activeCell: null,
 };
 
 const isSelectionValid = (selection, occupiedCells, height, width) => {
@@ -86,9 +87,16 @@ const dominoSlice = createSlice({
         state.grid.data[y][x] = value;
       }
     },
+    setActiveCell: (state, action) => {
+      state.activeCell = action.payload;
+    },
+    clearActiveCell: (state) => {
+      state.activeCell = null;
+    },
     resetGroups: (state) => {
       state.grid.groups.groupList = [];
       state.grid.occupiedCells = createOccupiedCells(state.grid.width, state.grid.height, []);
+      state.grid.data = Array(state.grid.height).fill(null).map(() => Array(state.grid.width).fill(null));
     },
     startSelection: (state, action) => {
       const { x, y } = action.payload;
@@ -168,6 +176,8 @@ export const {
   setGridDimensions,
   setGridState,
   updateCell,
+  setActiveCell,
+  clearActiveCell,
   resetGroups,
   startSelection,
   updateSelection,

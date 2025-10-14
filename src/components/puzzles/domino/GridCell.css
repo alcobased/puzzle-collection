@@ -1,8 +1,12 @@
 .grid-cell {
-    border: 1px solid #ddd;
+    border: 1px solid #666;
     box-sizing: border-box;
     user-select: none;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
   }
   
   .grid-cell.occupied {
@@ -31,15 +35,5 @@
   
   .grid-cell.selected.invalid {
     background-color: rgba(255, 0, 0, 0.3);
-  }
-
-  .grid-cell.start-cell::after {
-    content: '*';
-    position: absolute;
-    top: 10%;
-    left: 10%;
-    font-size: 2em;
-    color: black;
-    font-weight: bold;
   }
   

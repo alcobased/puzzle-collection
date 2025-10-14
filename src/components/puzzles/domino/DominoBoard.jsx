@@ -4,7 +4,6 @@ import {
   startSelection,
   updateSelection,
   endSelection,
-  toggleStartCell,
 } from '../../../features/domino/dominoSlice';
 
 const DominoBoard = ({ rendered }) => {
@@ -58,13 +57,6 @@ const DominoBoard = ({ rendered }) => {
     }
   };
 
-  const handleCellClick = (x, y) => {
-    // If the cell is occupied, toggle its start cell status
-    if (occupiedCells[y][x]) {
-      dispatch(toggleStartCell({ x, y }));
-    }
-  };
-
   const gridStyle = {
     display: 'grid',
     gridTemplateColumns: `repeat(${width || 0}, ${cellSize}px)`,
@@ -107,6 +99,7 @@ const DominoBoard = ({ rendered }) => {
         const group = findGroupForCell(x, y);
         const selected = isCellSelected(x, y);
         const isStart = group && group.startCell && group.startCell.x === x && group.startCell.y === y;
+        const cellValue = data[y]?.[x] ?? null;
 
         cells.push(
           <GridCell
@@ -114,11 +107,11 @@ const DominoBoard = ({ rendered }) => {
             cellX={x}
             cellY={y}
             cellSize={cellSize}
+            value={cellValue}
             group={group}
             isSelected={selected}
             isSelectionValid={selection.isValid}
             isStartCell={isStart}
-            onCellClick={handleCellClick}
           />
         );
       }

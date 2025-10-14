@@ -5,17 +5,20 @@ import Modal from "./Modal";
 import ModalCellProperties from "../../puzzles/pathfinder/ModalCellProperties";
 import ModalWords from "./ModalWords";
 import ModalCellQueue from "../../puzzles/pathfinder/ModalCellQueue";
+import ModalDominoCell from "../../puzzles/domino/ModalDominoCell";
 
 const MODAL_COMPONENTS = {
   CELL_PROPERTIES: ModalCellProperties,
   WORD_MANAGER: ModalWords,
   QUEUE_MANAGER: ModalCellQueue,
+  DOMINO_CELL: ModalDominoCell,
 };
 
 const MODAL_TITLES = {
   CELL_PROPERTIES: "Cell Properties",
   WORD_MANAGER: "Word Manager",
   QUEUE_MANAGER: "Queue Manager",
+  DOMINO_CELL: "Domino Cell",
 };
 
 const ModalManager = () => {

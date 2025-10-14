@@ -1,7 +1,11 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import './GridCell.css';
+import { setActiveCell } from '../../../features/domino/dominoSlice';
+import { setModal } from '../../../features/ui/uiSlice';
 
-const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid, isStartCell, onCellClick }) => {
+const GridCell = ({ cellX, cellY, cellSize, value, group, isSelected, isSelectionValid, isStartCell }) => {
+  const dispatch = useDispatch();
   const classNames = ['grid-cell'];
 
   if (group) {
@@ -35,10 +39,22 @@ const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid,
   const style = {
     width: `${cellSize}px`,
     height: `${cellSize}px`,
+    fontSize: `${cellSize * 0.6}px`,
+  };
+
+  const starStyle = {
+    position: 'absolute',
+    top: '0',
+    left: '5%',
+    lineHeight: '1',
+    fontSize: `${cellSize * 0.5}px`,
   };
 
   const handleClick = () => {
-    onCellClick(cellX, cellY);
+    if (group) {
+      dispatch(setActiveCell({ x: cellX, y: cellY }));
+      dispatch(setModal('DOMINO_CELL'));
+    }
   };
 
   return (
@@ -47,7 +63,8 @@ const GridCell = ({ cellX, cellY, cellSize, group, isSelected, isSelectionValid,
       style={style}
       onClick={handleClick}
     >
-      {/* Cell content will be added later */}
+      {isStartCell && <span style={starStyle}>*</span>}
+      {value}
     </div>
   );
 };
