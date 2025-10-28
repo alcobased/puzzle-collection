@@ -7,7 +7,7 @@ import AboutPage from "../pages/AboutPage";
 
 const AppRoutes = () => {
   return (
-    <div className="app-container">
+    <div className="main-content">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/pathfinder" element={<PathfinderPage />} />
