@@ -1,4 +1,3 @@
-
 :root {
   --primary-color: #3b82f6;
   --primary-color-transparent: rgba(59, 130, 246, 0.5);
@@ -18,45 +17,74 @@
   --cell-background-active-queue: rgb(255, 255, 255);
 
   --modal-overlay-background: rgba(17, 24, 39, 0.6);
-  --modal-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --modal-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
   --notification-success-background: #4caf50;
   --notification-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  
+
   --danger-color: #ef4444;
   --danger-color-hover: #dc2626;
 
-  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
-html, body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: var(--font-family-sans);
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font-family-sans);
 }
 
 #root {
-    display: flex;
-    flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .main-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 90%;
+  flex-grow: 1;
+  min-height: 0; /* Important for flex-grow in a column */
+}
+
+#board {
+  border: 2px green;
+  padding: 10px;
+  width: 100%;
+  flex-grow: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(0, 0, 0, 0.3);
+  background-color: grey;
+  position: relative;
+  box-sizing: border-box;
 }
 
 .puzzle-container {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-    background-color: var(--background-main); /* A more neutral grey */
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--background-main); /* A more neutral grey */
 }
 
 .controls-container {
-    flex-shrink: 0; /* Prevent controls from shrinking */
+  flex-shrink: 0; /* Prevent controls from shrinking */
 }
 
 .notification {
@@ -70,4 +98,17 @@ html, body, #root {
   z-index: 1000;
   font-size: 1.2rem;
   box-shadow: var(--notification-shadow);
+}
+
+#image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+#board-workspace {
+  position: absolute;
+  border-radius: 5px;
+  cursor: crosshair;
 }

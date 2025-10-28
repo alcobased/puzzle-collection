@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import './Controls.css';
-import PathfinderControls from '../../puzzles/pathfinder/ControlsPathfinder';
 
-const ControlPanel = (props) => {
+const Controls = (props) => {
   const [isVisible, setIsVisible] = useState(true);
 
   return (
-    <div id="controlPanel" className={!isVisible ? 'collapsed' : ''}>
+    <div id="controlPanel" className={`controls-container ${!isVisible ? 'collapsed' : ''}`}>
       <button 
         className="toggle-visibility-btn"
         onClick={() => setIsVisible(!isVisible)}
@@ -18,4 +17,4 @@ const ControlPanel = (props) => {
   );
 };
 
-export default ControlPanel;
+export default Controls;

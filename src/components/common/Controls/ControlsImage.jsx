@@ -5,21 +5,15 @@ const ControlsImage = () => {
   const dispatch = useDispatch();
 
   const handleImageChange = (event) => {
+    console.log(event.target.files);
+
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          dispatch(
-            setSrc({
-              src: e.target.result,
-              dimensions: {
-                width: img.width,
-                height: img.height,
-              },
-            })
-          );
+          dispatch(setSrc(e.target.result));
         };
         img.src = e.target.result;
       };
@@ -37,10 +31,10 @@ const ControlsImage = () => {
       <label className="file-upload-label">
         Load Image
         <input
-            type="file"
-            onChange={handleImageChange}
-            accept="image/*"
-            style={{ display: 'none' }}
+          type="file"
+          onChange={handleImageChange}
+          accept="image/*"
+          style={{ display: "none" }}
         />
       </label>
       <button onClick={handleUnloadImage}>Unload Image</button>

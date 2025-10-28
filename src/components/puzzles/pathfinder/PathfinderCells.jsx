@@ -1,18 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import Cell from "./Cell";
+import Cell from "./Cell.jsx";
 import { addCell, enqueue } from "../../../features/pathfinder/pathfinderSlice.js";
 
-const PathfinderBoard = ({ rendered }) => {
+const PathfinderCells = () => {
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
     (state) => state.puzzles.pathfinder.cells
   );
   const dispatch = useDispatch();
-
-  if (!rendered) {
-    return null;
-  }
-  const { width, height } = rendered;
 
   const handleClick = (e) => {
     // Only add a cell if the click is on the container itself, not on a child cell.
@@ -39,7 +34,7 @@ const PathfinderBoard = ({ rendered }) => {
   return (
     <div
       onClick={handleClick}
-      style={{ position: "absolute", width: "100%", height: "100%" }}
+      id="board-workspace"
     >
       {Object.values(cellSet).map((cell) => {
         const individualCellStyle = {
@@ -72,4 +67,4 @@ const PathfinderBoard = ({ rendered }) => {
   );
 };
 
-export default PathfinderBoard;
+export default PathfinderCells;

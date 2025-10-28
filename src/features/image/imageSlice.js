@@ -2,12 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   src: null,
-  naturalDimensions: { width: 0, height: 0 },
   rendered: {
-    width: 0,
-    height: 0,
-    top: 0,
-    left: 0,
+    offsetWidth: 0,
+    offsetHeight: 0,
+    offsetTop: 0,
+    offsetLeft: 0
   },
 };
 
@@ -16,10 +15,7 @@ const imageSlice = createSlice({
   initialState,
   reducers: {
     setSrc(state, action) {
-      state.src = action.payload.src;
-      state.naturalDimensions = action.payload.dimensions;
-      // Reset rendered geometry when a new image is set
-      state.rendered = initialState.rendered;
+      state.src = action.payload;
     },
     setRendered(state, action) {
       state.rendered = action.payload;
