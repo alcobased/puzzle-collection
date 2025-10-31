@@ -1,0 +1,31 @@
+.textris-board {
+  display: grid;
+  border: 1px solid #ccc;
+}
+
+.textris-board.locked .board-cell {
+  cursor: not-allowed;
+}
+
+.textris-board.locked .board-cell.active {
+  background-color: #ccc; /* A lighter color for the locked state */
+}
+
+.board-row {
+  display: contents;
+}
+
+.board-cell {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #eee;
+  background-color: #fff;
+}
+
+.board-cell.active {
+  background-color: #3498db;
+}
+
+.board-cell.selected {
+  background-color: #aed6f1;
+}

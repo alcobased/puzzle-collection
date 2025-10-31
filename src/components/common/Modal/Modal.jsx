@@ -1,9 +1,9 @@
 import React from 'react';
 import './Modal.css';
 
-const Modal = ({ title, children, onClose }) => {
+const Modal = ({ title, children, onClose, isDragging }) => {
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className={`modal-overlay ${isDragging ? 'dragging' : ''}`} onClick={onClose}>
       <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>

@@ -1,0 +1,21 @@
+.textris-piece {
+    display: grid;
+    gap: 2px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .piece-cell {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    border: 1px solid #eee;
+  }
+
+  .textris-piece.selected {
+    border-color: blue;
+    box-shadow: 0 0 5px blue;
+  }
+  

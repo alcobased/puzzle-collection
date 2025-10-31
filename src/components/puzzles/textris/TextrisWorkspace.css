@@ -1,0 +1,13 @@
+.textris-workspace {
+  display: flex;
+  gap: 20px;
+}
+
+.pieces-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+  flex-grow: 1;
+}

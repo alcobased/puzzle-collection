@@ -1,0 +1,3 @@
+.modal-overlay.dragging {
+  pointer-events: none;
+}
