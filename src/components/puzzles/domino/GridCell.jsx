@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import './GridCell.css';
+import '../../common/Cell.css';
 import { setActiveCell } from '../../../features/domino/dominoSlice';
-import { setModal } from '../../../features/ui/uiSlice';
+import { showModal } from '../../../features/ui/uiSlice';
 
 const GridCell = ({ cellX, cellY, cellSize, value, group, isSelected, isSelectionValid, isStartCell }) => {
   const dispatch = useDispatch();
-  const classNames = ['grid-cell'];
+  const classNames = ['cell'];
 
   if (group) {
     classNames.push('occupied');
@@ -23,6 +23,8 @@ const GridCell = ({ cellX, cellY, cellSize, value, group, isSelected, isSelectio
     if (cellX === groupX + groupWidth - 1) {
       classNames.push('border-right');
     }
+  } else {
+    classNames.push('unoccupied');
   }
 
   if (isSelected) {
@@ -53,7 +55,7 @@ const GridCell = ({ cellX, cellY, cellSize, value, group, isSelected, isSelectio
   const handleClick = () => {
     if (group) {
       dispatch(setActiveCell({ x: cellX, y: cellY }));
-      dispatch(setModal('DOMINO_CELL'));
+      dispatch(showModal('DOMINO_CELL'));
     }
   };
 

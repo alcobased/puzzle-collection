@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setGridDimensions } from '../../../features/domino/dominoSlice';
-import './GridControls.css';
 
 const GridControls = () => {
   const dispatch = useDispatch();
@@ -18,29 +17,26 @@ const GridControls = () => {
   };
 
   return (
-    <div className="grid-controls">
-      <div className="control-group">
-        <label htmlFor="width">Width</label>
-        <input
-          type="number"
-          id="width"
-          name="width"
-          value={width || ''}
-          onChange={handleDimensionChange}
-          min="1"
-        />
-      </div>
-      <div className="control-group">
-        <label htmlFor="height">Height</label>
-        <input
-          type="number"
-          id="height"
-          name="height"
-          value={height || ''}
-          onChange={handleDimensionChange}
-          min="1"
-        />
-      </div>
+    <div className="control-section">
+      <h4>Grid</h4>
+      <label htmlFor="width">Width</label>
+      <input
+        type="number"
+        id="width"
+        name="width"
+        value={width || ''}
+        onChange={handleDimensionChange}
+        min="1"
+      />
+      <label htmlFor="height">Height</label>
+      <input
+        type="number"
+        id="height"
+        name="height"
+        value={height || ''}
+        onChange={handleDimensionChange}
+        min="1"
+      />
     </div>
   );
 };

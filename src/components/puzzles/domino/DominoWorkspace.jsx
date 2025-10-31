@@ -1,23 +1,25 @@
-import { useSelector, useDispatch } from 'react-redux';
-import GridCell from './GridCell';
+import { useSelector, useDispatch } from "react-redux";
+import GridCell from "./GridCell";
 import {
   startSelection,
   updateSelection,
   endSelection,
-} from '../../../features/domino/dominoSlice';
+} from "../../../features/domino/dominoSlice";
 
-const DominoBoard = ({ rendered }) => {
+const DominoWorkspace = () => {
+
   const dispatch = useDispatch();
+
   const { grid } = useSelector((state) => state.puzzles.domino);
 
-  if (!rendered || !grid) {
-    return null;
-  }
+  const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = useSelector(
+    (state) => state.image.rendered
+  );
 
   const { data, width, height, occupiedCells, groups } = grid;
   const { groupList, selection } = groups;
 
-  const cellSize = Math.min(rendered.width / width, rendered.height / height);
+  const cellSize = Math.min(offsetWidth / width, offsetHeight / height);
 
   const getCellCoords = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -57,21 +59,26 @@ const DominoBoard = ({ rendered }) => {
     }
   };
 
-  const gridStyle = {
-    display: 'grid',
+  const boardWorkspaceStyle = {
+    display: "grid",
     gridTemplateColumns: `repeat(${width || 0}, ${cellSize}px)`,
     gridTemplateRows: `repeat(${height || 0}, ${cellSize}px)`,
-    border: '1px solid #ccc',
-    width: `${(width || 0) * cellSize}px`,
-    height: `${(height || 0) * cellSize}px`,
-    userSelect: 'none',
+    border: "1px solid #ccc",
+    width: `${offsetWidth}px`,
+    height: `${offsetHeight}px`,
+    top: `${offsetTop}px`,
+    left: `${offsetLeft}px`,
+    userSelect: "none",
   };
 
   const findGroupForCell = (x, y) => {
     if (!groupList) return null;
-    return groupList.find(group =>
-      x >= group.x && x < group.x + group.width &&
-      y >= group.y && y < group.y + group.height
+    return groupList.find(
+      (group) =>
+        x >= group.x &&
+        x < group.x + group.width &&
+        y >= group.y &&
+        y < group.y + group.height
     );
   };
 
@@ -98,7 +105,11 @@ const DominoBoard = ({ rendered }) => {
       for (let x = 0; x < (width || 0); x++) {
         const group = findGroupForCell(x, y);
         const selected = isCellSelected(x, y);
-        const isStart = group && group.startCell && group.startCell.x === x && group.startCell.y === y;
+        const isStart =
+          group &&
+          group.startCell &&
+          group.startCell.x === x &&
+          group.startCell.y === y;
         const cellValue = data[y]?.[x] ?? null;
 
         cells.push(
@@ -120,8 +131,8 @@ const DominoBoard = ({ rendered }) => {
   };
 
   return (
-    <div
-      style={gridStyle}
+    <div id="board-workspace"
+      style={boardWorkspaceStyle}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -132,4 +143,4 @@ const DominoBoard = ({ rendered }) => {
   );
 };
 
-export default DominoBoard;
+export default DominoWorkspace;

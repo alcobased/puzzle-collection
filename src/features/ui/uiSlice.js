@@ -1,26 +1,41 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const uiSlice = createSlice({
-  name: 'ui',
-  initialState: {
-    modal: null, // This will determine which modal content to show, null means no modal (closed)
-    notification: null,
+const initialState = {
+  isControlsVisible: true,
+  notification: {
+    message: null,
+    type: 'info', // info, success, warning, error
   },
+  modal: {
+    type: null,
+    props: {}
+  }
+};
+
+export const uiSlice = createSlice({
+  name: 'ui',
+  initialState,
   reducers: {
-    setModal(state, action) {
-      state.modal = action.payload;
+    toggleControls: (state) => {
+      state.isControlsVisible = !state.isControlsVisible;
     },
-    clearModal(state) {
-      state.modal = null;
+    setNotification: (state, action) => {
+      state.notification = { ...state.notification, ...action.payload };
     },
-    setNotification(state, action) {
-      state.notification = action.payload;
+    clearNotification: (state) => {
+      state.notification.message = null;
     },
-    clearNotification(state) {
-      state.notification = null;
+    showModal: (state, action) => {
+        state.modal.type = action.payload.type;
+        state.modal.props = action.payload.props;
+    },
+    hideModal: (state) => {
+        state.modal.type = null;
+        state.modal.props = {};
     }
   },
 });
 
-export const { setModal, clearModal, setNotification, clearNotification } = uiSlice.actions;
+export const { toggleControls, setNotification, clearNotification, showModal, hideModal } = uiSlice.actions;
+
 export default uiSlice.reducer;

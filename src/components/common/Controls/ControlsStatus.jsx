@@ -10,8 +10,8 @@ const ControlsStatus = () => {
     const totalLists = Object.keys(lists).length;
 
     return (
-        <fieldset>
-            <legend>Status</legend>
+        <div className="control-section">
+            <h4>Status</h4>
             <div>
                 Image: {imageData ? `${dimensions.width}x${dimensions.height}` : "Not Loaded"}
             </div>
@@ -30,7 +30,7 @@ const ControlsStatus = () => {
             <div>
                 Active List: <strong>{activeList || 'None'}</strong>
             </div>
-        </fieldset>
+        </div>
     );
 };
 

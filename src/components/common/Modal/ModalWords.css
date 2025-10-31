@@ -1,0 +1,11 @@
+/* Styles specific to the Word Manager Modal */
+
+.list-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.list-controls .modal-select {
+  flex-grow: 1;
+}

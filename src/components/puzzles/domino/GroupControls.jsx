@@ -9,12 +9,10 @@ const GroupControls = () => {
   };
 
   return (
-    <fieldset>
-      <legend>Groups</legend>
-      <div className="btn-group">
-        <button onClick={handleResetGroups}>Reset groups</button>
-      </div>
-    </fieldset>
+    <div className="control-section">
+      <h4>Groups</h4>
+      <button onClick={handleResetGroups}>Reset groups</button>
+    </div>
   );
 };
 

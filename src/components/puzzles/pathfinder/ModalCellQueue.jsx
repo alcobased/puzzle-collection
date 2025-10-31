@@ -1,7 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { setActiveQueue, addQueue, removeQueue, popFromActiveQueue } from '../../../features/pathfinder/pathfinderSlice.js';
+import {
+    setActiveQueue,
+    addQueue,
+    removeQueue,
+    popAndPurge,
+} from '../../../features/pathfinder/pathfinderSlice.js';
+import './ModalCellQueue.css';
 
 const ModalCellQueue = () => {
     const dispatch = useDispatch();
@@ -25,47 +31,48 @@ const ModalCellQueue = () => {
     };
 
     const handlePopFromQueue = () => {
-        dispatch(popFromActiveQueue());
+        dispatch(popAndPurge());
     };
 
     return (
-        <div>
-            <div style={{ marginBottom: '10px' }}>
-                <label>
-                    Active Queue:
-                    <select value={activeQueue || ''} onChange={handleSetActiveQueue}>
+        <>
+            <div className="modal-section">
+                <h3>Manage Queues</h3>
+                <div className="queue-controls">
+                    <select className="modal-select" value={activeQueue || ''} onChange={handleSetActiveQueue}>
                         {queueIds.map(id => (
                             <option key={id} value={id}>{id}</option>
                         ))}
                     </select>
-                </label>
+                    <button className="modal-button" onClick={handleAddQueue}>New Queue</button>
+                    <button
+                        className="modal-button"
+                        onClick={handlePopFromQueue}
+                        disabled={activeQueueItems.length === 0}
+                    >
+                        Pop Last Cell
+                    </button>
+                </div>
             </div>
-            <div style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
-                <button onClick={handleAddQueue}>Add New Queue</button>
-                <button 
-                    onClick={handlePopFromQueue}
-                    disabled={activeQueueItems.length === 0}
-                >
-                    Pop Last Cell
-                </button>
-            </div>
-            <div>
-                <h4>All Queues:</h4>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
+
+            <div className="modal-section">
+                <h3>All Queues</h3>
+                <ul className="modal-list">
                     {queueIds.map(id => (
-                        <li key={id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                        <li key={id} className="modal-list-item">
                             <span>{id} (Items: {queueSet[id].length})</span>
-                            <button 
+                            <button
+                                className="modal-list-remove-btn"
                                 onClick={() => handleRemoveQueue(id)}
                                 disabled={queueIds.length <= 1}
                             >
-                                Remove
+                                &times;
                             </button>
                         </li>
                     ))}
                 </ul>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -46,7 +46,16 @@ const cellSlice = createSlice({
         state.queueSet[state.activeQueue].push(action.payload);
       }
     },
-    popFromActiveQueue(state) {
+    dequeue(state) {
+      const activeQueueId = state.activeQueue;
+      if (activeQueueId && state.queueSet[activeQueueId]) {
+        const queue = state.queueSet[activeQueueId];
+        if (queue.length > 0) {
+          queue.pop();
+        }
+      }
+    },
+    popAndPurge(state) {
       const activeQueueId = state.activeQueue;
       if (activeQueueId && state.queueSet[activeQueueId]) {
         const queue = state.queueSet[activeQueueId];
@@ -144,7 +153,8 @@ export const {
   setCells,
   setCellState,
   enqueue,
-  popFromActiveQueue,
+  dequeue,
+  popAndPurge,
   setQueueSet,
   addQueue,
   removeQueue,

@@ -1,4 +1,4 @@
-/* --- Overlay --- */
+/* --- Modal Wrapper & Overlay --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -12,159 +12,151 @@
   z-index: 1000;
 }
 
-/* --- Content Wrapper --- */
-.modal-content {
-  background-color: var(--background-content);
-  padding: 24px;
-  border-radius: 8px; /* Match controls fieldset */
-  border: 1px solid var(--border-color); /* Match controls fieldset */
-  position: relative;
-  max-width: 90vw;
+.modal-panel {
+  background: var(--background-controls);
+  border-radius: 8px;
   box-shadow: var(--modal-shadow);
-  font-family: var(--font-family-sans);
-  color: var(--text-color-primary);
+  min-width: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Hide overflow, scrolling will be handled by the body */
 }
 
-/* --- Modal Header --- */
+/* --- Modal Header & Title --- */
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color-light);
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .modal-title {
-  font-weight: 600;
-  color: var(--text-color-primary);
-  font-size: 1.25em;
   margin: 0;
-}
-
-/* --- Close Button --- */
-.modal-close-button {
-  border: none;
-  background: transparent;
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text-color-secondary);
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.modal-close-button:hover {
-  background-color: var(--background-content-alt);
-  color: var(--text-color-primary);
-}
-
-/* --- Modal Sizing by Type --- */
-.modal-type-word-manager,
-.modal-type-queue-manager {
-  min-width: 450px;
-}
-
-.modal-type-cell-properties {
-  width: auto; /* Let the content define the width */
-  min-width: 280px; /* Provide a sensible minimum */
-}
-
-/* --- Generic Modal Elements (to match Controls.css) --- */
-
-.modal-content fieldset {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px 15px;
-  margin: 0 0 15px 0;
-  background-color: var(--background-content-alt);
-}
-
-.modal-content legend {
+  font-size: 1.2rem;
   font-weight: 600;
-  padding: 0 6px;
   color: var(--text-color-primary);
 }
 
-.modal-content label {
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  padding: 0 5px; /* Increase clickable area */
+}
+
+/* --- Generic Modal Content Body --- */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--text-color-primary);
+  padding: 20px; /* Add padding here instead of the panel */
+  overflow-y: auto; /* Make the body scrollable */
+}
+
+/* --- Generic Modal Form/Section Styles --- */
+.modal-section {
+  border: 1px solid var(--border-color-light);
+  padding: 15px;
+  border-radius: 6px;
+  background-color: var(--background-main);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-section h3 {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color-light);
+  color: var(--text-color-primary);
+}
+
+.modal-input,
+.modal-select,
+.modal-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  background-color: #333;
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color-light);
+  border-radius: 4px;
+}
+
+.modal-textarea {
+  resize: vertical;
+}
+
+.modal-button {
+  padding: 8px 12px;
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-button:hover {
+  background-color: var(--primary-color-darker);
+}
+
+.modal-form-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-form-row > .modal-input {
+  flex-grow: 1;
+}
+
+/* --- Generic List Styles --- */
+.modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color-light);
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.modal-list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9em;
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color-dark);
+}
+
+.modal-list-item:last-child {
+  border-bottom: none;
+}
+
+.modal-list-remove-btn {
+  background: none;
+  border: none;
   color: var(--text-color-secondary);
-  gap: 8px;
-  margin-bottom: 8px;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
-.modal-content input[type="text"],
-.modal-content input[type="number"],
-.modal-content select,
-.modal-content textarea {
-width: 100%;
-box-sizing: border-box; /* Important for 100% width */
-padding: 8px 10px;
-border: 1px solid var(--border-color);
-border-radius: 4px;
-font-size: 0.9em;
-transition: border-color 0.2s, box-shadow 0.2s;
+.modal-list-remove-btn:hover {
+  color: var(--notification-error-background);
 }
 
-/* Specific override for single-character input */
-.modal-content input.char-input {
-width: 40px;
-text-align: center;
-font-size: 1.1em;
-font-weight: bold;
-}
-
-.modal-content input:focus,
-.modal-content select:focus,
-.modal-content textarea:focus {
-outline: none;
-border-color: var(--primary-color);
-box-shadow: 0 0 0 2px var(--primary-color-transparent);
-}
-
-.modal-content button {
-padding: 8px 12px;
-font-size: 0.9em;
-font-weight: 500;
-color: var(--text-on-primary);
-background-color: var(--primary-color); /* Primary blue */
-border: none;
-border-radius: 5px;
-cursor: pointer;
-transition: background-color 0.2s ease-in-out;
-}
-
-.modal-content button:hover {
-background-color: var(--primary-color-darker);
-}
-
-.modal-content button:disabled {
-background-color: var(--background-main);
-cursor: not-allowed;
-}
-
-/* --- Specifics for lists inside modals --- */
-.modal-content ul {
-  margin-top: 10px;
-}
-
-/* Style for remove buttons in lists to be red */
-.modal-content li button {
-  background-color: var(--danger-color); 
-}
-.modal-content li button:hover {
-  background-color: var(--danger-color-hover);
-}
-
-/* New style for cell properties layout */
-.cell-properties-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.modal-list-remove-btn:disabled {
+  color: var(--border-color-dark);
+  cursor: not-allowed;
 }

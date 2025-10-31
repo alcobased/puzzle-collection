@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateCell, toggleStartCell } from "../../../features/domino/dominoSlice.js";
-import { clearModal } from "../../../features/ui/uiSlice.js";
+import { hideModal } from "../../../features/ui/uiSlice.js";
 
 const ModalDominoCell = () => {
   const dispatch = useDispatch();
@@ -30,13 +30,13 @@ const ModalDominoCell = () => {
     setCharInput(newChar);
     dispatch(updateCell({ x, y, value: newChar }));
     if (newChar) {
-      dispatch(clearModal());
+      dispatch(hideModal());
     }
   };
 
   const handleToggleStartCell = () => {
     dispatch(toggleStartCell({ x, y }));
-    dispatch(clearModal());
+    dispatch(hideModal());
   };
 
   return (

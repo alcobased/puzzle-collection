@@ -17,7 +17,7 @@ const ControlsStorage = () => {
     );
     localStorage.setItem("crossword-builder-words", JSON.stringify(words));
     localStorage.setItem("crossword-builder-image", JSON.stringify(image));
-    dispatch(setNotification("Crossword saved to local storage!"));
+    dispatch(setNotification({ message: "Crossword saved to local storage!" }));
   };
 
   const handleLoadFromLocalStorage = () => {
@@ -39,7 +39,7 @@ const ControlsStorage = () => {
       const parsedImage = JSON.parse(savedImage);
       dispatch(setImageState(parsedImage));
     }
-    dispatch(setNotification("Crossword loaded from local storage!"));
+    dispatch(setNotification({ message: "Crossword loaded from local storage!" }));
   };
 
   const handleSaveToFile = () => {
@@ -56,7 +56,7 @@ const ControlsStorage = () => {
     a.download = "crossword.json";
     a.click();
     URL.revokeObjectURL(url);
-    dispatch(setNotification("Crossword saved to file!"));
+    dispatch(setNotification({ message: "Crossword saved to file!" }));
   };
 
   const handleLoadFromFile = (event) => {
@@ -77,17 +77,17 @@ const ControlsStorage = () => {
         if (data.image) {
           dispatch(setImageState(data.image));
         }
-        dispatch(setNotification("Crossword loaded from file!"));
+        dispatch(setNotification({ message: "Crossword loaded from file!" }));
       } catch (error) {
-        dispatch(setNotification(`Error loading file: ${error.message}`));
+        dispatch(setNotification({ message: `Error loading file: ${error.message}` }));
       }
     };
     reader.readAsText(file);
   };
 
   return (
-    <fieldset>
-      <legend>Storage</legend>
+    <div className="control-section">
+      <h4>Storage</h4>
       <button onClick={handleSaveToLocalStorage}>Save to Local Storage</button>
       <button onClick={handleLoadFromLocalStorage}>
         Load from Local Storage
@@ -102,7 +102,7 @@ const ControlsStorage = () => {
           style={{ display: "none" }}
         />
       </label>
-    </fieldset>
+    </div>
   );
 };
 

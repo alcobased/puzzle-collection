@@ -1,24 +1,21 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setModal } from '../../../features/ui/uiSlice.js';
+import { useDispatch } from 'react-redux';
+import { showModal } from '../../../features/ui/uiSlice';
 
 const ControlsWords = () => {
-  const dispatch = useDispatch();
-  const { activeList, lists } = useSelector(state => state.words);
-  const activeWords = lists[activeList] || [];
+    const dispatch = useDispatch();
 
-  const handleManageWords = () => {
-    dispatch(setModal('WORD_MANAGER'));
-  };
+    const openWordManager = () => {
+        // Dispatch with an empty props object to maintain a consistent state shape
+        dispatch(showModal({ type: 'WORD_MANAGER', props: {} }));
+    };
 
-  return (
-    <fieldset>
-      <legend>Words</legend>
-      <div>Active List: <strong>{activeList}</strong></div>
-      <div>Word Count: {activeWords.length}</div>
-      <button onClick={handleManageWords}>Manage Words</button>
-    </fieldset>
-  );
+    return (
+        <div className="control-section">
+            <h4>Word Lists</h4>
+            <button onClick={openWordManager}>Manage Words</button>
+        </div>
+    );
 };
 
 export default ControlsWords;

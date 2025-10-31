@@ -8,10 +8,12 @@ import {
     addWords,
     removeWord,
 } from '../../../features/words/wordsSlice.js';
+import './ModalWords.css'; // Keep for specific styles
 
 const ModalWords = () => {
     const dispatch = useDispatch();
-    const { lists, activeList } = useSelector((state) => state.words);
+    const { lists, activeList } = useSelector(state => state.words);
+
     const listIds = Object.keys(lists);
     const activeWords = lists[activeList] || [];
 
@@ -53,67 +55,59 @@ const ModalWords = () => {
     };
 
     return (
-        <div>
-            {/* Word List Management */}
-            <fieldset style={{ marginBottom: '15px' }}>
-                <legend>Word Lists</legend>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>
-                        Active List:
-                        <select value={activeList || ''} onChange={handleSetActiveList}>
-                            {listIds.map(id => (
-                                <option key={id} value={id}>{id}</option>
-                            ))}
-                        </select>
-                    </label>
+        <>
+            <div className="modal-section">
+                <h3>Manage Word Lists</h3>
+                <div className="list-controls">
+                    <select className="modal-select" onChange={handleSetActiveList} value={activeList}>
+                        {listIds.map((id) => (
+                            <option key={id} value={id}>
+                                {id}
+                            </option>
+                        ))}
+                    </select>
+                    <button className="modal-button" onClick={handleAddList}>New List</button>
+                    {listIds.length > 1 && (
+                        <button className="modal-button" onClick={() => handleRemoveList(activeList)}>Remove Current List</button>
+                    )}
                 </div>
-                <button onClick={handleAddList} style={{ marginBottom: '10px' }}>Add New Word List</button>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {listIds.map(id => (
-                        <li key={id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                            <span>{id} (Words: {lists[id].length})</span>
-                            <button
-                                onClick={() => handleRemoveList(id)}
-                                disabled={listIds.length <= 1}
-                            >
-                                Remove
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </fieldset>
+            </div>
 
-            {/* Word Management for Active List */}
-            <fieldset>
-                <legend>Words in "{activeList}"</legend>
-                <form onSubmit={handleAddWord} style={{ marginBottom: '10px' }}>
+            <div className="modal-section">
+                <h3>Words in "{activeList}"</h3>
+                <form onSubmit={handleAddWord} className="modal-form-row">
                     <input
                         type="text"
+                        className="modal-input"
                         value={newWord}
-                        onChange={(e) => setNewWord(e.target.value.toUpperCase())}
-                        placeholder="Add one word"
+                        onChange={(e) => setNewWord(e.target.value)}
+                        placeholder="Add a new word"
                     />
-                    <button type="submit">Add Word</button>
+                    <button type="submit" className="modal-button">Add</button>
                 </form>
-                <div style={{ marginBottom: '10px' }}>
-                    <textarea
-                        value={textAreaValue}
-                        onChange={(e) => setTextAreaValue(e.target.value)}
-                        placeholder="Or paste a list of words (separated by space, comma, or new line)"
-                        style={{ width: '95%', minHeight: '80px', margin: '5px 0' }}
-                    />
-                    <button onClick={handleAddFromTextArea}>Add From List</button>
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0, maxHeight: '150px', overflowY: 'auto' }}>
-                    {activeWords.map((word, index) => (
-                        <li key={`${word}-${index}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                            <span>{word}</span>
-                            <button onClick={() => handleRemoveWord(word)}>Remove</button>
+
+                <ul className="modal-list">
+                    {activeWords.map((word) => (
+                        <li key={word} className="modal-list-item">
+                            {word}
+                            <button className="modal-list-remove-btn" onClick={() => handleRemoveWord(word)}>&times;</button>
                         </li>
                     ))}
                 </ul>
-            </fieldset>
-        </div>
+            </div>
+
+            <div className="modal-section">
+                <h3>Add Multiple Words</h3>
+                <textarea
+                    className="modal-textarea"
+                    value={textAreaValue}
+                    onChange={(e) => setTextAreaValue(e.target.value)}
+                    placeholder="Add words separated by commas, spaces, or new lines."
+                    rows="4"
+                ></textarea>
+                <button className="modal-button" onClick={handleAddFromTextArea}>Add Words</button>
+            </div>
+        </>
     );
 };
 

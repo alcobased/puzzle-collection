@@ -6,7 +6,7 @@ const initialState = {
     offsetWidth: 0,
     offsetHeight: 0,
     offsetTop: 0,
-    offsetLeft: 0
+    offsetLeft: 0,
   },
 };
 
@@ -21,7 +21,6 @@ const imageSlice = createSlice({
       state.rendered = action.payload;
     },
     unloadImage() {
-      // Return the initial state to clear everything
       return initialState;
     },
     setImageState(state, action) {

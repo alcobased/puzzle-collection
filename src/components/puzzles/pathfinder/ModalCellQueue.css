@@ -1,0 +1,11 @@
+/* Styles specific to the Cell Queue Modal */
+
+.queue-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.queue-controls .modal-select {
+    flex-grow: 1;
+}

@@ -26,8 +26,8 @@ const ControlsImage = () => {
   };
 
   return (
-    <fieldset>
-      <legend>Image</legend>
+    <div className="control-section">
+      <h4>Image</h4>
       <label className="file-upload-label">
         Load Image
         <input
@@ -38,7 +38,7 @@ const ControlsImage = () => {
         />
       </label>
       <button onClick={handleUnloadImage}>Unload Image</button>
-    </fieldset>
+    </div>
   );
 };
 

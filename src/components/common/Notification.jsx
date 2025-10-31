@@ -1,27 +1,29 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { clearNotification } from '../../features/ui/uiSlice';
 import { useEffect } from 'react';
+import './Notification.css';
+
 
 const Notification = () => {
-  const notification = useSelector(state => state.ui.notification);
+  const { message, type } = useSelector(state => state.ui.notification);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (notification) {
+    if (message) {
       const timer = setTimeout(() => {
         dispatch(clearNotification());
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [notification, dispatch]);
+  }, [message, dispatch]);
 
-  if (!notification) {
+  if (!message) {
     return null;
   }
 
   return (
-    <div className="notification">
-      {notification}
+    <div className={`notification ${type}`}>
+      {message}
     </div>
   );
 };
