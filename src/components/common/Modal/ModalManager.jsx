@@ -6,7 +6,7 @@ import ModalCellProperties from "../../puzzles/pathfinder/ModalCellProperties";
 import ModalWords from "./ModalWords";
 import ModalCellQueue from "../../puzzles/pathfinder/ModalCellQueue";
 import ModalDominoCell from "../../puzzles/domino/ModalDominoCell";
-import TextrisPiecesModal from "../../puzzles/textris/TextrisPiecesModal";
+import ModalTextrisShapes from "../../puzzles/textris/ModalShapes";
 
 // Map modal types to their respective components
 const MODAL_COMPONENTS = {
@@ -14,7 +14,7 @@ const MODAL_COMPONENTS = {
   WORD_MANAGER: ModalWords,
   QUEUE_MANAGER: ModalCellQueue,
   DOMINO_CELL: ModalDominoCell,
-  TEXTRIS_PIECES_MANAGER: TextrisPiecesModal,
+  TEXTRIS_SHAPES: ModalTextrisShapes,
 };
 
 // Map modal types to their titles
@@ -23,7 +23,7 @@ const MODAL_TITLES = {
   WORD_MANAGER: "Word Manager",
   QUEUE_MANAGER: "Queue Manager",
   DOMINO_CELL: "Domino Cell",
-  TEXTRIS_PIECES_MANAGER: "Pieces Manager",
+  TEXTRIS_SHAPES: "Textris Shapes",
 };
 
 const ModalManager = () => {
@@ -37,6 +37,8 @@ const ModalManager = () => {
 
   // If no modal type is set, render nothing
   if (!type) {
+    console.log("No modal type set");
+
     return null;
   }
 

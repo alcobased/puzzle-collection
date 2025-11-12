@@ -26,6 +26,24 @@
   --palette-orange: #ff9800;
   --palette-red: #f44336;
 
+  --palette-pastel-blue: #A7C7E7;
+  --palette-pastel-green: #C1E1C1;
+  --palette-pastel-pink: #F8C8DC;
+  --palette-pastel-yellow: #FDFD96;
+  --palette-pastel-purple: #C3B1E1;
+  --palette-pastel-orange: #FFDAB9;
+  --palette-pastel-teal: #B2D8D8;
+  --palette-pastel-red: #FFB3B3;
+
+  --palette-pastel-blue-hl: #6A9ECB;
+  --palette-pastel-green-hl: #8DC48D;
+  --palette-pastel-pink-hl: #F09AB8;
+  --palette-pastel-yellow-hl: #F8F85A;
+  --palette-pastel-purple-hl: #9D8BC4;
+  --palette-pastel-orange-hl: #FFB87F;
+  --palette-pastel-teal-hl: #80BDBD;
+  --palette-pastel-red-hl: #FF7D7D;
+
   /* Font & Text Colors */
   --font-family-main: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --text-color-primary: var(--palette-grey-100);

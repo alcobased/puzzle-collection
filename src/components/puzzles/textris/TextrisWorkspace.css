@@ -1,13 +1,21 @@
-.textris-workspace {
+#board-workspace {
   display: flex;
-  gap: 20px;
+  justify-content: space-around;
+  padding: 20px;
 }
 
-.pieces-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-content: flex-start;
-  flex-grow: 1;
+#shapes-container,
+#board-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.grid-board {
+  display: grid;
+  gap: 1px;
 }

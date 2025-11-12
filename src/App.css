@@ -62,5 +62,5 @@ body,
 #board-workspace {
   position: absolute;
   border-radius: 5px;
-  cursor: crosshair;
+  /* cursor: crosshair; */
 }

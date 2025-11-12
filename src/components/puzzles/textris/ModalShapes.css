@@ -1,0 +1,16 @@
+#shape-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 20px);
+    grid-template-rows: repeat(5, 20px);
+}
+
+.shape-grid-cell {
+    border: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+}

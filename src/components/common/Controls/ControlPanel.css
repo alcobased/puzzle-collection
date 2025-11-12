@@ -1,147 +1,147 @@
 /* --- Main Control Panel Container --- */
 #controlPanel {
-    display: flex;
-    flex-direction: column; /* Changed to column for better layout control */
-    background-color: var(--background-content);
-    border-top: 1px solid var(--border-color);
-    color: var(--text-color-primary);
-    position: relative;
-    transition: max-height 0.5s ease-in-out;
-    overflow: hidden; /* Hide the content when collapsed */
-    box-shadow: var(--control-panel-shadow);
-  }
+  display: flex;
+  flex-direction: column; /* Changed to column for better layout control */
+  background-color: var(--background-content);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-color-primary);
+  position: relative;
+  transition: max-height 0.5s ease-in-out;
+  overflow: hidden; /* Hide the content when collapsed */
+  box-shadow: var(--control-panel-shadow);
+}
 
-  .controls-content {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 5px;
-    gap: 5px;
-    transition: opacity 0.5s ease-in-out;
-  }
+.controls-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 5px;
+  gap: 5px;
+  transition: opacity 0.5s ease-in-out;
+}
 
-  .controls-content h4 {
-    margin: 0;
-    padding: 0;
-    font-size: 1em;
-    line-height: 1.2;
-  }
+.controls-content h4 {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  line-height: 1.2;
+}
 
-  #controlPanel.collapsed .controls-content {
-    max-height: 0;
-    padding: 0;
-    opacity: 0;    
-  }
+#controlPanel.collapsed .controls-content {
+  max-height: 0;
+  padding: 0;
+  opacity: 0;
+}
 
-  .toggle-visibility-btn {
-    align-self: flex-end; /* Position button to the right */
-    margin: 2px;
-    padding: 2px 5px;
-  }
-  
-  /* --- Fieldset Styling --- */
-  #controlPanel fieldset {
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 8px 10px;
-    margin: 0;
-    background-color: var(--background-content-alt);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* Space between elements inside a fieldset */
-    min-width: 150px; /* Ensure fieldsets don't get too squished */
-  }
-  
-  /* --- Legend Styling --- */
-  #controlPanel legend {
-    font-weight: 600;
-    padding: 0 5px;
-    color: var(--text-color-primary);
-    font-size: 0.95em;
-  }
-  
-  /* --- Label Styling --- */
-  #controlPanel label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85em;
-    color: var(--text-color-secondary);
-    gap: 4px;
-  }
-  
-  /* --- Input Styling --- */
-  #controlPanel input[type="text"],
-  #controlPanel input[type="number"] {
-    width: 50px; /* A fixed width for number inputs looks tidy */
-    padding: 4px 5px;
-    border: 1px solid var(--border-color);
-    border-radius: 3px;
-    font-size: 0.85em;
-    text-align: right;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  
-  #controlPanel input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-color-transparent);
-  }
-  
-  /* --- Button Styling --- */
-  #controlPanel button,
-  #controlPanel .file-upload-label {
-    font-family: var(--font-family-main);
-    padding: 4px 8px;
-    font-size: 0.85em;
-    font-weight: 600;
-    color: var(--text-on-primary);
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-    text-align: center;
-    display: inline-block; /* For label */
-  }
-  
-  #controlPanel button:hover,
-  #controlPanel .file-upload-label:hover {
-    background-color: var(--primary-color-darker);
-  }
-  
-  #controlPanel button:disabled {
-    background-color: var(--background-main);
-    cursor: not-allowed;
-  }
-  
-  /* --- General Info/Status Div Styling --- */
-  #controlPanel fieldset div {
-      font-size: 0.85em;
-      color: var(--text-color-secondary);
-  }
-  
-  #controlPanel fieldset div strong {
-      color: var(--text-color-primary);
-      font-weight: 600;
-  }
+.toggle-visibility-btn {
+  align-self: flex-end; /* Position button to the right */
+  margin: 2px;
+  padding: 2px 5px;
+}
 
-  .label-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 2px; 
-    font-size: 0.85em;
-    color: var(--text-color-secondary);
-  }
+/* --- Fieldset Styling --- */
+#controlPanel fieldset {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 0;
+  background-color: var(--background-content-alt);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Space between elements inside a fieldset */
+  min-width: 150px; /* Ensure fieldsets don't get too squished */
+}
 
-  .label-row strong {
-      color: var(--text-color-primary);
-      font-weight: 600;
-  }
+/* --- Legend Styling --- */
+#controlPanel legend {
+  font-weight: 600;
+  padding: 0 5px;
+  color: var(--text-color-primary);
+  font-size: 0.95em;
+}
+
+/* --- Label Styling --- */
+#controlPanel label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85em;
+  color: var(--text-color-secondary);
+  gap: 4px;
+}
+
+/* --- Input Styling --- */
+#controlPanel input[type="text"],
+#controlPanel input[type="number"] {
+  width: 50px; /* A fixed width for number inputs looks tidy */
+  padding: 4px 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  font-size: 0.85em;
+  text-align: right;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#controlPanel input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-transparent);
+}
+
+/* --- Button Styling --- */
+#controlPanel button,
+#controlPanel .file-upload-label {
+  font-family: var(--font-family-main);
+  padding: 4px 8px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--text-on-primary);
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  text-align: center;
+  display: inline-block; /* For label */
+}
+
+#controlPanel button:hover,
+#controlPanel .file-upload-label:hover {
+  background-color: var(--primary-color-darker);
+}
+
+#controlPanel button:disabled {
+  background-color: var(--background-main);
+  cursor: not-allowed;
+}
+
+/* --- General Info/Status Div Styling --- */
+#controlPanel fieldset div {
+  font-size: 0.85em;
+  color: var(--text-color-secondary);
+}
+
+#controlPanel fieldset div strong {
+  color: var(--text-color-primary);
+  font-weight: 600;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 2px;
+  font-size: 0.85em;
+  color: var(--text-color-secondary);
+}
+
+.label-row strong {
+  color: var(--text-color-primary);
+  font-weight: 600;
+}
 
 .control-section {
   border: 1px solid var(--border-color);

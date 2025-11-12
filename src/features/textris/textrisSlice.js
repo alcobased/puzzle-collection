@@ -1,103 +1,252 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
+import { devShapes, devBoardGrid, devShapesGrid } from "./devData";
 
-const initialState = {
-  board: {
-    data: Array(20).fill(null).map(() => Array(20).fill(null)),
-    width: 20,
-    height: 20,
-    selection: {
-      isActive: false,
-      start: null,
-      end: null,
-    },
-  },
-  pieces: [
-    {
-      id: 'piece-1',
-      shape: [
-        ['T', null, null],
-        ['A', 'S', null],
-        [null, 'O', 'C'],
-      ],
-    },
-    {
-      id: 'piece-2',
-      shape: [
-        [null, 'E'],
-        ['P', 'I', 'E', 'C', 'E'],
-        [null, 'E'],
-      ],
-    },
-    // Add more pieces as needed based on the puzzle design
-  ],
-  phase: 'setup', // setup | solve
+// Initial grids will be 2d arrays filled with false value
+// Initially no cells on boths grids will be occupied
+
+const INITIAL_BOARD_GRID_DIMENSIONS = {
+  width: 20,
+  height: 10,
 };
 
-const textrisSlice = createSlice({
-  name: 'textris',
-  initialState,
+const INITIAL_SHAPES_GRID_DIMENSIONS = {
+  width: 10,
+  height: 10,
+};
+
+const initialBoardGrid = {
+  name: "boardGrid",
+  ...INITIAL_BOARD_GRID_DIMENSIONS,
+  occupiedCells: Array.from(
+    { length: INITIAL_BOARD_GRID_DIMENSIONS.height },
+    () => Array(INITIAL_BOARD_GRID_DIMENSIONS.width).fill(false)
+  ),
+};
+
+const initialShapesGrid = {
+  name: "shapesGrid",
+  ...INITIAL_SHAPES_GRID_DIMENSIONS,
+  occupiedCells: Array.from(
+    { length: INITIAL_SHAPES_GRID_DIMENSIONS.height },
+    () => Array(INITIAL_SHAPES_GRID_DIMENSIONS.width).fill(false)
+  ),
+};
+
+const initialState = {
+  boardGrid: initialBoardGrid,
+  shapesGrid: initialShapesGrid,
+  shapesCollection: [],
+  highlightedShapeId: null,
+  selectedShape: {
+    id: null,
+    relativePosition: null,
+    absolutePosition: null,
+    gridName: null,
+  },
+  lastPlacementResult: {
+    status: null,
+    msg: null,
+  },
+};
+
+const initialStateDev = {
+  boardGrid: devBoardGrid,
+  shapesGrid: devShapesGrid,
+  shapesCollection: devShapes,
+  highlightedShapeId: null,
+  liftedShape: {
+    id: null,
+    offset: {
+      x: null,
+      y: null,
+    },
+  },
+  cursorLocation: {
+    gridName: null,
+    position: {
+      x: null,
+      y: null,
+    },
+  },
+  lastPlacementResult: {
+    status: null,
+    msg: null,
+  },
+};
+
+export const updateGrid = (grid, newWidth, newHeight) => {
+  const { width: oldWidth, height: oldHeight, occupiedCells } = grid;
+
+  // if newWidth and/or newHeight is lower than existing grid
+  // a check needs to be made ensuring that trimmed cells
+  // are not occupied
+  if (newWidth < oldWidth || newHeight < oldHeight) {
+    for (let y = 0; y < oldHeight; y++) {
+      for (let x = 0; x < oldWidth; x++) {
+        if (occupiedCells[y][x] && (y >= newHeight || x >= newWidth)) {
+          // if occupied cells are detected amongst cells to be trimmed
+          // function should return grid unchanged
+          return grid;
+        }
+      }
+    }
+  }
+
+  // if grid is to be expanded the values should be set to false
+  const newOccupiedCells = Array.from({ length: newHeight }, () =>
+    Array(newWidth).fill(false)
+  );
+
+  const heightToCopy = Math.min(oldHeight, newHeight);
+  const widthToCopy = Math.min(oldWidth, newWidth);
+
+  for (let y = 0; y < heightToCopy; y++) {
+    for (let x = 0; x < widthToCopy; x++) {
+      newOccupiedCells[y][x] = occupiedCells[y][x];
+    }
+  }
+
+  return {
+    ...grid,
+    width: newWidth,
+    height: newHeight,
+    occupiedCells: newOccupiedCells,
+  };
+};
+
+export const validShapePosition = (grid, shape, position) => {
+  for (let y = 0; y < shape.grid.length; y++) {
+    for (let x = 0; x < shape.grid[y].length; x++) {
+      if (shape.grid[y][x]) {
+        const absX = position.x + x;
+        const absY = position.y + y;
+        if (
+          absX < 0 ||
+          absX >= grid.width ||
+          absY < 0 ||
+          absY >= grid.height ||
+          grid.occupiedCells[absY][absX]
+        ) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+};
+
+export const findValidShapePosition = (grid, shape) => {
+  for (let y = 0; y < grid.height; y++) {
+    for (let x = 0; x < grid.width; x++) {
+      if (validShapePosition(grid, shape, { x, y })) {
+        return { x, y };
+      }
+    }
+  }
+  return null;
+};
+
+export const textrisSlice = createSlice({
+  name: "textris",
+  initialState:
+    process.env.NODE_ENV === "production" ? initialState : initialStateDev,
   reducers: {
     setBoardDimensions: (state, action) => {
       const { width, height } = action.payload;
-      state.board.width = width;
-      state.board.height = height;
-      state.board.data = Array(height).fill(null).map(() => Array(width).fill(null));
-      state.board.selection = {
-        isActive: false,
-        start: null,
-        end: null,
-      };
+      state.boardGrid = updateGrid(state.boardGrid, width, height);
     },
-    startSelection: (state, action) => {
-      state.board.selection.isActive = true;
-      state.board.selection.start = action.payload;
-      state.board.selection.end = action.payload;
+    setShapesDimensions: (state, action) => {
+      const { width, height } = action.payload;
+      state.shapesGrid = updateGrid(state.shapesGrid, width, height);
     },
-    moveSelection: (state, action) => {
-      if (state.board.selection.isActive) {
-        state.board.selection.end = action.payload;
+    setShapesCollection: (state, action) => {
+      state.shapesCollection = action.payload;
+    },
+    addShape: (state, action) => {
+      const { id, grid, color } = action.payload;
+      state.shapesCollection.push({
+        id,
+        grid,
+        location: null,
+        position: null,
+        color,
+      });
+    },
+    updateShapeLocationAndPosition: (state, action) => {
+      const { shapeId, location, position } = action.payload;
+      const shape = state.shapesCollection.find(
+        (shape) => shape.id === shapeId
+      );
+      if (shape) {
+        shape.location = location;
+        shape.position = position;
       }
     },
-    endSelection: (state) => {
-      if (!state.board.selection.start || !state.board.selection.end) return;
-      const { start, end } = state.board.selection;
-      const minX = Math.min(start.x, end.x);
-      const maxX = Math.max(start.x, end.x);
-      const minY = Math.min(start.y, end.y);
-      const maxY = Math.max(start.y, end.y);
-
-      for (let y = minY; y <= maxY; y++) {
-        for (let x = minX; x <= maxX; x++) {
-          if (!state.board.data[y]) {
-            state.board.data[y] = [];
-          }
-          state.board.data[y][x] = 1; // Mark as part of the board
-        }
+    setHighlightShape(state, action) {
+      state.highlightedShapeId = action.payload.shapeId;
+    },
+    clearHighlightShape(state) {
+      state.highlightedShapeId = null;
+    },
+    setLiftShape(state, action) {
+      const { shapeId, offset } = action.payload;
+      const shape = state.shapesCollection.find(
+        (shape) => shape.id === shapeId
+      );
+      if (shape) {
+        state.liftedShape = {
+          id: shapeId,
+          offset,
+        };
       }
-      state.board.selection.isActive = false;
-      state.board.selection.start = null;
-      state.board.selection.end = null;
     },
-    clearBoard: (state) => {
-      state.board.data = Array(state.board.height).fill(null).map(() => Array(state.board.width).fill(null));
-    },
-    togglePhase: (state) => {
-      state.phase = state.phase === 'setup' ? 'solve' : 'setup';
-    },
-    addPiece: (state, action) => {
-      const existingIds = state.pieces.map(p => parseInt(p.id.split('-')[1], 10));
-      const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
-      const newPiece = {
-        id: `piece-${maxId + 1}`,
-        shape: action.payload.shape,
+    clearLiftShape(state) {
+      state.liftedShape = {
+        id: null,
+        offset: {
+          x: null,
+          y: null,
+        },
       };
-      state.pieces.push(newPiece);
     },
-    removePiece: (state, action) => {
-        state.pieces = state.pieces.filter(piece => piece.id !== action.payload);
-    }
+    setCursorLocation(state, action) {
+      state.cursorLocation = action.payload;
+    },
+    clearCursorLocation(state) {
+      state.cursorLocation = {
+        gridName: null,
+        position: {
+          x: null,
+          y: null,
+        },
+      };
+    },
+    setLastPlacementResult(state, action) {
+      state.lastPlacementResult = action.payload;
+    },
+    clearLastPlacementResult(state) {
+      state.lastPlacementResult = {
+        status: null,
+        msg: null,
+      };
+    },
   },
 });
 
-export const { setBoardDimensions, startSelection, moveSelection, endSelection, clearBoard, togglePhase, addPiece, removePiece } = textrisSlice.actions;
+export const {
+  setBoardDimensions,
+  setShapesDimensions,
+  setShapesCollection,
+  addShape,
+  updateShapeLocationAndPosition,
+  setHighlightShape,
+  clearHighlightShape,
+  setLiftShape,
+  clearLiftShape,
+  setCursorLocation,
+  clearCursorLocation,
+  setLastPlacementResult,
+  clearLastPlacementResult,
+} = textrisSlice.actions;
+
 export default textrisSlice.reducer;

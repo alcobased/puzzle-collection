@@ -10,7 +10,6 @@ import wordReducer from "./features/words/wordsSlice.js";
 import solverReducer from "./features/pathfinder/solverSlice.js";
 import dominoReducer from "./features/domino/dominoSlice.js";
 import textrisReducer from "./features/textris/textrisSlice.js";
-import textrisSolverReducer from "./features/textris/solverSlice.js";
 
 import { listenerMiddleware } from "./middleware/listenerMiddleware.js";
 
@@ -19,15 +18,10 @@ const pathfinderReducer = combineReducers({
   solver: solverReducer,
 });
 
-const textrisRootReducer = combineReducers({
-  setup: textrisReducer,
-  solver: textrisSolverReducer,
-});
-
 const puzzlesReducer = combineReducers({
   pathfinder: pathfinderReducer,
   domino: dominoReducer,
-  textris: textrisRootReducer,
+  textris: textrisReducer,
 });
 
 const rootReducer = combineReducers({

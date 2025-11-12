@@ -1,21 +1,22 @@
-import React from 'react';
-import PuzzleBoard from '../../common/PuzzleBoard/PuzzleBoard';
-import ControlPanel from '../../common/Controls/ControlPanel';
-import TextrisWorkspace from './TextrisWorkspace';
-import BoardControls from './BoardControls';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import PuzzleBoard from "../../common/PuzzleBoard/PuzzleBoard";
+import TextrisWorkspace from "./TextrisWorkspace";
+import ControlPanel from "../../common/Controls/ControlPanel";
+import BoardGridControls from "./BoardGridControls";
+import ShapesGridControls from "./ShapesGridControls";
+import ShapeControls from "./ShapeControls";
 
 const TextrisPage = () => {
   return (
-    <DndProvider backend={HTML5Backend}>
+    <>
       <PuzzleBoard>
         <TextrisWorkspace />
       </PuzzleBoard>
       <ControlPanel>
-        <BoardControls />
+        <BoardGridControls />
+        <ShapesGridControls />
+        <ShapeControls />
       </ControlPanel>
-    </DndProvider>
+    </>
   );
 };
 
