@@ -14,6 +14,7 @@ import {
   clearCursorLocation,
   setLastPlacementResult,
   clearLastPlacementResult,
+  validShapePosition,
 } from "../../../features/textris/textrisSlice";
 import "./Cell.css";
 
@@ -21,6 +22,7 @@ const Cell = ({
   char,
   cellColor,
   shapeId,
+  shapeOffset,
   absolutePosition, // absolute to grid
   liftedShape,
   gridName,
@@ -29,7 +31,6 @@ const Cell = ({
   const dispatch = useDispatch();
 
   const handleMouseOver = () => {
-    console.log("mouse over", absolutePosition, gridName);
     dispatch(
       setCursorLocation({
         gridName,
@@ -43,12 +44,34 @@ const Cell = ({
   };
 
   const handleMouseLeave = () => {
+    dispatch(clearCursorLocation());
     if (shapeId) {
       dispatch(clearHighlightShape());
     }
   };
 
-  const handleMouseClick = () => {};
+  const handleMouseClick = () => {
+    // lift if cell is part of a shape and shape is not lifted
+    if (shapeId && !liftedShape) {
+      dispatch(setLiftShape({ shapeId, offset: shapeOffset }));
+    }
+    // if cell is lifted, place it
+    if (liftedShape) {
+      console.log("dropping shape");
+
+      dispatch(
+        updateShapeLocationAndPosition({
+          shapeId: liftedShape.shape.id,
+          location: gridName,
+          position: {
+            x: absolutePosition.x - liftedShape.offset.x,
+            y: absolutePosition.y - liftedShape.offset.y,
+          },
+        })
+      );
+      dispatch(clearLiftShape());
+    }
+  };
 
   const handleContextMenu = (e) => {
     e.preventDefault();

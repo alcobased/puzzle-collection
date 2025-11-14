@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import Cell from "./Cell";
 import "./TextrisWorkspace.css";
@@ -10,6 +9,7 @@ const TextrisWorkspace = () => {
     shapesCollection,
     liftedShape,
     highlightedShapeId,
+    cursorLocation,
   } = useSelector((state) => state.puzzles.textris);
   const cellSize = 20;
   const shapesOnBoardGrid = shapesCollection.filter(
@@ -25,15 +25,15 @@ const TextrisWorkspace = () => {
     );
   };
 
-  const projectShapesToGrid = (grid, shapes, gridName) => {
-    const { height, width } = grid;
+  const projectShapesToGrid = (boardGrid, shapes) => {
+    const { height, width } = boardGrid;
     const newGrid = createVisualGrid(height, width);
 
     shapes.forEach((shape) => {
-      // only unselected shapes should be projected here
-      if (shape.selected) return;
+      // only unlifted shapes should be projected here
+      if (liftedShape && shape.id === liftedShape.shape.id) return;
 
-      const { grid, position, color, id, highlighted } = shape;
+      const { grid, position, color, id } = shape;
       grid.forEach((row, y) => {
         row.forEach((char, x) => {
           if (char) {
@@ -41,10 +41,10 @@ const TextrisWorkspace = () => {
             const boardY = position.y + y;
             if (boardY < newGrid.length && boardX < newGrid[0].length) {
               newGrid[boardY][boardX] = {
-                char,
-                cellColor: `color-${color}`,
                 shapeId: id,
-                relativePosition: { x, y },
+                char,
+                shapeOffset: { x, y },
+                cellColor: `color-${color}`,
               };
             }
           }
@@ -52,43 +52,40 @@ const TextrisWorkspace = () => {
       });
     });
 
-    // selected shape should be projected here, possibly overriding some of the cells
-    // if (selectedShape.id && selectedShape.gridName === gridName) {
-    //   const { relativePosition, absolutePosition } = selectedShape;
-    //   const shape = shapesCollection.find((s) => s.id === selectedShape.id);
-    //   if (shape) {
-    //     const { grid, color, id, highlighted } = shape;
-    //     grid.forEach((row, y) => {
-    //       row.forEach((char, x) => {
-    //         if (char) {
-    //           const boardX = absolutePosition.x + x - relativePosition.x;
-    //           const boardY = absolutePosition.y + y - relativePosition.y;
-    //           if (boardY < newGrid.length && boardX < newGrid[0].length) {
-    //             newGrid[boardY][boardX] = {
-    //               char,
-    //               cellColor: `color-${color}`,
-    //               shapeId: id,
-    //               highlighted,
-    //             };
-    //           }
-    //         }
-    //       });
-    //     });
-    //   }
-    // }
+    // lifted shape should be projected here
+    if (
+      liftedShape &&
+      cursorLocation &&
+      cursorLocation.gridName === boardGrid.name
+    ) {
+      liftedShape.shape.grid.forEach((row, y) => {
+        row.forEach((char, x) => {
+          if (char) {
+            const boardX = cursorLocation.position.x + x - liftedShape.offset.x;
+            const boardY = cursorLocation.position.y + y - liftedShape.offset.y;
+            if (
+              boardY < newGrid.length &&
+              boardX < newGrid[0].length &&
+              boardY >= 0 &&
+              boardX >= 0
+            ) {
+              newGrid[boardY][boardX] = {
+                shapeId: liftedShape.shape.id,
+                char,
+                shapeOffset: { x, y },
+                cellColor: `color-${liftedShape.shape.color}`,
+              };
+            }
+          }
+        });
+      });
+    }
+
     return newGrid;
   };
 
-  const visualBoardGrid = projectShapesToGrid(
-    boardGrid,
-    shapesOnBoardGrid,
-    "boardGrid"
-  );
-  const visualShapesGrid = projectShapesToGrid(
-    shapesGrid,
-    shapesOnShapesGrid,
-    "shapesGrid"
-  );
+  const visualBoardGrid = projectShapesToGrid(boardGrid, shapesOnBoardGrid);
+  const visualShapesGrid = projectShapesToGrid(shapesGrid, shapesOnShapesGrid);
 
   const renderGrid = (grid, gridName) => {
     if (!grid || !grid.length) return null;

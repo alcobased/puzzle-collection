@@ -37,16 +37,9 @@ const initialState = {
   shapesGrid: initialShapesGrid,
   shapesCollection: [],
   highlightedShapeId: null,
-  selectedShape: {
-    id: null,
-    relativePosition: null,
-    absolutePosition: null,
-    gridName: null,
-  },
-  lastPlacementResult: {
-    status: null,
-    msg: null,
-  },
+  liftedShape: null,
+  cursorLocation: null,
+  lastPlacementResult: null,
 };
 
 const initialStateDev = {
@@ -54,24 +47,9 @@ const initialStateDev = {
   shapesGrid: devShapesGrid,
   shapesCollection: devShapes,
   highlightedShapeId: null,
-  liftedShape: {
-    id: null,
-    offset: {
-      x: null,
-      y: null,
-    },
-  },
-  cursorLocation: {
-    gridName: null,
-    position: {
-      x: null,
-      y: null,
-    },
-  },
-  lastPlacementResult: {
-    status: null,
-    msg: null,
-  },
+  liftedShape: null,
+  cursorLocation: null,
+  lastPlacementResult: null,
 };
 
 export const updateGrid = (grid, newWidth, newHeight) => {
@@ -195,31 +173,19 @@ export const textrisSlice = createSlice({
       );
       if (shape) {
         state.liftedShape = {
-          id: shapeId,
+          shape,
           offset,
         };
       }
     },
     clearLiftShape(state) {
-      state.liftedShape = {
-        id: null,
-        offset: {
-          x: null,
-          y: null,
-        },
-      };
+      state.liftedShape = null;
     },
     setCursorLocation(state, action) {
       state.cursorLocation = action.payload;
     },
     clearCursorLocation(state) {
-      state.cursorLocation = {
-        gridName: null,
-        position: {
-          x: null,
-          y: null,
-        },
-      };
+      state.cursorLocation = null;
     },
     setLastPlacementResult(state, action) {
       state.lastPlacementResult = action.payload;
