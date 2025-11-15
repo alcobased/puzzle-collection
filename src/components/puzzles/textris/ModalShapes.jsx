@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setLastPlacementResult,
   clearLastPlacementResult,
+  findValidShapeLocationOnBoard,
+  addShape,
+  updateShapeLocationAndPosition,
 } from "../../../features/textris/textrisSlice";
-import { setNotification } from "../../../features/ui/uiSlice";
+import { setNotification, hideModal } from "../../../features/ui/uiSlice";
 import "./ModalShapes.css";
 
 // Helper to create a clean 5x5 grid
@@ -20,6 +22,7 @@ const ModalTextrisShapes = () => {
   const lastPlacementResult = useSelector(
     (state) => state.puzzles.textris.lastPlacementResult
   );
+  const board = useSelector((state) => state.puzzles.textris.shapesBoard);
 
   useEffect(() => {
     if (lastPlacementResult.status === "success") {
@@ -74,12 +77,40 @@ const ModalTextrisShapes = () => {
       const newShape = {
         id: `shape-${Date.now()}`,
         grid: shapeGrid,
-        location: null,
-        position: null,
         color: Math.floor(Math.random() * 8) + 1, // random int in range 1-8
       };
 
-      dispatch(addShape(newShape));
+      const validLocation = findValidShapeLocationOnBoard(board, newShape);
+
+      console.log("valid location", validLocation);
+
+      if (validLocation === null) {
+        dispatch(
+          setNotification({
+            message: "Shape does not fit on the board",
+            type: "error",
+          })
+        );
+      } else {
+        dispatch(addShape(newShape));
+        dispatch(
+          updateShapeLocationAndPosition({
+            shapeId: newShape.id,
+            newBoardName: "shapesBoard",
+            newLocationOnBoard: validLocation,
+          })
+        );
+        setGrid(createEmptyGrid());
+        dispatch(clearLastPlacementResult());
+        dispatch(
+          setNotification({
+            message: "Shape added successfully!",
+            type: "success",
+          })
+        );
+        setGrid(createEmptyGrid());
+        dispatch(hideModal());
+      }
     }
   };
 

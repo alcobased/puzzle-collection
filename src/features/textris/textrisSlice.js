@@ -18,7 +18,7 @@ const initialSolutionBoard = {
   name: "solutionBoard",
   ...INITIAL_SOLUTION_BOARD_DIMENSIONS,
   grid: Array.from({ length: INITIAL_SOLUTION_BOARD_DIMENSIONS.height }, () =>
-    Array(INITIAL_SOLUTION_BOARD_DIMENSIONS.width).fill(false)
+    Array(INITIAL_SOLUTION_BOARD_DIMENSIONS.width).fill(null)
   ),
 };
 
@@ -27,7 +27,7 @@ const initialShapesBoard = {
   ...INITIAL_SHAPES_BOARD_DIMENSIONS,
   occupiedCells: Array.from(
     { length: INITIAL_SHAPES_BOARD_DIMENSIONS.height },
-    () => Array(INITIAL_SHAPES_BOARD_DIMENSIONS.width).fill(false)
+    () => Array(INITIAL_SHAPES_BOARD_DIMENSIONS.width).fill(null)
   ),
 };
 
@@ -48,7 +48,10 @@ const initialStateDev = {
   highlightedShapeId: null,
   liftedShape: null,
   cursor: null,
-  lastPlacementResult: null,
+  lastPlacementResult: {
+    status: null,
+    msg: null,
+  },
 };
 
 export const updateBoard = (board, newWidth, newHeight) => {
@@ -69,9 +72,9 @@ export const updateBoard = (board, newWidth, newHeight) => {
     }
   }
 
-  // if grid is to be expanded the values should be set to false
+  // if grid is to be expanded the values should be set to null
   const newGrid = Array.from({ length: newHeight }, () =>
-    Array(newWidth).fill(false)
+    Array(newWidth).fill(null)
   );
 
   const heightToCopy = Math.min(oldHeight, newHeight);
@@ -91,18 +94,21 @@ export const updateBoard = (board, newWidth, newHeight) => {
   };
 };
 
-export const validShapePosition = (board, shape, locationOnBoard) => {
+export const validShapeLocationOnBoard = (board, shape, newLocationOnBoard) => {
+  // cells previously occupied by the same shape should not be concidered
+
   for (let y = 0; y < shape.grid.length; y++) {
     for (let x = 0; x < shape.grid[y].length; x++) {
       if (shape.grid[y][x]) {
-        const absX = locationOnBoard.x + x;
-        const absY = locationOnBoard.y + y;
+        const absX = newLocationOnBoard.x + x;
+        const absY = newLocationOnBoard.y + y;
         if (
           absX < 0 ||
           absX >= board.width ||
           absY < 0 ||
           absY >= board.height ||
-          board.grid[absY][absX]
+          (board.grid[absY][absX].char &&
+            board.grid[absY][absX].shapeId !== shape.id)
         ) {
           return false;
         }
@@ -112,10 +118,14 @@ export const validShapePosition = (board, shape, locationOnBoard) => {
   return true;
 };
 
-export const findValidShapePosition = (board, shape) => {
+export const findValidShapeLocationOnBoard = (board, shape) => {
+  console.log("finding valid location");
+  console.log(board);
+  console.log(shape);
+
   for (let y = 0; y < board.height; y++) {
     for (let x = 0; x < board.width; x++) {
-      if (validShapePosition(board, shape, { x, y })) {
+      if (validShapeLocationOnBoard(board, shape, { x, y })) {
         return { x, y };
       }
     }
@@ -153,12 +163,26 @@ export const textrisSlice = createSlice({
       const shape = state.shapesCollection.find(
         (shape) => shape.id === shapeId
       );
+      const board = state[newBoardName];
       if (shape) {
-        console.log("dispatching update shape location");
-
         shape.boardName = newBoardName;
         shape.locationOnBoard = newLocationOnBoard;
       }
+      shape.grid.forEach((row, y) => {
+        row.forEach((char, x) => {
+          if (char) {
+            // clear old cell
+            board.grid[shape.locationOnBoard.y + y][
+              shape.locationOnBoard.x + x
+            ] = null;
+            // set new cell
+            board.grid[newLocationOnBoard.y + y][newLocationOnBoard.x + x] = {
+              shapeId,
+              char,
+            };
+          }
+        });
+      });
     },
     setHighlightShape(state, action) {
       state.highlightedShapeId = action.payload.shapeId;

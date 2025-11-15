@@ -10,7 +10,7 @@ import {
   clearCursor,
   setLastPlacementResult,
   clearLastPlacementResult,
-  validShapePosition,
+  validShapeLocationOnBoard,
 } from "../../../features/textris/textrisSlice";
 import "./Cell.css";
 
