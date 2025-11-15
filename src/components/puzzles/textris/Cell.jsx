@@ -1,17 +1,13 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import {
-  setBoardDimensions,
-  setShapesDimensions,
-  setShapesCollection,
-  addShape,
   updateShapeLocationAndPosition,
   setHighlightShape,
   clearHighlightShape,
   setLiftShape,
   clearLiftShape,
-  setCursorLocation,
-  clearCursorLocation,
+  setCursor,
+  clearCursor,
   setLastPlacementResult,
   clearLastPlacementResult,
   validShapePosition,
@@ -20,21 +16,21 @@ import "./Cell.css";
 
 const Cell = ({
   char,
-  cellColor,
   shapeId,
   shapeOffset,
+  cellColor,
   absolutePosition, // absolute to grid
   liftedShape,
-  gridName,
+  boardName,
   highlighted,
 }) => {
   const dispatch = useDispatch();
 
   const handleMouseOver = () => {
     dispatch(
-      setCursorLocation({
-        gridName,
-        position: absolutePosition,
+      setCursor({
+        boardName,
+        locationOnBoard: absolutePosition,
       })
     );
     // is cell is part of a shape and a shape is not lifted
@@ -44,7 +40,7 @@ const Cell = ({
   };
 
   const handleMouseLeave = () => {
-    dispatch(clearCursorLocation());
+    // dispatch(clearCursorLocation());
     if (shapeId) {
       dispatch(clearHighlightShape());
     }
@@ -53,17 +49,19 @@ const Cell = ({
   const handleMouseClick = () => {
     // lift if cell is part of a shape and shape is not lifted
     if (shapeId && !liftedShape) {
-      dispatch(setLiftShape({ shapeId, offset: shapeOffset }));
+      console.log("lifting shape");
+      dispatch(setLiftShape({ shapeId, shapeOffset }));
     }
     // if cell is lifted, place it
     if (liftedShape) {
       console.log("dropping shape");
+      // collision check
 
       dispatch(
         updateShapeLocationAndPosition({
-          shapeId: liftedShape.shape.id,
-          location: gridName,
-          position: {
+          shapeId: liftedShape.id,
+          newBoardName: boardName,
+          newLocationOnBoard: {
             x: absolutePosition.x - liftedShape.offset.x,
             y: absolutePosition.y - liftedShape.offset.y,
           },

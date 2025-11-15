@@ -1,59 +1,58 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { devShapes, devBoardGrid, devShapesGrid } from "./devData";
+import { devShapes, devSolutionBoard, devShapesBoard } from "./devData";
 
-// Initial grids will be 2d arrays filled with false value
-// Initially no cells on boths grids will be occupied
+// Initial grids will be 2d arrays filled with false values
+// Initially no cells on boths grids of the boards will be occupied
 
-const INITIAL_BOARD_GRID_DIMENSIONS = {
+const INITIAL_SOLUTION_BOARD_DIMENSIONS = {
   width: 20,
   height: 10,
 };
 
-const INITIAL_SHAPES_GRID_DIMENSIONS = {
+const INITIAL_SHAPES_BOARD_DIMENSIONS = {
   width: 10,
   height: 10,
 };
 
-const initialBoardGrid = {
-  name: "boardGrid",
-  ...INITIAL_BOARD_GRID_DIMENSIONS,
-  occupiedCells: Array.from(
-    { length: INITIAL_BOARD_GRID_DIMENSIONS.height },
-    () => Array(INITIAL_BOARD_GRID_DIMENSIONS.width).fill(false)
+const initialSolutionBoard = {
+  name: "solutionBoard",
+  ...INITIAL_SOLUTION_BOARD_DIMENSIONS,
+  grid: Array.from({ length: INITIAL_SOLUTION_BOARD_DIMENSIONS.height }, () =>
+    Array(INITIAL_SOLUTION_BOARD_DIMENSIONS.width).fill(false)
   ),
 };
 
-const initialShapesGrid = {
-  name: "shapesGrid",
-  ...INITIAL_SHAPES_GRID_DIMENSIONS,
+const initialShapesBoard = {
+  name: "shapesBoard",
+  ...INITIAL_SHAPES_BOARD_DIMENSIONS,
   occupiedCells: Array.from(
-    { length: INITIAL_SHAPES_GRID_DIMENSIONS.height },
-    () => Array(INITIAL_SHAPES_GRID_DIMENSIONS.width).fill(false)
+    { length: INITIAL_SHAPES_BOARD_DIMENSIONS.height },
+    () => Array(INITIAL_SHAPES_BOARD_DIMENSIONS.width).fill(false)
   ),
 };
 
 const initialState = {
-  boardGrid: initialBoardGrid,
-  shapesGrid: initialShapesGrid,
+  solutionBoard: initialSolutionBoard,
+  shapesBoard: initialShapesBoard,
   shapesCollection: [],
   highlightedShapeId: null,
   liftedShape: null,
-  cursorLocation: null,
+  cursor: null,
   lastPlacementResult: null,
 };
 
 const initialStateDev = {
-  boardGrid: devBoardGrid,
-  shapesGrid: devShapesGrid,
+  solutionBoard: devSolutionBoard,
+  shapesBoard: devShapesBoard,
   shapesCollection: devShapes,
   highlightedShapeId: null,
   liftedShape: null,
-  cursorLocation: null,
+  cursor: null,
   lastPlacementResult: null,
 };
 
-export const updateGrid = (grid, newWidth, newHeight) => {
-  const { width: oldWidth, height: oldHeight, occupiedCells } = grid;
+export const updateBoard = (board, newWidth, newHeight) => {
+  const { width: oldWidth, height: oldHeight, grid } = board;
 
   // if newWidth and/or newHeight is lower than existing grid
   // a check needs to be made ensuring that trimmed cells
@@ -61,17 +60,17 @@ export const updateGrid = (grid, newWidth, newHeight) => {
   if (newWidth < oldWidth || newHeight < oldHeight) {
     for (let y = 0; y < oldHeight; y++) {
       for (let x = 0; x < oldWidth; x++) {
-        if (occupiedCells[y][x] && (y >= newHeight || x >= newWidth)) {
+        if (grid[y][x] && (y >= newHeight || x >= newWidth)) {
           // if occupied cells are detected amongst cells to be trimmed
           // function should return grid unchanged
-          return grid;
+          return board;
         }
       }
     }
   }
 
   // if grid is to be expanded the values should be set to false
-  const newOccupiedCells = Array.from({ length: newHeight }, () =>
+  const newGrid = Array.from({ length: newHeight }, () =>
     Array(newWidth).fill(false)
   );
 
@@ -80,30 +79,30 @@ export const updateGrid = (grid, newWidth, newHeight) => {
 
   for (let y = 0; y < heightToCopy; y++) {
     for (let x = 0; x < widthToCopy; x++) {
-      newOccupiedCells[y][x] = occupiedCells[y][x];
+      newGrid[y][x] = grid[y][x];
     }
   }
 
   return {
-    ...grid,
+    ...board,
     width: newWidth,
     height: newHeight,
-    occupiedCells: newOccupiedCells,
+    grid: newGrid,
   };
 };
 
-export const validShapePosition = (grid, shape, position) => {
+export const validShapePosition = (board, shape, locationOnBoard) => {
   for (let y = 0; y < shape.grid.length; y++) {
     for (let x = 0; x < shape.grid[y].length; x++) {
       if (shape.grid[y][x]) {
-        const absX = position.x + x;
-        const absY = position.y + y;
+        const absX = locationOnBoard.x + x;
+        const absY = locationOnBoard.y + y;
         if (
           absX < 0 ||
-          absX >= grid.width ||
+          absX >= board.width ||
           absY < 0 ||
-          absY >= grid.height ||
-          grid.occupiedCells[absY][absX]
+          absY >= board.height ||
+          board.grid[absY][absX]
         ) {
           return false;
         }
@@ -113,10 +112,10 @@ export const validShapePosition = (grid, shape, position) => {
   return true;
 };
 
-export const findValidShapePosition = (grid, shape) => {
-  for (let y = 0; y < grid.height; y++) {
-    for (let x = 0; x < grid.width; x++) {
-      if (validShapePosition(grid, shape, { x, y })) {
+export const findValidShapePosition = (board, shape) => {
+  for (let y = 0; y < board.height; y++) {
+    for (let x = 0; x < board.width; x++) {
+      if (validShapePosition(board, shape, { x, y })) {
         return { x, y };
       }
     }
@@ -129,13 +128,12 @@ export const textrisSlice = createSlice({
   initialState:
     process.env.NODE_ENV === "production" ? initialState : initialStateDev,
   reducers: {
-    setBoardDimensions: (state, action) => {
-      const { width, height } = action.payload;
-      state.boardGrid = updateGrid(state.boardGrid, width, height);
-    },
-    setShapesDimensions: (state, action) => {
-      const { width, height } = action.payload;
-      state.shapesGrid = updateGrid(state.shapesGrid, width, height);
+    updateBoardDimensions: (state, action) => {
+      const { boardName, width, height } = action.payload;
+      const board = state[boardName];
+      if (!board) return;
+      if (width) board.width = width;
+      if (height) board.height = height;
     },
     setShapesCollection: (state, action) => {
       state.shapesCollection = action.payload;
@@ -144,20 +142,22 @@ export const textrisSlice = createSlice({
       const { id, grid, color } = action.payload;
       state.shapesCollection.push({
         id,
+        boardName: null,
+        locationOnBoard: null,
         grid,
-        location: null,
-        position: null,
         color,
       });
     },
     updateShapeLocationAndPosition: (state, action) => {
-      const { shapeId, location, position } = action.payload;
+      const { shapeId, newBoardName, newLocationOnBoard } = action.payload;
       const shape = state.shapesCollection.find(
         (shape) => shape.id === shapeId
       );
       if (shape) {
-        shape.location = location;
-        shape.position = position;
+        console.log("dispatching update shape location");
+
+        shape.boardName = newBoardName;
+        shape.locationOnBoard = newLocationOnBoard;
       }
     },
     setHighlightShape(state, action) {
@@ -167,25 +167,31 @@ export const textrisSlice = createSlice({
       state.highlightedShapeId = null;
     },
     setLiftShape(state, action) {
-      const { shapeId, offset } = action.payload;
+      const { shapeId, shapeOffset } = action.payload;
       const shape = state.shapesCollection.find(
         (shape) => shape.id === shapeId
       );
       if (shape) {
         state.liftedShape = {
-          shape,
-          offset,
+          id: shapeId,
+          offset: shapeOffset,
+          grid: shape.grid,
+          color: shape.color,
         };
       }
     },
     clearLiftShape(state) {
       state.liftedShape = null;
     },
-    setCursorLocation(state, action) {
-      state.cursorLocation = action.payload;
+    setCursor(state, action) {
+      const { boardName, locationOnBoard } = action.payload;
+      state.cursor = {
+        boardName,
+        locationOnBoard,
+      };
     },
-    clearCursorLocation(state) {
-      state.cursorLocation = null;
+    clearCursor(state) {
+      state.cursor = null;
     },
     setLastPlacementResult(state, action) {
       state.lastPlacementResult = action.payload;
@@ -200,7 +206,7 @@ export const textrisSlice = createSlice({
 });
 
 export const {
-  setBoardDimensions,
+  updateBoardDimensions,
   setShapesDimensions,
   setShapesCollection,
   addShape,
@@ -209,8 +215,8 @@ export const {
   clearHighlightShape,
   setLiftShape,
   clearLiftShape,
-  setCursorLocation,
-  clearCursorLocation,
+  setCursor,
+  clearCursor,
   setLastPlacementResult,
   clearLastPlacementResult,
 } = textrisSlice.actions;

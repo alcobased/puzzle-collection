@@ -4,19 +4,20 @@ import "./TextrisWorkspace.css";
 
 const TextrisWorkspace = () => {
   const {
-    boardGrid,
-    shapesGrid,
+    solutionBoard,
+    shapesBoard,
     shapesCollection,
     liftedShape,
     highlightedShapeId,
-    cursorLocation,
+    cursor,
   } = useSelector((state) => state.puzzles.textris);
+
   const cellSize = 20;
-  const shapesOnBoardGrid = shapesCollection.filter(
-    (s) => s.location === "boardGrid"
+  const shapesOnSolutionBoard = shapesCollection.filter(
+    (s) => s.boardName === "solutionBoard"
   );
-  const shapesOnShapesGrid = shapesCollection.filter(
-    (s) => s.location === "shapesGrid"
+  const shapesOnShapesBoard = shapesCollection.filter(
+    (s) => s.boardName === "shapesBoard"
   );
 
   const createVisualGrid = (height, width) => {
@@ -25,20 +26,21 @@ const TextrisWorkspace = () => {
     );
   };
 
-  const projectShapesToGrid = (boardGrid, shapes) => {
-    const { height, width } = boardGrid;
+  const projectShapesToBoard = (board, shapes) => {
+    const { height, width } = board;
     const newGrid = createVisualGrid(height, width);
 
     shapes.forEach((shape) => {
       // only unlifted shapes should be projected here
-      if (liftedShape && shape.id === liftedShape.shape.id) return;
+      if (liftedShape && shape.id === liftedShape.id) return;
 
-      const { grid, position, color, id } = shape;
+      const { grid, locationOnBoard, color, id } = shape;
+
       grid.forEach((row, y) => {
         row.forEach((char, x) => {
           if (char) {
-            const boardX = position.x + x;
-            const boardY = position.y + y;
+            const boardX = locationOnBoard.x + x;
+            const boardY = locationOnBoard.y + y;
             if (boardY < newGrid.length && boardX < newGrid[0].length) {
               newGrid[boardY][boardX] = {
                 shapeId: id,
@@ -53,16 +55,13 @@ const TextrisWorkspace = () => {
     });
 
     // lifted shape should be projected here
-    if (
-      liftedShape &&
-      cursorLocation &&
-      cursorLocation.gridName === boardGrid.name
-    ) {
-      liftedShape.shape.grid.forEach((row, y) => {
+
+    if (liftedShape && cursor && cursor.boardName === board.name) {
+      liftedShape.grid.forEach((row, y) => {
         row.forEach((char, x) => {
           if (char) {
-            const boardX = cursorLocation.position.x + x - liftedShape.offset.x;
-            const boardY = cursorLocation.position.y + y - liftedShape.offset.y;
+            const boardX = cursor.locationOnBoard.x + x - liftedShape.offset.x;
+            const boardY = cursor.locationOnBoard.y + y - liftedShape.offset.y;
             if (
               boardY < newGrid.length &&
               boardX < newGrid[0].length &&
@@ -70,10 +69,12 @@ const TextrisWorkspace = () => {
               boardX >= 0
             ) {
               newGrid[boardY][boardX] = {
-                shapeId: liftedShape.shape.id,
+                shapeId: liftedShape.id,
                 char,
                 shapeOffset: { x, y },
-                cellColor: `color-${liftedShape.shape.color}`,
+                cellColor: `color-${liftedShape.color}`,
+                cursor,
+                liftedShape,
               };
             }
           }
@@ -84,27 +85,32 @@ const TextrisWorkspace = () => {
     return newGrid;
   };
 
-  const visualBoardGrid = projectShapesToGrid(boardGrid, shapesOnBoardGrid);
-  const visualShapesGrid = projectShapesToGrid(shapesGrid, shapesOnShapesGrid);
+  const visualSolutionBoard = projectShapesToBoard(
+    solutionBoard,
+    shapesOnSolutionBoard
+  );
+  const visualShapesBoard = projectShapesToBoard(
+    shapesBoard,
+    shapesOnShapesBoard
+  );
 
-  const renderGrid = (grid, gridName) => {
-    if (!grid || !grid.length) return null;
-    const rows = grid.length;
-    const cols = grid[0].length;
+  const renderBoard = (board, boardName) => {
+    if (!board || !board.length) return null;
+    const rows = board.length;
+    const cols = board[0].length;
     const style = {
       gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
       gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
     };
     return (
       <div style={style} className="grid-board">
-        {grid.map((row, rowIndex) =>
+        {board.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
             <Cell
-              key={`${gridName}-${rowIndex}-${colIndex}`}
+              key={`${boardName}-${rowIndex}-${colIndex}`}
               {...cell}
               absolutePosition={{ x: colIndex, y: rowIndex }}
-              liftedShape={liftedShape}
-              gridName={gridName}
+              boardName={boardName}
               highlighted={highlightedShapeId === cell.shapeId}
             />
           ))
@@ -115,13 +121,13 @@ const TextrisWorkspace = () => {
 
   return (
     <div id="board-workspace">
-      <div id="shapes-container">
-        <h2>Shapes</h2>
-        {renderGrid(visualShapesGrid, "shapesGrid")}
-      </div>
       <div id="board-container">
-        <h2>Board</h2>
-        {renderGrid(visualBoardGrid, "boardGrid")}
+        <h2>Solution board</h2>
+        {renderBoard(visualSolutionBoard, "solutionBoard")}
+      </div>
+      <div id="shapes-container">
+        <h2>Shapes board</h2>
+        {renderBoard(visualShapesBoard, "shapesBoard")}
       </div>
     </div>
   );

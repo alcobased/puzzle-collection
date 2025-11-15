@@ -1,9 +1,7 @@
 import PuzzleBoard from "../../common/PuzzleBoard/PuzzleBoard";
 import TextrisWorkspace from "./TextrisWorkspace";
 import ControlPanel from "../../common/Controls/ControlPanel";
-import BoardGridControls from "./BoardGridControls";
-import ShapesGridControls from "./ShapesGridControls";
-import ShapeControls from "./ShapeControls";
+import BoardControls from "./BoardControls";
 
 const TextrisPage = () => {
   return (
@@ -12,9 +10,9 @@ const TextrisPage = () => {
         <TextrisWorkspace />
       </PuzzleBoard>
       <ControlPanel>
-        <BoardGridControls />
-        <ShapesGridControls />
-        <ShapeControls />
+        <BoardControls boardName="solutionBoard" />
+        <BoardControls boardName="shapesBoard" />
+        {/* <ShapeControls /> */}
       </ControlPanel>
     </>
   );

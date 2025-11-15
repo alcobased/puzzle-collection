@@ -1,9 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
-import {setBoardDimensions} from "../../../features/textris/textrisSlice"
+import { updateBoardDimensions } from "../../../features/textris/textrisSlice";
 
-const BoardGridControls = () => {
+const BoardControls = ({ boardName }) => {
   const dispatch = useDispatch();
-  const { width, height } = useSelector((state) => state.puzzles.textris.boardGrid);
+
+  const { width, height } = useSelector(
+    (state) => state.puzzles.textris[boardName]
+  );
 
   const handleDimensionChange = (e) => {
     const { name, value } = e.target;
@@ -12,12 +15,15 @@ const BoardGridControls = () => {
       height,
       [name]: parseInt(value, 10),
     };
-    dispatch(setBoardDimensions(newDimensions));
+    dispatch(updateBoardDimensions({ boardName, ...newDimensions }));
   };
 
   return (
     <div className="control-section">
-      <h4>Board Grid</h4>
+      <h4>
+        {boardName === "solutionBoard" ? "Solution Board" : "Puzzle Board"}{" "}
+        Controls
+      </h4>
       <label htmlFor="width">Width</label>
       <input
         type="number"
@@ -40,4 +46,4 @@ const BoardGridControls = () => {
   );
 };
 
-export default BoardGridControls;
+export default BoardControls;
