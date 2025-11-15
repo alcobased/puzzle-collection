@@ -94,22 +94,23 @@ const TextrisWorkspace = () => {
     shapesOnShapesBoard
   );
 
-  const renderBoard = (board, boardName) => {
-    if (!board || !board.length) return null;
-    const rows = board.length;
-    const cols = board[0].length;
+  const renderBoard = (boardGrid, boardName) => {
+    if (!boardGrid || !boardGrid.length) return null;
+    const rows = boardGrid.length;
+    const cols = boardGrid[0].length;
     const style = {
       gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
       gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
     };
     return (
       <div style={style} className="grid-board">
-        {board.map((row, rowIndex) =>
+        {boardGrid.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
             <Cell
               key={`${boardName}-${rowIndex}-${colIndex}`}
               {...cell}
               absolutePosition={{ x: colIndex, y: rowIndex }}
+              boardGrid={boardGrid}
               boardName={boardName}
               highlighted={highlightedShapeId === cell.shapeId}
             />

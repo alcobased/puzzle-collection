@@ -12,19 +12,22 @@ import {
   clearLastPlacementResult,
   validShapeLocationOnBoard,
 } from "../../../features/textris/textrisSlice";
+import { setNotification } from "../../../features/ui/uiSlice";
 import "./Cell.css";
 
-const Cell = ({
-  char,
-  shapeId,
-  shapeOffset,
-  cellColor,
-  absolutePosition, // absolute to grid
-  liftedShape,
-  boardName,
-  highlighted,
-}) => {
+const Cell = (props) => {
   const dispatch = useDispatch();
+  const {
+    char,
+    shapeId,
+    shapeOffset,
+    cellColor,
+    absolutePosition, // absolute to grid
+    liftedShape,
+    boardName,
+    boardGrid,
+    highlighted,
+  } = props;
 
   const handleMouseOver = () => {
     dispatch(
@@ -56,18 +59,35 @@ const Cell = ({
     if (liftedShape) {
       console.log("dropping shape");
       // collision check
-
-      dispatch(
-        updateShapeLocationAndPosition({
-          shapeId: liftedShape.id,
-          newBoardName: boardName,
-          newLocationOnBoard: {
-            x: absolutePosition.x - liftedShape.offset.x,
-            y: absolutePosition.y - liftedShape.offset.y,
-          },
-        })
+      const validPlacement = validShapeLocationOnBoard(
+        boardGrid,
+        liftedShape,
+        absolutePosition
       );
-      dispatch(clearLiftShape());
+
+      if (validPlacement) {
+        dispatch(
+          updateShapeLocationAndPosition({
+            shapeId: liftedShape.id,
+            newBoardName: boardName,
+            newLocationOnBoard: {
+              x: absolutePosition.x - liftedShape.offset.x,
+              y: absolutePosition.y - liftedShape.offset.y,
+            },
+          })
+        );
+        dispatch(clearLiftShape());
+        dispatch(
+          setNotification({ message: "Shape placed!", type: "success" })
+        );
+      } else {
+        dispatch(
+          setNotification({
+            message: "Invalid placement!",
+            type: "error",
+          })
+        );
+      }
     }
   };
 

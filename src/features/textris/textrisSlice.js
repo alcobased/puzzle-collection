@@ -94,7 +94,11 @@ export const updateBoard = (board, newWidth, newHeight) => {
   };
 };
 
-export const validShapeLocationOnBoard = (board, shape, newLocationOnBoard) => {
+export const validShapeLocationOnBoard = (
+  boardGrid,
+  shape,
+  newLocationOnBoard
+) => {
   // cells previously occupied by the same shape should not be concidered
 
   for (let y = 0; y < shape.grid.length; y++) {
@@ -104,11 +108,11 @@ export const validShapeLocationOnBoard = (board, shape, newLocationOnBoard) => {
         const absY = newLocationOnBoard.y + y;
         if (
           absX < 0 ||
-          absX >= board.width ||
+          absX >= boardGrid[0].length ||
           absY < 0 ||
-          absY >= board.height ||
-          (board.grid[absY][absX].char &&
-            board.grid[absY][absX].shapeId !== shape.id)
+          absY >= boardGrid.length ||
+          (boardGrid[absY][absX].char &&
+            boardGrid[absY][absX].shapeId !== shape.id)
         ) {
           return false;
         }
@@ -125,7 +129,7 @@ export const findValidShapeLocationOnBoard = (board, shape) => {
 
   for (let y = 0; y < board.height; y++) {
     for (let x = 0; x < board.width; x++) {
-      if (validShapeLocationOnBoard(board, shape, { x, y })) {
+      if (validShapeLocationOnBoard(board.grid, shape, { x, y })) {
         return { x, y };
       }
     }
