@@ -1,16 +1,14 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import {
-  updateShapeLocationAndPosition,
+  updateShapeLocation,
   setHighlightShape,
   clearHighlightShape,
   setLiftShape,
   clearLiftShape,
   setCursor,
-  clearCursor,
-  setLastPlacementResult,
-  clearLastPlacementResult,
-  validShapeLocationOnBoard,
+  shapeOutOfBounds,
+  shapeCollision,
 } from "../../../features/textris/textrisSlice";
 import { setNotification } from "../../../features/ui/uiSlice";
 import "./Cell.css";
@@ -24,20 +22,20 @@ const Cell = (props) => {
     cellColor,
     absolutePosition, // absolute to grid
     liftedShape,
-    boardName,
-    boardGrid,
+    board,
     highlighted,
+    collision,
   } = props;
 
   const handleMouseOver = () => {
     dispatch(
       setCursor({
-        boardName,
+        boardName: board.name,
         locationOnBoard: absolutePosition,
       })
     );
     // is cell is part of a shape and a shape is not lifted
-    if (shapeId) {
+    if (shapeId && !liftedShape) {
       dispatch(setHighlightShape({ shapeId }));
     }
   };
@@ -52,42 +50,52 @@ const Cell = (props) => {
   const handleMouseClick = () => {
     // lift if cell is part of a shape and shape is not lifted
     if (shapeId && !liftedShape) {
-      console.log("lifting shape");
-      dispatch(setLiftShape({ shapeId, shapeOffset }));
+      dispatch(setLiftShape({ shapeId, shapeOffset, boardName: board.name }));
     }
     // if cell is lifted, place it
     if (liftedShape) {
-      console.log("dropping shape");
-      // collision check
-      const validPlacement = validShapeLocationOnBoard(
-        boardGrid,
-        liftedShape,
-        absolutePosition
-      );
+      const newLocationOnBoard = {
+        x: absolutePosition.x - liftedShape.offset.x,
+        y: absolutePosition.y - liftedShape.offset.y,
+      };
 
-      if (validPlacement) {
-        dispatch(
-          updateShapeLocationAndPosition({
-            shapeId: liftedShape.id,
-            newBoardName: boardName,
-            newLocationOnBoard: {
-              x: absolutePosition.x - liftedShape.offset.x,
-              y: absolutePosition.y - liftedShape.offset.y,
-            },
-          })
-        );
-        dispatch(clearLiftShape());
-        dispatch(
-          setNotification({ message: "Shape placed!", type: "success" })
-        );
-      } else {
+      const isShapeOutOfBounds = shapeOutOfBounds(
+        board,
+        liftedShape,
+        newLocationOnBoard
+      );
+      if (isShapeOutOfBounds) {
         dispatch(
           setNotification({
-            message: "Invalid placement!",
+            message: "Shape is out of bounds",
             type: "error",
           })
         );
+        return;
       }
+      const isShapeCollision = shapeCollision(
+        board,
+        liftedShape,
+        newLocationOnBoard
+      );
+      if (isShapeCollision) {
+        dispatch(
+          setNotification({
+            message: "Shape collision",
+            type: "error",
+          })
+        );
+        return;
+      }
+      dispatch(
+        updateShapeLocation({
+          shapeId: liftedShape.id,
+          newBoardName: board.name,
+          newLocationOnBoard,
+        })
+      );
+      dispatch(clearLiftShape());
+      dispatch(setNotification({ message: "Shape placed!", type: "success" }));
     }
   };
 
@@ -101,6 +109,10 @@ const Cell = (props) => {
   }
   if (cellColor) {
     classList.push(cellColor);
+  }
+
+  if (collision) {
+    classList.push("collision");
   }
 
   return (

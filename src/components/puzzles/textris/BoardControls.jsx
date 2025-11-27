@@ -15,6 +15,8 @@ const BoardControls = ({ boardName }) => {
       height,
       [name]: parseInt(value, 10),
     };
+    console.log(newDimensions);
+
     dispatch(updateBoardDimensions({ boardName, ...newDimensions }));
   };
 

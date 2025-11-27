@@ -20,15 +20,23 @@ const TextrisWorkspace = () => {
     (s) => s.boardName === "shapesBoard"
   );
 
-  const createVisualGrid = (height, width) => {
-    return Array.from({ length: height }, () =>
-      Array.from({ length: width }, () => ({ char: null }))
-    );
+  const createVisualGrid = (board) => {
+    const visualGrid = [];
+    for (let y = 0; y < board.height; y++) {
+      const row = [];
+      for (let x = 0; x < board.width; x++) {
+        row.push({
+          char: null,
+          shapeId: null,
+        });
+      }
+      visualGrid.push(row);
+    }
+    return visualGrid;
   };
 
   const projectShapesToBoard = (board, shapes) => {
-    const { height, width } = board;
-    const newGrid = createVisualGrid(height, width);
+    const newGrid = createVisualGrid(board);
 
     shapes.forEach((shape) => {
       // only unlifted shapes should be projected here
@@ -42,11 +50,14 @@ const TextrisWorkspace = () => {
             const boardX = locationOnBoard.x + x;
             const boardY = locationOnBoard.y + y;
             if (boardY < newGrid.length && boardX < newGrid[0].length) {
+              const collision = newGrid[boardY][boardX].char ? true : false;
               newGrid[boardY][boardX] = {
+                ...newGrid[boardY][boardX],
                 shapeId: id,
                 char,
                 shapeOffset: { x, y },
                 cellColor: `color-${color}`,
+                collision,
               };
             }
           }
@@ -55,7 +66,6 @@ const TextrisWorkspace = () => {
     });
 
     // lifted shape should be projected here
-
     if (liftedShape && cursor && cursor.boardName === board.name) {
       liftedShape.grid.forEach((row, y) => {
         row.forEach((char, x) => {
@@ -69,6 +79,7 @@ const TextrisWorkspace = () => {
               boardX >= 0
             ) {
               newGrid[boardY][boardX] = {
+                ...newGrid[boardY][boardX],
                 shapeId: liftedShape.id,
                 char,
                 shapeOffset: { x, y },
@@ -94,7 +105,7 @@ const TextrisWorkspace = () => {
     shapesOnShapesBoard
   );
 
-  const renderBoard = (boardGrid, boardName) => {
+  const renderBoard = (boardGrid, board) => {
     if (!boardGrid || !boardGrid.length) return null;
     const rows = boardGrid.length;
     const cols = boardGrid[0].length;
@@ -107,11 +118,10 @@ const TextrisWorkspace = () => {
         {boardGrid.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
             <Cell
-              key={`${boardName}-${rowIndex}-${colIndex}`}
+              key={`${board.name}-${rowIndex}-${colIndex}`}
               {...cell}
               absolutePosition={{ x: colIndex, y: rowIndex }}
-              boardGrid={boardGrid}
-              boardName={boardName}
+              board={board}
               highlighted={highlightedShapeId === cell.shapeId}
             />
           ))
@@ -124,11 +134,11 @@ const TextrisWorkspace = () => {
     <div id="board-workspace">
       <div id="board-container">
         <h2>Solution board</h2>
-        {renderBoard(visualSolutionBoard, "solutionBoard")}
+        {renderBoard(visualSolutionBoard, solutionBoard)}
       </div>
       <div id="shapes-container">
         <h2>Shapes board</h2>
-        {renderBoard(visualShapesBoard, "shapesBoard")}
+        {renderBoard(visualShapesBoard, shapesBoard)}
       </div>
     </div>
   );

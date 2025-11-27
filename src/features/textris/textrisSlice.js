@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { devShapes, devSolutionBoard, devShapesBoard } from "./devData";
 
 // Initial grids will be 2d arrays filled with false values
 // Initially no cells on boths grids of the boards will be occupied
@@ -17,8 +16,9 @@ const INITIAL_SHAPES_BOARD_DIMENSIONS = {
 const initialSolutionBoard = {
   name: "solutionBoard",
   ...INITIAL_SOLUTION_BOARD_DIMENSIONS,
-  grid: Array.from({ length: INITIAL_SOLUTION_BOARD_DIMENSIONS.height }, () =>
-    Array(INITIAL_SOLUTION_BOARD_DIMENSIONS.width).fill(null)
+  occupiedCells: Array.from(
+    { length: INITIAL_SOLUTION_BOARD_DIMENSIONS.height },
+    () => Array(INITIAL_SOLUTION_BOARD_DIMENSIONS.width).fill(false)
   ),
 };
 
@@ -27,7 +27,7 @@ const initialShapesBoard = {
   ...INITIAL_SHAPES_BOARD_DIMENSIONS,
   occupiedCells: Array.from(
     { length: INITIAL_SHAPES_BOARD_DIMENSIONS.height },
-    () => Array(INITIAL_SHAPES_BOARD_DIMENSIONS.width).fill(null)
+    () => Array(INITIAL_SHAPES_BOARD_DIMENSIONS.width).fill(false)
   ),
 };
 
@@ -38,20 +38,6 @@ const initialState = {
   highlightedShapeId: null,
   liftedShape: null,
   cursor: null,
-  lastPlacementResult: null,
-};
-
-const initialStateDev = {
-  solutionBoard: devSolutionBoard,
-  shapesBoard: devShapesBoard,
-  shapesCollection: devShapes,
-  highlightedShapeId: null,
-  liftedShape: null,
-  cursor: null,
-  lastPlacementResult: {
-    status: null,
-    msg: null,
-  },
 };
 
 export const updateBoard = (board, newWidth, newHeight) => {
@@ -94,13 +80,7 @@ export const updateBoard = (board, newWidth, newHeight) => {
   };
 };
 
-export const validShapeLocationOnBoard = (
-  boardGrid,
-  shape,
-  newLocationOnBoard
-) => {
-  // cells previously occupied by the same shape should not be concidered
-
+export const shapeOutOfBounds = (board, shape, newLocationOnBoard) => {
   for (let y = 0; y < shape.grid.length; y++) {
     for (let x = 0; x < shape.grid[y].length; x++) {
       if (shape.grid[y][x]) {
@@ -108,18 +88,38 @@ export const validShapeLocationOnBoard = (
         const absY = newLocationOnBoard.y + y;
         if (
           absX < 0 ||
-          absX >= boardGrid[0].length ||
+          absX >= board.width ||
           absY < 0 ||
-          absY >= boardGrid.length ||
-          (boardGrid[absY][absX].char &&
-            boardGrid[absY][absX].shapeId !== shape.id)
+          absY >= board.height
         ) {
-          return false;
+          return true;
         }
       }
     }
   }
-  return true;
+  return false;
+};
+
+export const shapeCollision = (board, shape, newLocationOnBoard) => {
+  for (let y = 0; y < shape.grid.length; y++) {
+    for (let x = 0; x < shape.grid[y].length; x++) {
+      if (shape.grid[y][x]) {
+        const absX = newLocationOnBoard.x + x;
+        const absY = newLocationOnBoard.y + y;
+        if (board.occupiedCells[absY][absX]) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
+export const validShapeLocationOnBoard = (board, shape, newLocationOnBoard) => {
+  return (
+    !shapeOutOfBounds(board, shape, newLocationOnBoard) &&
+    !shapeCollision(board, shape, newLocationOnBoard)
+  );
 };
 
 export const findValidShapeLocationOnBoard = (board, shape) => {
@@ -129,29 +129,67 @@ export const findValidShapeLocationOnBoard = (board, shape) => {
 
   for (let y = 0; y < board.height; y++) {
     for (let x = 0; x < board.width; x++) {
-      if (validShapeLocationOnBoard(board.grid, shape, { x, y })) {
+      if (validShapeLocationOnBoard(board, shape, { x, y })) {
         return { x, y };
       }
     }
   }
   return null;
 };
+console.log("env", process.env.NODE_ENV);
 
 export const textrisSlice = createSlice({
   name: "textris",
-  initialState:
-    process.env.NODE_ENV === "production" ? initialState : initialStateDev,
+  initialState,
   reducers: {
     updateBoardDimensions: (state, action) => {
       const { boardName, width, height } = action.payload;
-      const board = state[boardName];
-      if (!board) return;
-      if (width) board.width = width;
-      if (height) board.height = height;
+      const oldBoard = state[boardName];
+      for (let r = 0; r < oldBoard.occupiedCells.length; r++) {
+        for (let c = 0; c < oldBoard.occupiedCells[r].length; c++) {
+          // If we find a true value...
+          if (oldBoard.occupiedCells[r][c] === true) {
+            // ...and it is outside the new bounds...
+            if (r >= height || c >= width) {
+              // ...return the original grid immediately.
+              console.log(
+                `Resize aborted: a 'true' value at [${r},${c}] would be lost.`
+              );
+              return;
+            }
+          }
+        }
+      }
+
+      const newGrid = [];
+
+      for (let row = 0; row < height; row++) {
+        const newRow = [];
+        for (let col = 0; col < width; col++) {
+          // Check if the cell exists in the original grid
+          if (
+            oldBoard.occupiedCells[row] !== undefined &&
+            oldBoard.occupiedCells[row][col] !== undefined
+          ) {
+            // Copy existing value
+            newRow.push(oldBoard.occupiedCells[row][col]);
+          } else {
+            // Fill new space with false
+            newRow.push(false);
+          }
+        }
+        newGrid.push(newRow);
+      }
+
+      oldBoard.occupiedCells = newGrid;
+      oldBoard.width = width;
+      oldBoard.height = height;
     },
+
     setShapesCollection: (state, action) => {
       state.shapesCollection = action.payload;
     },
+
     addShape: (state, action) => {
       const { id, grid, color } = action.payload;
       state.shapesCollection.push({
@@ -162,7 +200,7 @@ export const textrisSlice = createSlice({
         color,
       });
     },
-    updateShapeLocationAndPosition: (state, action) => {
+    updateShapeLocation: (state, action) => {
       const { shapeId, newBoardName, newLocationOnBoard } = action.payload;
       const shape = state.shapesCollection.find(
         (shape) => shape.id === shapeId
@@ -172,21 +210,17 @@ export const textrisSlice = createSlice({
         shape.boardName = newBoardName;
         shape.locationOnBoard = newLocationOnBoard;
       }
-      shape.grid.forEach((row, y) => {
-        row.forEach((char, x) => {
-          if (char) {
-            // clear old cell
-            board.grid[shape.locationOnBoard.y + y][
-              shape.locationOnBoard.x + x
-            ] = null;
-            // set new cell
-            board.grid[newLocationOnBoard.y + y][newLocationOnBoard.x + x] = {
-              shapeId,
-              char,
-            };
+
+      // occupiedCells in board need to be updated (set to true)
+      for (let y = 0; y < shape.grid.length; y++) {
+        for (let x = 0; x < shape.grid[y].length; x++) {
+          if (shape.grid[y][x]) {
+            board.occupiedCells[newLocationOnBoard.y + y][
+              newLocationOnBoard.x + x
+            ] = true;
           }
-        });
-      });
+        }
+      }
     },
     setHighlightShape(state, action) {
       state.highlightedShapeId = action.payload.shapeId;
@@ -195,11 +229,22 @@ export const textrisSlice = createSlice({
       state.highlightedShapeId = null;
     },
     setLiftShape(state, action) {
-      const { shapeId, shapeOffset } = action.payload;
+      const { shapeId, shapeOffset, boardName } = action.payload;
       const shape = state.shapesCollection.find(
         (shape) => shape.id === shapeId
       );
+      const board = state[boardName];
       if (shape) {
+        // occupiedCells in board need to be updated (set to false)
+        for (let y = 0; y < shape.grid.length; y++) {
+          for (let x = 0; x < shape.grid[y].length; x++) {
+            if (shape.grid[y][x]) {
+              board.occupiedCells[shape.locationOnBoard.y + y][
+                shape.locationOnBoard.x + x
+              ] = false;
+            }
+          }
+        }
         state.liftedShape = {
           id: shapeId,
           offset: shapeOffset,
@@ -238,7 +283,7 @@ export const {
   setShapesDimensions,
   setShapesCollection,
   addShape,
-  updateShapeLocationAndPosition,
+  updateShapeLocation,
   setHighlightShape,
   clearHighlightShape,
   setLiftShape,

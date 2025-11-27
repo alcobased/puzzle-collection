@@ -1,6 +1,4 @@
-import {
-  configureStore,
-} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 
 import imageReducer from "./features/image/imageSlice.js";
@@ -12,6 +10,8 @@ import dominoReducer from "./features/domino/dominoSlice.js";
 import textrisReducer from "./features/textris/textrisSlice.js";
 
 import { listenerMiddleware } from "./middleware/listenerMiddleware.js";
+
+import { initializeTextrisDevData } from "./features/textris/devStateInitializer.js";
 
 const pathfinderReducer = combineReducers({
   cells: cellReducer,
@@ -36,5 +36,15 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 });
+
+// --- Conditional Dispatch for Development ---
+if (process.env.NODE_ENV === "development") {
+  console.log(
+    "--- Development Mode: Initializing state with multiple items ---"
+  );
+
+  // Dispatch the Thunk function
+  store.dispatch(initializeTextrisDevData());
+}
 
 export default store;

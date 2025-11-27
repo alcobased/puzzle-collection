@@ -1,83 +1,81 @@
 export const devShapes = [
-  // {
-  //   id: "shape-1",
-  //   boardName: "shapesBoard",
-  //   locationOnBoard: { x: 0, y: 0 },
-  //   grid: [
-  //     ["A", null],
-  //     ["B", "C"],
-  //     [null, "D"],
-  //   ],
-  //   color: 2,
-  // },
-  // {
-  //   id: "shape-2",
-  //   boardName: "shapesBoard",
-  //   locationOnBoard: { x: 2, y: 0 },
-  //   grid: [
-  //     ["A", "B", "C"],
-  //     [null, "D", null],
-  //   ],
-  //   color: 4,
-  // },
-  // {
-  //   id: "shape-3",
-  //   boardName: "shapesBoard",
-  //   locationOnBoard: { x: 0, y: 3 },
-  //   grid: [
-  //     [null, "B"],
-  //     ["A", "C"],
-  //   ],
-  //   color: 1,
-  // },
+  {
+    id: "shape-1",
+    boardName: "shapesBoard",
+    locationOnBoard: { x: 0, y: 0 },
+    grid: [
+      ["A", null],
+      ["B", "C"],
+      [null, "D"],
+    ],
+    color: 2,
+  },
+  {
+    id: "shape-2",
+    boardName: "shapesBoard",
+    locationOnBoard: { x: 2, y: 0 },
+    grid: [
+      ["A", "B", "C"],
+      [null, "D", null],
+    ],
+    color: 4,
+  },
+  {
+    id: "shape-3",
+    boardName: "shapesBoard",
+    locationOnBoard: { x: 0, y: 3 },
+    grid: [
+      [null, "B"],
+      ["A", "C"],
+    ],
+    color: 1,
+  },
   {
     id: "shape-4",
-    boardName: "solutionBoard",
-    locationOnBoard: { x: 1, y: 1 },
+    boardName: "shapesBoard",
+    locationOnBoard: { x: 0, y: 0 },
     grid: [
-      [null, "A", null],
-      [null, "B", "F"],
-      [null, "C", null],
-      ["E", "D", null],
+      ["A", null],
+      ["B", "C"],
     ],
     color: 7,
+  },
+  {
+    id: "shape-5",
+    boardName: "shapesBoard",
+    locationOnBoard: { x: 0, y: 0 },
+    grid: [["A", "B"]],
+    color: 3,
   },
 ];
 
 export const devSolutionBoard = {
-  width: 5,
-  height: 5,
-  grid: [
-    [false, false, false, false, false],
-    [false, false, { shapeId: "shape-4", char: "A" }, false, false],
-    [
-      false,
-      false,
-      { shapeId: "shape-4", char: "B" },
-      { shapeId: "shape-4", char: "F" },
-      false,
-    ],
-    [false, false, { shapeId: "shape-4", char: "C" }, false, false],
-    [
-      false,
-      { shapeId: "shape-4", char: "E" },
-      { shapeId: "shape-4", char: "D" },
-      false,
-      false,
-    ],
+  width: 10,
+  height: 10,
+  occupiedCells: [
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false, false, false],
   ],
   name: "solutionBoard",
 };
 
 export const devShapesBoard = {
-  width: 9,
-  height: 5,
-  grid: [
-    [true, false, true, true, true, false, false, false, false],
-    [true, true, false, true, false, false, false, false, false],
-    [false, true, false, false, false, false, false, false, false],
-    [false, true, false, false, false, false, false, false, false],
-    [true, true, false, false, false, false, false, false, false],
+  width: 16,
+  height: 9,
+  occupiedCells: [
+    [false, false, false, false, false],
+    [false, false, false, false, false],
+    [false, false, false, false, false],
+    [false, false, false, false, false],
+    [false, false, false, false, false],
   ],
   name: "shapesBoard",
 };
