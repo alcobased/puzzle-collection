@@ -9,6 +9,7 @@ import {
   setCursor,
   shapeOutOfBounds,
   shapeCollision,
+  toggleCellToBoardMask,
 } from "../../../features/textris/textrisSlice";
 import { setNotification } from "../../../features/ui/uiSlice";
 import "./Cell.css";
@@ -48,6 +49,12 @@ const Cell = (props) => {
   };
 
   const handleMouseClick = () => {
+    // check if mask is being marked
+    if (board.boardMask && board.boardMask.isMarking) {
+      dispatch(toggleCellToBoardMask(absolutePosition));
+      return;
+    }
+
     // lift if cell is part of a shape and shape is not lifted
     if (shapeId && !liftedShape) {
       dispatch(setLiftShape({ shapeId, shapeOffset, boardName: board.name }));
@@ -113,6 +120,13 @@ const Cell = (props) => {
 
   if (collision) {
     classList.push("collision");
+  }
+
+  if (
+    board.name === "solutionBoard" &&
+    board.boardMask.draft[absolutePosition.y][absolutePosition.x]
+  ) {
+    classList.push("masked");
   }
 
   return (

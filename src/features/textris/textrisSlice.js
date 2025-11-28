@@ -13,21 +13,32 @@ const INITIAL_SHAPES_BOARD_DIMENSIONS = {
   height: 10,
 };
 
+const generateEmptyGrid = (width, height) => {
+  return Array.from({ length: height }, () => Array(width).fill(false));
+};
+
 const initialSolutionBoard = {
   name: "solutionBoard",
   ...INITIAL_SOLUTION_BOARD_DIMENSIONS,
-  occupiedCells: Array.from(
-    { length: INITIAL_SOLUTION_BOARD_DIMENSIONS.height },
-    () => Array(INITIAL_SOLUTION_BOARD_DIMENSIONS.width).fill(false)
+  occupiedCells: generateEmptyGrid(
+    INITIAL_SOLUTION_BOARD_DIMENSIONS.width,
+    INITIAL_SOLUTION_BOARD_DIMENSIONS.height
   ),
+  boardMask: {
+    isMarking: false,
+    draft: generateEmptyGrid(
+      INITIAL_SOLUTION_BOARD_DIMENSIONS.width,
+      INITIAL_SOLUTION_BOARD_DIMENSIONS.height
+    ),
+  },
 };
 
 const initialShapesBoard = {
   name: "shapesBoard",
   ...INITIAL_SHAPES_BOARD_DIMENSIONS,
-  occupiedCells: Array.from(
-    { length: INITIAL_SHAPES_BOARD_DIMENSIONS.height },
-    () => Array(INITIAL_SHAPES_BOARD_DIMENSIONS.width).fill(false)
+  occupiedCells: generateEmptyGrid(
+    INITIAL_SHAPES_BOARD_DIMENSIONS.width,
+    INITIAL_SHAPES_BOARD_DIMENSIONS.height
   ),
 };
 
@@ -123,10 +134,6 @@ export const validShapeLocationOnBoard = (board, shape, newLocationOnBoard) => {
 };
 
 export const findValidShapeLocationOnBoard = (board, shape) => {
-  console.log("finding valid location");
-  console.log(board);
-  console.log(shape);
-
   for (let y = 0; y < board.height; y++) {
     for (let x = 0; x < board.width; x++) {
       if (validShapeLocationOnBoard(board, shape, { x, y })) {
@@ -136,7 +143,6 @@ export const findValidShapeLocationOnBoard = (board, shape) => {
   }
   return null;
 };
-console.log("env", process.env.NODE_ENV);
 
 export const textrisSlice = createSlice({
   name: "textris",
@@ -200,6 +206,7 @@ export const textrisSlice = createSlice({
         color,
       });
     },
+
     updateShapeLocation: (state, action) => {
       const { shapeId, newBoardName, newLocationOnBoard } = action.payload;
       const shape = state.shapesCollection.find(
@@ -222,12 +229,15 @@ export const textrisSlice = createSlice({
         }
       }
     },
+
     setHighlightShape(state, action) {
       state.highlightedShapeId = action.payload.shapeId;
     },
+
     clearHighlightShape(state) {
       state.highlightedShapeId = null;
     },
+
     setLiftShape(state, action) {
       const { shapeId, shapeOffset, boardName } = action.payload;
       const shape = state.shapesCollection.find(
@@ -253,9 +263,11 @@ export const textrisSlice = createSlice({
         };
       }
     },
+
     clearLiftShape(state) {
       state.liftedShape = null;
     },
+
     setCursor(state, action) {
       const { boardName, locationOnBoard } = action.payload;
       state.cursor = {
@@ -263,17 +275,38 @@ export const textrisSlice = createSlice({
         locationOnBoard,
       };
     },
+
     clearCursor(state) {
       state.cursor = null;
     },
+
     setLastPlacementResult(state, action) {
       state.lastPlacementResult = action.payload;
     },
+
     clearLastPlacementResult(state) {
       state.lastPlacementResult = {
         status: null,
         msg: null,
       };
+    },
+
+    toggleIsMarkingBoardMask(state) {
+      state.solutionBoard.boardMask.isMarking =
+        !state.solutionBoard.boardMask.isMarking;
+    },
+
+    toggleCellToBoardMask(state, action) {
+      const { x, y } = action.payload;
+      state.solutionBoard.boardMask.draft[y][x] =
+        !state.solutionBoard.boardMask.draft[y][x];
+    },
+
+    resetBoardMask(state) {
+      state.solutionBoard.boardMask.draft = generateEmptyGrid(
+        state.solutionBoard.width,
+        state.solutionBoard.height
+      );
     },
   },
 });
@@ -292,6 +325,9 @@ export const {
   clearCursor,
   setLastPlacementResult,
   clearLastPlacementResult,
+  toggleIsMarkingBoardMask,
+  toggleCellToBoardMask,
+  resetBoardMask,
 } = textrisSlice.actions;
 
 export default textrisSlice.reducer;

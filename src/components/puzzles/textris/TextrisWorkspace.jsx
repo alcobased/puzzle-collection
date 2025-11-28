@@ -28,6 +28,7 @@ const TextrisWorkspace = () => {
         row.push({
           char: null,
           shapeId: null,
+          
         });
       }
       visualGrid.push(row);
