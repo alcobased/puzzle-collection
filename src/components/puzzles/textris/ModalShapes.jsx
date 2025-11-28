@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   findValidShapeLocationOnBoard,
@@ -16,16 +16,32 @@ const createEmptyGrid = () =>
 
 const ModalTextrisShapes = () => {
   const dispatch = useDispatch();
+  const inputRefs = useRef([]);
 
   const [grid, setGrid] = useState(createEmptyGrid());
+
+  const handleKeyDown = (e, rowIndex, colIndex) => {
+    let nextRow = rowIndex;
+    let nextCol = colIndex;
+
+    if (e.key === "ArrowUp") nextRow = Math.max(0, rowIndex - 1);
+    else if (e.key === "ArrowDown") nextRow = Math.min(4, rowIndex + 1);
+    else if (e.key === "ArrowLeft") nextCol = Math.max(0, colIndex - 1);
+    else if (e.key === "ArrowRight") nextCol = Math.min(4, colIndex + 1);
+    else return;
+
+    e.preventDefault();
+    const nextIndex = nextRow * 5 + nextCol;
+    inputRefs.current[nextIndex]?.focus();
+  };
   const board = useSelector((state) => state.puzzles.textris.shapesBoard);
 
   const handleInputChange = (e, rowIndex, colIndex) => {
     const newGrid = grid.map((row, rIdx) =>
       rIdx === rowIndex
         ? row.map((cell, cIdx) =>
-            cIdx === colIndex ? e.target.value.toUpperCase() : cell
-          )
+          cIdx === colIndex ? e.target.value.toUpperCase() : cell
+        )
         : row
     );
     setGrid(newGrid);
@@ -100,11 +116,13 @@ const ModalTextrisShapes = () => {
             row.map((cell, colIndex) => (
               <input
                 key={`${rowIndex}-${colIndex}`}
+                ref={(el) => (inputRefs.current[rowIndex * 5 + colIndex] = el)}
                 className="shape-grid-cell"
                 type="text"
                 maxLength="1"
                 value={cell ? cell : ""}
                 onChange={(e) => handleInputChange(e, rowIndex, colIndex)}
+                onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
               />
             ))
           )}
