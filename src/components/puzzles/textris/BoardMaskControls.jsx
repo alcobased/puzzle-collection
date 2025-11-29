@@ -1,14 +1,25 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleIsMarkingBoardMask } from "../../../features/textris/textrisSlice";
+import { setNotification } from "../../../features/ui/uiSlice";
 
 const BoardMaskControls = () => {
   const dispatch = useDispatch();
   const { isMarking } = useSelector(
     (state) => state.puzzles.textris.solutionBoard.boardMask
   );
+  const { liftedShape } = useSelector((state) => state.puzzles.textris);
 
   const handleToggle = () => {
+    if (liftedShape) {
+      dispatch(
+        setNotification({
+          message: "Cannot mark while shape is lifted",
+          type: "error",
+        })
+      );
+      return;
+    }
     dispatch(toggleIsMarkingBoardMask());
   };
 

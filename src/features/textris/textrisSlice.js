@@ -40,6 +40,10 @@ const initialShapesBoard = {
     INITIAL_SHAPES_BOARD_DIMENSIONS.width,
     INITIAL_SHAPES_BOARD_DIMENSIONS.height
   ),
+  boardMask: {
+    isMarking: false, // this is needed to disable shape interactions on shapes board
+    // draft is not needed, because shapes board does not have a mask
+  },
 };
 
 const initialState = {
@@ -158,9 +162,6 @@ export const textrisSlice = createSlice({
             // ...and it is outside the new bounds...
             if (r >= height || c >= width) {
               // ...return the original grid immediately.
-              console.log(
-                `Resize aborted: a 'true' value at [${r},${c}] would be lost.`
-              );
               return;
             }
           }
@@ -190,6 +191,10 @@ export const textrisSlice = createSlice({
       oldBoard.occupiedCells = newGrid;
       oldBoard.width = width;
       oldBoard.height = height;
+      // reset mask if solution board dimensions are changed
+      if (boardName === "solutionBoard") {
+        state.solutionBoard.boardMask.draft = generateEmptyGrid(width, height);
+      }
     },
 
     setShapesCollection: (state, action) => {
@@ -254,13 +259,15 @@ export const textrisSlice = createSlice({
               ] = false;
             }
           }
+          state.liftedShape = {
+            id: shapeId,
+            offset: shapeOffset,
+            grid: shape.grid,
+            color: shape.color,
+          };
+          // clear is marking mask
+          board.boardMask.isMarking = false;
         }
-        state.liftedShape = {
-          id: shapeId,
-          offset: shapeOffset,
-          grid: shape.grid,
-          color: shape.color,
-        };
       }
     },
 
@@ -294,9 +301,13 @@ export const textrisSlice = createSlice({
     toggleIsMarkingBoardMask(state) {
       state.solutionBoard.boardMask.isMarking =
         !state.solutionBoard.boardMask.isMarking;
+      state.shapesBoard.boardMask.isMarking =
+        !state.shapesBoard.boardMask.isMarking;
     },
 
     toggleCellToBoardMask(state, action) {
+      console.log("toggleCellToBoardMask", action.payload);
+
       const { x, y } = action.payload;
       state.solutionBoard.boardMask.draft[y][x] =
         !state.solutionBoard.boardMask.draft[y][x];

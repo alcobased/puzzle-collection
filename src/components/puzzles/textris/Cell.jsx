@@ -36,7 +36,7 @@ const Cell = (props) => {
       })
     );
     // is cell is part of a shape and a shape is not lifted
-    if (shapeId && !liftedShape) {
+    if (shapeId && !liftedShape && !board.boardMask.isMarking) {
       dispatch(setHighlightShape({ shapeId }));
     }
   };
@@ -50,7 +50,23 @@ const Cell = (props) => {
 
   const handleMouseClick = () => {
     // check if mask is being marked
-    if (board.boardMask && board.boardMask.isMarking) {
+    if (board.boardMask.isMarking) {
+      // if cell is part of a shape, do not mark
+      if (board.name === "shapesBoard") {
+        dispatch(
+          setNotification({
+            message: "Cannot mark shapes board",
+            type: "error",
+          })
+        );
+        return;
+      }
+      if (char) {
+        dispatch(
+          setNotification({ message: "Cannot mark shape", type: "error" })
+        );
+        return;
+      }
       dispatch(toggleCellToBoardMask(absolutePosition));
       return;
     }
@@ -109,6 +125,7 @@ const Cell = (props) => {
   const handleContextMenu = (e) => {
     e.preventDefault();
   };
+
   const classList = ["cell", "textris-cell"];
 
   if (highlighted) {
@@ -117,11 +134,9 @@ const Cell = (props) => {
   if (cellColor) {
     classList.push(cellColor);
   }
-
   if (collision) {
     classList.push("collision");
   }
-
   if (
     board.name === "solutionBoard" &&
     board.boardMask.draft[absolutePosition.y][absolutePosition.x]
