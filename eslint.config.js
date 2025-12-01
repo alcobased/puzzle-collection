@@ -15,7 +15,12 @@ export default defineConfig([
     ],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.node,
+
+      // ➡️ 1. COMBINE 'node' GLOBALS (for tooling) with 'browser' GLOBALS (for runtime)
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
 
       parserOptions: {
         ecmaVersion: "latest",

@@ -26,24 +26,26 @@ const BoardControls = ({ boardName }) => {
         {boardName === "solutionBoard" ? "Solution Board" : "Puzzle Board"}{" "}
         Controls
       </h4>
-      <label htmlFor="width">Width</label>
-      <input
-        type="number"
-        id="width"
-        name="width"
-        value={width || ""}
-        onChange={handleDimensionChange}
-        min="1"
-      />
-      <label htmlFor="height">Height</label>
-      <input
-        type="number"
-        id="height"
-        name="height"
-        value={height || ""}
-        onChange={handleDimensionChange}
-        min="1"
-      />
+      <div className="control-subsection">
+        <label htmlFor="width">Width</label>
+        <input
+          type="number"
+          id="width"
+          name="width"
+          value={width || ""}
+          onChange={handleDimensionChange}
+          min="1"
+        />
+        <label htmlFor="height">Height</label>
+        <input
+          type="number"
+          id="height"
+          name="height"
+          value={height || ""}
+          onChange={handleDimensionChange}
+          min="1"
+        />
+      </div>
     </div>
   );
 };

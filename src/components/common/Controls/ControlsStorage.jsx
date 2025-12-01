@@ -39,7 +39,9 @@ const ControlsStorage = () => {
       const parsedImage = JSON.parse(savedImage);
       dispatch(setImageState(parsedImage));
     }
-    dispatch(setNotification({ message: "Crossword loaded from local storage!" }));
+    dispatch(
+      setNotification({ message: "Crossword loaded from local storage!" })
+    );
   };
 
   const handleSaveToFile = () => {
@@ -79,7 +81,9 @@ const ControlsStorage = () => {
         }
         dispatch(setNotification({ message: "Crossword loaded from file!" }));
       } catch (error) {
-        dispatch(setNotification({ message: `Error loading file: ${error.message}` }));
+        dispatch(
+          setNotification({ message: `Error loading file: ${error.message}` })
+        );
       }
     };
     reader.readAsText(file);
