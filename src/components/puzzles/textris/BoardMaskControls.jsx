@@ -25,7 +25,7 @@ const BoardMaskControls = () => {
 
   return (
     <div className="control-section">
-      <h3>Solution Board Mask</h3>
+      <h4>Solution Board Mask</h4>
       {/* <p>Click on cells on the solution board to mark them as disabled.</p> */}
       <button onClick={handleToggle}>
         {isMarking ? "Apply Mask" : "Start Marking"}

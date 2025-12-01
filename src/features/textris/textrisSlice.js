@@ -121,7 +121,10 @@ export const shapeCollision = (board, shape, newLocationOnBoard) => {
       if (shape.grid[y][x]) {
         const absX = newLocationOnBoard.x + x;
         const absY = newLocationOnBoard.y + y;
-        if (board.occupiedCells[absY][absX]) {
+        if (
+          board.occupiedCells[absY][absX] ||
+          (board.boardMask.draft && board.boardMask.draft[absY][absX])
+        ) {
           return true;
         }
       }
