@@ -21,7 +21,11 @@ const PathfinderPage = () => {
       <ControlPanel>
         <ControlsStatus />
         <ControlsImage />
-        <ControlsStorage />
+        <ControlsStorage
+          puzzleName={"pathfinder"}
+          saveWords={true}
+          saveImage={true}
+        />
         <ControlsSolver />
         <ControlsCells />
         <ControlsWords />

@@ -19,7 +19,11 @@ const DominoPage = () => {
       <ControlPanel>
         <ControlsStatus />
         <ControlsImage />
-        <ControlsStorage />
+        <ControlsStorage
+          puzzleName={"domino"}
+          saveImage={true}
+          saveWords={true}
+        />
         <ControlsWords />
         <GroupControls />
         <GridControls />

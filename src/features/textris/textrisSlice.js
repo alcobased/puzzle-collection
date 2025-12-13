@@ -155,6 +155,12 @@ export const textrisSlice = createSlice({
   name: "textris",
   initialState,
   reducers: {
+    setTextrisState: (state, action) => {
+      return action.payload;
+    },
+
+    setShapesDimensions: (state, action) => {},
+
     updateBoardDimensions: (state, action) => {
       const { boardName, width, height } = action.payload;
       const oldBoard = state[boardName];
@@ -326,6 +332,7 @@ export const textrisSlice = createSlice({
 });
 
 export const {
+  setTextrisState,
   updateBoardDimensions,
   setShapesDimensions,
   setShapesCollection,

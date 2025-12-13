@@ -4,6 +4,7 @@ import ControlPanel from "../../common/Controls/ControlPanel";
 import BoardControls from "./BoardControls";
 import ShapeControls from "./ShapeControls";
 import BoardMaskControls from "./BoardMaskControls";
+import ControlsStorage from "../../common/Controls/ControlsStorage";
 
 const TextrisPage = () => {
   return (
@@ -16,6 +17,11 @@ const TextrisPage = () => {
         <BoardControls boardName="shapesBoard" />
         <ShapeControls />
         <BoardMaskControls />
+        <ControlsStorage
+          puzzleName={"textris"}
+          saveWords={false}
+          saveImage={false}
+        />
       </ControlPanel>
     </>
   );

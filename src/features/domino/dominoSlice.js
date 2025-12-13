@@ -1,6 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-const defaultGrid = Array(10).fill(null).map(() => Array(10).fill(null));
+const defaultGrid = Array(10)
+  .fill(null)
+  .map(() => Array(10).fill(null));
 const initialWidth = 10;
 const initialHeight = 10;
 
@@ -11,8 +13,10 @@ const initialGroupList = [
 ];
 
 const createOccupiedCells = (width, height, groupList) => {
-  const occupied = Array(height).fill(null).map(() => Array(width).fill(false));
-  groupList.forEach(group => {
+  const occupied = Array(height)
+    .fill(null)
+    .map(() => Array(width).fill(false));
+  groupList.forEach((group) => {
     for (let y = group.y; y < group.y + group.height; y++) {
       for (let x = group.x; x < group.x + group.width; x++) {
         if (y < height && x < width) {
@@ -29,7 +33,11 @@ const initialState = {
     data: defaultGrid,
     width: initialWidth,
     height: initialHeight,
-    occupiedCells: createOccupiedCells(initialWidth, initialHeight, initialGroupList),
+    occupiedCells: createOccupiedCells(
+      initialWidth,
+      initialHeight,
+      initialGroupList
+    ),
     groups: {
       groupList: initialGroupList,
       selection: {
@@ -56,7 +64,11 @@ const isSelectionValid = (selection, occupiedCells, height, width) => {
 
   for (let y = minY; y <= maxY; y++) {
     for (let x = minX; x <= maxX; x++) {
-      if (y >= height || x >= width || (occupiedCells[y] && occupiedCells[y][x])) {
+      if (
+        y >= height ||
+        x >= width ||
+        (occupiedCells[y] && occupiedCells[y][x])
+      ) {
         return false;
       }
     }
@@ -65,9 +77,12 @@ const isSelectionValid = (selection, occupiedCells, height, width) => {
 };
 
 const dominoSlice = createSlice({
-  name: 'domino',
+  name: "domino",
   initialState,
   reducers: {
+    setDominoState: (state, action) => {
+      return action.payload;
+    },
     setGridDimensions: (state, action) => {
       const { width, height } = action.payload;
       state.grid.width = width;
@@ -75,7 +90,9 @@ const dominoSlice = createSlice({
 
       // Reset groups and regenerate grids
       state.grid.groups.groupList = [];
-      state.grid.data = Array(height).fill(null).map(() => Array(width).fill(null));
+      state.grid.data = Array(height)
+        .fill(null)
+        .map(() => Array(width).fill(null));
       state.grid.occupiedCells = createOccupiedCells(width, height, []);
     },
     setGridState: (state, action) => {
@@ -95,8 +112,14 @@ const dominoSlice = createSlice({
     },
     resetGroups: (state) => {
       state.grid.groups.groupList = [];
-      state.grid.occupiedCells = createOccupiedCells(state.grid.width, state.grid.height, []);
-      state.grid.data = Array(state.grid.height).fill(null).map(() => Array(state.grid.width).fill(null));
+      state.grid.occupiedCells = createOccupiedCells(
+        state.grid.width,
+        state.grid.height,
+        []
+      );
+      state.grid.data = Array(state.grid.height)
+        .fill(null)
+        .map(() => Array(state.grid.width).fill(null));
     },
     startSelection: (state, action) => {
       const { x, y } = action.payload;
@@ -120,7 +143,12 @@ const dominoSlice = createSlice({
     },
     endSelection: (state) => {
       const { selection } = state.grid.groups;
-      if (selection.isActive && selection.start && selection.end && selection.isValid) {
+      if (
+        selection.isActive &&
+        selection.start &&
+        selection.end &&
+        selection.isValid
+      ) {
         const { x: x1, y: y1 } = selection.start;
         const { x: x2, y: y2 } = selection.end;
 
@@ -151,17 +179,24 @@ const dominoSlice = createSlice({
     },
     toggleStartCell: (state, action) => {
       const { x, y } = action.payload;
-    
+
       // Find the group that contains the cell (x, y)
-      const groupIndex = state.grid.groups.groupList.findIndex(group => 
-        x >= group.x && x < group.x + group.width &&
-        y >= group.y && y < group.y + group.height
+      const groupIndex = state.grid.groups.groupList.findIndex(
+        (group) =>
+          x >= group.x &&
+          x < group.x + group.width &&
+          y >= group.y &&
+          y < group.y + group.height
       );
-    
+
       if (groupIndex !== -1) {
         const group = state.grid.groups.groupList[groupIndex];
         // If the start cell is already this cell, toggle it off.
-        if (group.startCell && group.startCell.x === x && group.startCell.y === y) {
+        if (
+          group.startCell &&
+          group.startCell.x === x &&
+          group.startCell.y === y
+        ) {
           state.grid.groups.groupList[groupIndex].startCell = null;
         } else {
           // Otherwise, set it as the new start cell for that group.
@@ -173,6 +208,7 @@ const dominoSlice = createSlice({
 });
 
 export const {
+  setDominoState,
   setGridDimensions,
   setGridState,
   updateCell,

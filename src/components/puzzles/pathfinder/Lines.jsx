@@ -1,13 +1,17 @@
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 const Lines = ({ rendered }) => {
-  const { cellSet, activeQueue, queueSet } = useSelector(state => state.puzzles.pathfinder.cells);
-  const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = useSelector(state => state.image.rendered)
+  const { cellSet, activeQueue, queueSet } = useSelector(
+    (state) => state.puzzles.pathfinder.cells
+  );
+  const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = useSelector(
+    (state) => state.image.rendered
+  );
 
   if (!offsetWidth || !offsetHeight || !activeQueue || !queueSet[activeQueue]) {
     return null;
   }
-  
+
   const activeCells = queueSet[activeQueue];
 
   const lines = [];
@@ -27,6 +31,7 @@ const Lines = ({ rendered }) => {
           y2={cell2.normalizedPosition.y * offsetHeight}
           stroke="white"
           strokeWidth="2"
+          filter="drop-shadow(0 0 5px black)"
         />
       );
     }
@@ -35,12 +40,12 @@ const Lines = ({ rendered }) => {
   return (
     <svg
       style={{
-        position: 'absolute',
+        position: "absolute",
         top: `${offsetTop}px`,
         left: `${offsetLeft}px`,
         width: `${offsetWidth}px`,
         height: `${offsetHeight}px`,
-        pointerEvents: 'none',
+        pointerEvents: "none",
       }}
     >
       {lines}

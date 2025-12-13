@@ -1,13 +1,10 @@
-import {
-  createListenerMiddleware,
-  isAnyOf,
-} from "@reduxjs/toolkit";
+import { createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
 
 // Import actions from pathfinder slice
 import {
+  setPathfinderState,
   addCell,
   setCells,
-  setCellState,
   enqueue,
   dequeue,
   popAndPurge,
@@ -15,6 +12,7 @@ import {
   addQueue,
   removeQueue,
   assignChar,
+  clearSolution,
 } from "../features/pathfinder/pathfinderSlice.js";
 
 // Import actions from words slice
@@ -28,18 +26,15 @@ import {
   setWordsState,
 } from "../features/words/wordsSlice.js";
 
-// Import actions from solver slice
-import { clearSolution } from "../features/pathfinder/solverSlice.js";
-
 // Create the middleware instance
 export const listenerMiddleware = createListenerMiddleware();
 
 // Add the listener
 listenerMiddleware.startListening({
   matcher: isAnyOf(
+    setPathfinderState,
     addCell,
     setCells,
-    setCellState,
     enqueue,
     dequeue,
     popAndPurge,
