@@ -5,8 +5,16 @@ const defaultQueueId = "default-queue-0";
 const pathfinderSlice = createSlice({
   name: "pathfinder",
   initialState: {
+    boardType: "grid",
+    grid: {
+      width: 10,
+      height: 10,
+    },
     cells: {
-      // A collection of cell objects, each with an ID, normalized position and char
+      // A collection of cell objects, each with an ID, char
+      // Each cell has a normalized position data relative to a background image
+      // for when board is image type
+      // Alternatively, each cell has a position data as a coordinate for when board is grid type
       cellSet: {},
       // A collection of queues, where each queue is an array of cell IDs
       queueSet: {
@@ -35,6 +43,10 @@ const pathfinderSlice = createSlice({
     // This is used for loading from local storage or file
     setPathfinderState(state, action) {
       return action.payload;
+    },
+    // Reducer for toggling the board type
+    toggleBoardType(state) {
+      state.boardType = state.boardType === "free" ? "grid" : "free";
     },
     // Reducer for adding a single cell to the cellSet
     addCell(state, action) {

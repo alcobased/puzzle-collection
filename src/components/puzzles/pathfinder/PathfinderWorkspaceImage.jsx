@@ -1,20 +1,22 @@
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import Cell from "./Cell.jsx";
-import { addCell, enqueue } from "../../../features/pathfinder/pathfinderSlice.js";
+import {
+  addCell,
+  enqueue,
+} from "../../../features/pathfinder/pathfinderSlice.js";
 
-const PathfinderWorkspace = () => {
-
+const PathfinderWorkspaceImage = () => {
   const dispatch = useDispatch();
 
   const { cellSet, cellStyle, activeCell, queueSet, activeQueue } = useSelector(
     (state) => state.puzzles.pathfinder.cells
   );
-  
-  const {offsetWidth, offsetHeight, offsetTop, offsetLeft} = useSelector(
+
+  const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = useSelector(
     (state) => state.image.rendered
   );
-  
+
   const handleClick = (e) => {
     // Only add a cell if the click is on the container itself, not on a child cell.
     if (e.target !== e.currentTarget) return;
@@ -35,17 +37,13 @@ const PathfinderWorkspace = () => {
     width: `${offsetWidth}px`,
     height: `${offsetHeight}px`,
     top: `${offsetTop}px`,
-    left: `${offsetLeft}px`
-  }
+    left: `${offsetLeft}px`,
+  };
 
   const activeQueueCells = activeQueue ? queueSet[activeQueue] || [] : [];
 
   return (
-    <div
-      onClick={handleClick}
-      id="board-workspace"
-      style={boardWorkspaceStyle}
-    >
+    <div onClick={handleClick} id="board-workspace" style={boardWorkspaceStyle}>
       {Object.values(cellSet).map((cell) => {
         const individualCellStyle = {
           width: cellStyle.width,
@@ -77,4 +75,4 @@ const PathfinderWorkspace = () => {
   );
 };
 
-export default PathfinderWorkspace;
+export default PathfinderWorkspaceImage;

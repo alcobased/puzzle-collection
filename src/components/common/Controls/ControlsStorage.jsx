@@ -37,18 +37,17 @@ const ControlsStorage = ({ puzzleName, saveWords, saveImage }) => {
   const handleLoadFromLocalStorage = () => {
     const savedPuzzle = localStorage.getItem(`puzzle-${puzzleName}`);
     if (savedPuzzle) {
-      console.log("Loaded from local storage");
       const parsedPuzzle = JSON.parse(savedPuzzle);
       dispatch(puzzleStateSetters[puzzleName](parsedPuzzle));
     }
 
     const savedWords = localStorage.getItem("common-words");
-    if (savedWords) {
+    if (saveWords && savedWords) {
       const parsedWords = JSON.parse(savedWords);
       dispatch(setWordsState(parsedWords));
     }
     const savedImage = localStorage.getItem("common-image");
-    if (savedImage) {
+    if (saveImage && savedImage) {
       const parsedImage = JSON.parse(savedImage);
       dispatch(setImageState(parsedImage));
     }
@@ -90,10 +89,10 @@ const ControlsStorage = ({ puzzleName, saveWords, saveImage }) => {
         if (data.puzzle) {
           dispatch(puzzleStateSetters[puzzleName](data.puzzle));
         }
-        if (data.words) {
+        if (saveWords && data.words) {
           dispatch(setWordsState(data.words));
         }
-        if (data.image) {
+        if (saveImage && data.image) {
           dispatch(setImageState(data.image));
         }
         dispatch(setNotification({ message: `Puzzle ${puzzleName} loaded!` }));
