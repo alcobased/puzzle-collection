@@ -5,7 +5,7 @@ const defaultQueueId = "default-queue-0";
 const pathfinderSlice = createSlice({
   name: "pathfinder",
   initialState: {
-    boardType: "grid",
+    boardMode: "image",
     grid: {
       width: 10,
       height: 10,
@@ -45,8 +45,8 @@ const pathfinderSlice = createSlice({
       return action.payload;
     },
     // Reducer for toggling the board type
-    toggleBoardType(state) {
-      state.boardType = state.boardType === "free" ? "grid" : "free";
+    toggleBoardMode(state) {
+      state.boardMode = state.boardMode === "image" ? "grid" : "image";
     },
     // Reducer for adding a single cell to the cellSet
     addCell(state, action) {
@@ -199,6 +199,7 @@ const pathfinderSlice = createSlice({
 
 export const {
   setPathfinderState,
+  toggleBoardMode,
   addCell,
   setCells,
   enqueue,

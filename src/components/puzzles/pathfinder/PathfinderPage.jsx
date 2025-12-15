@@ -10,22 +10,23 @@ import ControlsWords from "../../common/Controls/ControlsWords";
 import ControlsImage from "../../common/Controls/ControlsImage";
 import ControlsStorage from "../../common/Controls/ControlsStorage";
 import ControlsSolver from "./ControlsSolver";
+import ControlsBoardMode from "./ControlsBoardMode.jsx";
 import { useSelector } from "react-redux";
 
 const PathfinderPage = () => {
-  const boardType = useSelector((state) => state.puzzles.pathfinder.boardType);
+  const boardMode = useSelector((state) => state.puzzles.pathfinder.boardMode);
 
   return (
     <>
       <PuzzleBoard>
-        {boardType === "image" && (
+        {boardMode === "image" && (
           <>
             <PuzzleImage />
             <Lines />
             <PathfinderWorkspaceImage />
           </>
         )}
-        {boardType === "grid" && (
+        {boardMode === "grid" && (
           <>
             <PathfinderWorkspaceGrid />
           </>
@@ -39,6 +40,7 @@ const PathfinderPage = () => {
           saveWords={true}
           saveImage={true}
         />
+        <ControlsBoardMode />
         <ControlsSolver />
         <ControlsCells />
         <ControlsWords />

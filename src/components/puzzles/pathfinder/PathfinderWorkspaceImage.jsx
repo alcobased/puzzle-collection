@@ -1,10 +1,13 @@
+// PathfinderWorkspaceImage.jsx - Refactored to define Cell's functionality
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import Cell from "./Cell.jsx";
 import {
   addCell,
   enqueue,
+  popAndPurge, // Added necessary action
 } from "../../../features/pathfinder/pathfinderSlice.js";
+import { showModal } from "../../../features/ui/uiSlice"; // Added necessary action
 
 const PathfinderWorkspaceImage = () => {
   const dispatch = useDispatch();
@@ -31,6 +34,27 @@ const PathfinderWorkspaceImage = () => {
     const newCellId = uuidv4();
     dispatch(addCell({ id: newCellId, x: normalizedX, y: normalizedY }));
     dispatch(enqueue(newCellId));
+  };
+
+  // --- NEW: Define the specific click functionality for a Cell ---
+  const handleCellClick = (cellId) => (e) => {
+    e.stopPropagation(); // Prevent the grid from creating a new cell
+    dispatch(showModal({ type: "CELL_PROPERTIES", props: { cellId } }));
+  };
+
+  // --- NEW: Define the specific context menu functionality for a Cell ---
+  const handleCellContextMenu = (cellId) => (e) => {
+    e.preventDefault(); // Prevent the default context menu
+    e.stopPropagation();
+
+    const queue = queueSet[activeQueue];
+    const lastInQueue = queue ? queue[queue.length - 1] : undefined;
+
+    if (lastInQueue === cellId) {
+      dispatch(popAndPurge());
+    } else {
+      dispatch(enqueue(cellId));
+    }
   };
 
   const boardWorkspaceStyle = {
@@ -68,6 +92,9 @@ const PathfinderWorkspaceImage = () => {
             char={cell.char}
             className={className}
             solutionChar={cell.solutionChar}
+            // Pass the generated handlers as props
+            onClick={handleCellClick(cell.id)}
+            onContextMenu={handleCellContextMenu(cell.id)}
           />
         );
       })}

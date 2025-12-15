@@ -85,6 +85,71 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* --- NEW TOGGLE SWITCH STYLES --- */
+
+/* 1. Hide the native checkbox, but keep it focusable and functional */
+#controlPanel input[type="checkbox"] {
+  /* Hide visually but keep accessible */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* 2. Target the label specifically used with the checkbox to apply the toggle styling */
+.control-section #pathfinder-board-mode-input + label {
+  /* Override the default label flex layout for this specific toggle */
+  /* This makes the label act as the container for the switch/mode name */
+  display: inline-flex;
+  justify-content: flex-start; /* Aligns content to the start */
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin: 2px 0;
+}
+
+/* 3. Create the visual switch track element (::before) and the sliding thumb (::after) */
+.control-section #pathfinder-board-mode-input + label::before {
+  content: "";
+  width: 34px; /* Width of the track */
+  height: 18px; /* Height of the track */
+  background-color: var(--border-color); /* Default 'Off' color */
+  border-radius: 9px;
+  transition: background-color 0.4s;
+  flex-shrink: 0; /* Prevents the switch from squishing */
+}
+
+.control-section #pathfinder-board-mode-input + label::after {
+  content: "";
+  position: absolute; /* Position relative to the ::before's container */
+  left: 8px; /* Initial offset from the edge of the label */
+  transform: translateX(0);
+  width: 14px; /* Size of the thumb */
+  height: 14px; /* Size of the thumb */
+  border-radius: 50%;
+  background: var(--background-content); /* Thumb color */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: transform 0.4s, background-color 0.4s;
+}
+
+/* 4. State: WHEN CHECKED (input:checked + label) */
+#controlPanel input[type="checkbox"]:checked + label::before {
+  background-color: var(--primary-color); /* 'On' color */
+}
+
+#controlPanel input[type="checkbox"]:checked + label::after {
+  /* Move the thumb to the 'On' position */
+  transform: translateX(16px);
+  background: var(--text-on-primary); /* Change thumb color when 'on' */
+}
+
+/* State: Focus (for accessibility) */
+#controlPanel input[type="checkbox"]:focus + label::before {
+  box-shadow: 0 0 0 2px var(--primary-color-transparent),
+    0 0 0 4px var(--primary-color);
+}
+/* --- END NEW TOGGLE SWITCH STYLES --- */
+
 #controlPanel input:focus {
   outline: none;
   border-color: var(--primary-color);
