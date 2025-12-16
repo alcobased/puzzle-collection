@@ -1,26 +1,28 @@
-// Cell.jsx - Refactored to be a Reusable Presentation Component
-import React from "react";
-// We can remove the Redux imports as they are no longer needed here
-// import { useSelector, useDispatch } from "react-redux";
 import "../../common/Cell.css";
 
 const Cell = ({
   style,
   char,
-  className,
+  additionalClassList,
   solutionChar,
-  // New: Accept specific event handlers as props
   onClick,
   onContextMenu,
+  onMouseOver,
 }) => {
-  // The logic is removed, and the props are used directly.
+  // additionalClassList is an array of strings.
+  // This array might contain empty strings,
+  // this means that this class will not be added
+  const filteredClassList = additionalClassList
+    .filter((className) => className)
+    .join(" ");
+  const className = `cell ${filteredClassList}`;
   return (
     <div
-      className={`cell ${className}`}
+      className={className}
       style={style}
-      // Use the handlers passed in from the parent
       onClick={onClick}
       onContextMenu={onContextMenu}
+      onMouseOver={onMouseOver}
     >
       {solutionChar || char}
     </div>

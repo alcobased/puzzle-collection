@@ -7,9 +7,36 @@
   box-sizing: border-box;
   position: relative;
   background-color: var(--cell-background-color);
-  border: 1px solid var(--cell-border-color);
   color: var(--cell-text-color);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   font-weight: bold;
+}
+
+.cell:hover {
+  background-color: var(--cell-hover-background-color);
+}
+
+.cell-image {
+  border: 1px solid var(--cell-border-color);
+}
+
+.cell.selected {
+  background-color: blue;
+}
+
+.cell.selected-start {
+  background-color: green;
+}
+
+.cell.selected-end {
+  background-color: red;
+}
+
+.cell.marked {
+  background-color: yellow;
+}
+
+.cell.queue-start {
+  background-color: orange;
 }

@@ -5,7 +5,8 @@ import Cell from "./Cell.jsx";
 import {
   addCell,
   enqueue,
-  popAndPurge, // Added necessary action
+  popAndPurge,
+  addQueue,
 } from "../../../features/pathfinder/pathfinderSlice.js";
 import { showModal } from "../../../features/ui/uiSlice"; // Added necessary action
 
@@ -19,6 +20,10 @@ const PathfinderWorkspaceImage = () => {
   const { offsetWidth, offsetHeight, offsetTop, offsetLeft } = useSelector(
     (state) => state.image.rendered
   );
+
+  if (Object.keys(queueSet).length === 0) {
+    dispatch(addQueue({ id: uuidv4() }));
+  }
 
   const handleClick = (e) => {
     // Only add a cell if the click is on the container itself, not on a child cell.
@@ -80,9 +85,11 @@ const PathfinderWorkspaceImage = () => {
 
         const isActive = cell.id === activeCell;
         const inActiveQueue = activeQueueCells.includes(cell.id);
-        const className = `cell ${isActive ? "active" : ""} ${
-          inActiveQueue ? "in-active-queue" : ""
-        }`;
+        const additionalClassList = [
+          "cell-image",
+          isActive ? "active" : "",
+          inActiveQueue ? "in-active-queue" : "",
+        ];
 
         return (
           <Cell
@@ -90,7 +97,7 @@ const PathfinderWorkspaceImage = () => {
             id={cell.id}
             style={individualCellStyle}
             char={cell.char}
-            className={className}
+            additionalClassList={additionalClassList}
             solutionChar={cell.solutionChar}
             // Pass the generated handlers as props
             onClick={handleCellClick(cell.id)}

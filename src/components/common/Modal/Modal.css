@@ -13,7 +13,7 @@
 }
 
 .modal-panel {
-  background: var(--background-controls);
+  background-color: var(--background-main);
   border-radius: 8px;
   box-shadow: var(--modal-shadow);
   min-width: 400px;
@@ -62,10 +62,10 @@
 
 /* --- Generic Modal Form/Section Styles --- */
 .modal-section {
+  background-color: var(--background-content-alt);
   border: 1px solid var(--border-color-light);
   padding: 15px;
   border-radius: 6px;
-  background-color: var(--background-main);
   display: flex;
   flex-direction: column;
   gap: 15px;

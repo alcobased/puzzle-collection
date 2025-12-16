@@ -1,14 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const defaultQueueId = "default-queue-0";
-
 const pathfinderSlice = createSlice({
   name: "pathfinder",
   initialState: {
     boardMode: "image",
     grid: {
-      width: 10,
-      height: 10,
+      width: 20,
+      height: 20,
     },
     cells: {
       // A collection of cell objects, each with an ID, char
@@ -17,19 +15,21 @@ const pathfinderSlice = createSlice({
       // Alternatively, each cell has a position data as a coordinate for when board is grid type
       cellSet: {},
       // A collection of queues, where each queue is an array of cell IDs
-      queueSet: {
-        [defaultQueueId]: [],
-      },
+      queueSet: {},
+      // Coordinates of selected cells on grid type board
+      selectedCells: [],
       // The ID of the currently active queue
-      activeQueue: defaultQueueId,
+      activeQueue: null,
       // Default styles for a cell, can be configured.
       cellStyle: {
         width: 20, // px
         height: 20, // px
         fontSize: 16, // px
       },
-      // The ID of the currently active/selected cell
-      activeCell: null,
+      selectionStartCell: null,
+      selectionEndCell: null,
+      queueStartCell: null,
+      markingStartCell: false,
     },
     solver: {
       connections: {},
@@ -107,21 +107,13 @@ const pathfinderSlice = createSlice({
     // Reducer for creating a new queue
     addQueue(state, action) {
       const { id } = action.payload;
-      if (state.cells.queueSet[id] === undefined) {
-        state.cells.queueSet[id] = [];
-      }
+      state.cells.queueSet[id] = [];
       state.cells.activeQueue = id;
     },
     // Reducer for removing a queue
     removeQueue(state, action) {
       const idToRemove = action.payload;
-      if (Object.keys(state.cells.queueSet).length <= 1) {
-        console.warn("Cannot remove the last queue.");
-        return; // Prevent removing the last queue
-      }
-
-      const cellsInRemovedQueue = state.cells.queueSet[idToRemove] || [];
-
+      const cellsInRemovedQueue = state.cells.queueSet[idToRemove];
       delete state.cells.queueSet[idToRemove];
 
       const allRemainingCellIds = new Set(
@@ -194,6 +186,59 @@ const pathfinderSlice = createSlice({
       state.solver.solutionVisible = false;
       state.solver.currentSolutionIndex = 0;
     },
+    setSelectionStartCell(state, action) {
+      state.cells.selectionStartCell = action.payload;
+    },
+    clearSelectionStartCell(state) {
+      state.cells.selectionStartCell = null;
+    },
+    setSelectionEndCell(state, action) {
+      state.cells.selectionEndCell = action.payload;
+    },
+    clearSelectionEndCell(state) {
+      state.cells.selectionEndCell = null;
+    },
+    addSeletedCells(state, action) {
+      // action.payload will include two cells
+      // all cells between them will be added to seleted cells
+      const { c1, c2 } = action.payload;
+      const minX = Math.min(c1.x, c2.x);
+      const minY = Math.min(c1.y, c2.y);
+      const maxX = Math.max(c1.x, c2.x);
+      const maxY = Math.max(c1.y, c2.y);
+      for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+          const id = `${x},${y}`;
+          state.cells.cellSet[id] = {
+            id: id,
+            gridPosition: { x, y },
+            char: null,
+            solutionChar: null,
+          };
+        }
+      }
+    },
+    clearSelectedCells(state) {
+      state.cells.selectedCells = [];
+    },
+    resetCells(state) {
+      state.cells.cellSet = {};
+      state.cells.queueSet = {};
+      state.cells.activeQueue = null;
+      state.cells.activeCell = null;
+      state.cells.selectionStartCell = null;
+      state.cells.selectionEndCell = null;
+      state.cells.selectedCells = [];
+    },
+    setQueueStartCell(state, action) {
+      state.cells.queueStartCell = action.payload;
+    },
+    clearQueueStartCell(state) {
+      state.cells.queueStartCell = null;
+    },
+    toggleMarkingStartCell(state) {
+      state.cells.markingStartCell = !state.cells.markingStartCell;
+    },
   },
 });
 
@@ -220,6 +265,16 @@ export const {
   nextSolution,
   previousSolution,
   clearSolution,
+  setSelectionStartCell,
+  clearSelectionStartCell,
+  setSelectionEndCell,
+  clearSelectionEndCell,
+  addSeletedCells,
+  clearSelectedCells,
+  resetCells,
+  setQueueStartCell,
+  clearQueueStartCell,
+  toggleMarkingStartCell,
 } = pathfinderSlice.actions;
 
 export default pathfinderSlice.reducer;

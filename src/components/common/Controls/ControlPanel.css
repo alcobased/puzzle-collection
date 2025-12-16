@@ -63,7 +63,7 @@
   font-size: 0.95em;
 }
 
-/* --- Label Styling --- */
+/* --- Label Styling (General) --- */
 #controlPanel label {
   display: flex;
   justify-content: space-between;
@@ -73,7 +73,7 @@
   gap: 4px;
 }
 
-/* --- Input Styling --- */
+/* --- Input Styling (Text/Number) --- */
 #controlPanel input[type="text"],
 #controlPanel input[type="number"] {
   width: 50px; /* A fixed width for number inputs looks tidy */
@@ -85,78 +85,78 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* --- NEW TOGGLE SWITCH STYLES --- */
-
-/* 1. Hide the native checkbox, but keep it focusable and functional */
-#controlPanel input[type="checkbox"] {
-  /* Hide visually but keep accessible */
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* 2. Target the label specifically used with the checkbox to apply the toggle styling */
-.control-section #pathfinder-board-mode-input + label {
-  /* Override the default label flex layout for this specific toggle */
-  /* This makes the label act as the container for the switch/mode name */
-  display: inline-flex;
-  justify-content: flex-start; /* Aligns content to the start */
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  margin: 2px 0;
-}
-
-/* 3. Create the visual switch track element (::before) and the sliding thumb (::after) */
-.control-section #pathfinder-board-mode-input + label::before {
-  content: "";
-  width: 34px; /* Width of the track */
-  height: 18px; /* Height of the track */
-  background-color: var(--border-color); /* Default 'Off' color */
-  border-radius: 9px;
-  transition: background-color 0.4s;
-  flex-shrink: 0; /* Prevents the switch from squishing */
-}
-
-.control-section #pathfinder-board-mode-input + label::after {
-  content: "";
-  position: absolute; /* Position relative to the ::before's container */
-  left: 8px; /* Initial offset from the edge of the label */
-  transform: translateX(0);
-  width: 14px; /* Size of the thumb */
-  height: 14px; /* Size of the thumb */
-  border-radius: 50%;
-  background: var(--background-content); /* Thumb color */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  transition: transform 0.4s, background-color 0.4s;
-}
-
-/* 4. State: WHEN CHECKED (input:checked + label) */
-#controlPanel input[type="checkbox"]:checked + label::before {
-  background-color: var(--primary-color); /* 'On' color */
-}
-
-#controlPanel input[type="checkbox"]:checked + label::after {
-  /* Move the thumb to the 'On' position */
-  transform: translateX(16px);
-  background: var(--text-on-primary); /* Change thumb color when 'on' */
-}
-
-/* State: Focus (for accessibility) */
-#controlPanel input[type="checkbox"]:focus + label::before {
-  box-shadow: 0 0 0 2px var(--primary-color-transparent),
-    0 0 0 4px var(--primary-color);
-}
-/* --- END NEW TOGGLE SWITCH STYLES --- */
-
 #controlPanel input:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px var(--primary-color-transparent);
 }
 
-/* --- Button Styling --- */
+/* ------------------------------------- */
+/* --- SEGMENTED RADIO BUTTON STYLES --- */
+/* ------------------------------------- */
+
+/* 1. Container for the buttons (takes full width) */
+.radio-group-segmented {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--border-color); /* This is the only border for the group */
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+/* 2. Hide the actual radio buttons but keep them functional and accessible */
+.radio-group-segmented input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  /* FIX: Suppress native focus outline/border flash */
+  outline: none !important;
+  border: none !important;
+}
+
+/* 3. Style the labels as buttons */
+.radio-group-segmented label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-grow: 1; /* Ensures equal width distribution */
+
+  padding: 6px 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  background-color: var(--background-content-alt);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover state */
+.radio-group-segmented label:hover {
+  background-color: var(--background-main);
+}
+
+/* 4. Style the CHECKED (active) state using the adjacent sibling selector (+) */
+#controlPanel .radio-group-segmented input[type="radio"]:checked + label {
+  color: var(--text-on-primary);
+  background-color: var(--primary-color);
+}
+
+/* 5. Focus state (for accessibility) */
+/* This now handles the visual focus state instead of the native browser outline */
+#controlPanel .radio-group-segmented input[type="radio"]:focus + label {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -1px;
+}
+
+/* ------------------------------------- */
+/* --- END SEGMENTED RADIO BUTTON STYLES --- */
+/* ------------------------------------- */
+
+/* --- Button Styling (General) --- */
 #controlPanel button,
 #controlPanel .file-upload-label {
   font-family: var(--font-family-main);
