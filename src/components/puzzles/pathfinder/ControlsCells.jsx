@@ -122,6 +122,54 @@ const ControlsCells = () => {
     return queue;
   };
 
+  const generateQueuesMulti = (cellSet) => {
+    const generateQueue = (cell, cellSet, direction) => {
+      // generates a qeueu from a start cell
+      // does not change direction
+      let startCell = cell;
+      const queue = [startCell.id];
+      while (true) {
+        const nextCell =
+          cellSet[
+            `${startCell.gridPosition.x + direction.x},${
+              startCell.gridPosition.y + direction.y
+            }`
+          ];
+        if (!nextCell) {
+          return queue;
+        } else {
+          queue.push(nextCell.id);
+          startCell = nextCell;
+        }
+      }
+    };
+    // Generates multiple queues
+    // Start cell of a queue is determined by a rule
+    const queueSet = {};
+    Object.values(cellSet).forEach((cell) => {
+      // cell has to be a valid start
+      // case1: the cell down should exist and cell up should not
+      if (
+        cellSet[`${cell.gridPosition.x},${cell.gridPosition.y + 1}`] &&
+        !cellSet[`${cell.gridPosition.x},${cell.gridPosition.y - 1}`]
+      ) {
+        const verticalQueue = generateQueue(cell, cellSet, { x: 0, y: 1 });
+        const verticalQueueId = `queue-${cell.id}-vertical`;
+        queueSet[verticalQueueId] = verticalQueue;
+      }
+      // case2: the cell right should exist and cell left should not
+      if (
+        cellSet[`${cell.gridPosition.x + 1},${cell.gridPosition.y}`] &&
+        !cellSet[`${cell.gridPosition.x - 1},${cell.gridPosition.y}`]
+      ) {
+        const horizontalQueue = generateQueue(cell, cellSet, { x: 1, y: 0 });
+        const horizontalQueueId = `queue-${cell.id}-horizontal`;
+        queueSet[horizontalQueueId] = horizontalQueue;
+      }
+    });
+    return queueSet;
+  };
+
   const handleSizeChange = (e) => {
     const size = parseInt(e.target.value, 10);
     // Keep font size proportional to cell size
@@ -147,7 +195,9 @@ const ControlsCells = () => {
   };
 
   const handleGenerateQueuesMultiple = () => {
-    // todo
+    const queueSet = generateQueuesMulti(cellSet);
+    dispatch(setQueueSet(queueSet));
+    dispatch(setActiveQueue(Object.keys(queueSet)[0]));
   };
 
   const handleToggleMarkingStartCell = () => {
