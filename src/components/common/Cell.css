@@ -40,3 +40,7 @@
 .cell.queue-start {
   background-color: orange;
 }
+
+.cell.flashing {
+  border: 2px solid red;
+}

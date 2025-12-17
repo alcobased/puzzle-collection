@@ -30,6 +30,10 @@ const pathfinderSlice = createSlice({
       selectionEndCell: null,
       queueStartCell: null,
       markingStartCell: false,
+      queueFlashing: {
+        currentQueue: null,
+        currentCellIndex: null,
+      },
     },
     solver: {
       connections: {},
@@ -239,6 +243,25 @@ const pathfinderSlice = createSlice({
     toggleMarkingStartCell(state) {
       state.cells.markingStartCell = !state.cells.markingStartCell;
     },
+    setFlashingCurrentQueue(state, action) {
+      state.cells.queueFlashing.currentQueue = action.payload;
+      state.cells.queueFlashing.currentCellIndex = 0;
+    },
+    incrementFlashingCurrentCellIndex(state) {
+      if (!state.cells.queueFlashing.currentQueue) {
+        return;
+      }
+      const currentQueue =
+        state.cells.queueSet[state.cells.queueFlashing.currentQueue];
+      if (!currentQueue) {
+        return;
+      }
+      state.cells.queueFlashing.currentCellIndex++;
+      if (currentQueue.length <= state.cells.queueFlashing.currentCellIndex) {
+        state.cells.queueFlashing.currentQueue = null;
+        state.cells.queueFlashing.currentCellIndex = null;
+      }
+    },
   },
 });
 
@@ -275,6 +298,8 @@ export const {
   setQueueStartCell,
   clearQueueStartCell,
   toggleMarkingStartCell,
+  setFlashingCurrentQueue,
+  incrementFlashingCurrentCellIndex,
 } = pathfinderSlice.actions;
 
 export default pathfinderSlice.reducer;

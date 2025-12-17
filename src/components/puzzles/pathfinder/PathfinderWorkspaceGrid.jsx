@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
 import {
   setSelectionStartCell,
   clearSelectionStartCell,
@@ -8,6 +9,8 @@ import {
   toggleMarkingStartCell,
   setQueueStartCell,
   clearQueueStartCell,
+  setFlashingCurrentQueue,
+  incrementFlashingCurrentCellIndex,
 } from "../../../features/pathfinder/pathfinderSlice.js";
 import { showModal } from "../../../features/ui/uiSlice.js";
 import Cell from "./Cell.jsx";
@@ -19,14 +22,25 @@ const PathfinderWorkspaceGrid = () => {
 
   const {
     cellStyle,
+    queueSet,
     selectionStartCell,
     selectionEndCell,
     cellSet,
     queueStartCell,
     markingStartCell,
+    queueFlashing,
   } = useSelector((state) => state.puzzles.pathfinder.cells);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (queueFlashing && queueFlashing.currentQueue) {
+      const timer = setTimeout(() => {
+        dispatch(incrementFlashingCurrentCellIndex());
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [queueFlashing, dispatch]);
 
   const cellSize = Math.min(cellStyle.width, cellStyle.height);
 
@@ -110,6 +124,14 @@ const PathfinderWorkspaceGrid = () => {
             cellSet[key] ? "marked" : "",
             queueStartCell && x === queueStartCell.x && y === queueStartCell.y
               ? "queue-start"
+              : "",
+            queueFlashing &&
+            queueFlashing.currentQueue &&
+            queueFlashing.currentCellIndex !== null &&
+            queueSet[queueFlashing.currentQueue][
+              queueFlashing.currentCellIndex
+            ] === key
+              ? "flashing"
               : "",
           ]}
           onClick={() => handleClick(x, y)}
