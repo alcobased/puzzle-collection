@@ -11,7 +11,7 @@ const MODE_IMAGE = "Image";
 
 const ControlsBoardMode = () => {
   const dispatch = useDispatch();
-  const currentMode = useSelector(
+  const currentGridMode = useSelector(
     (state) => state.puzzles.pathfinder.boardMode
   );
   // When a radio button is clicked, we need to dispatch an action.
@@ -21,7 +21,7 @@ const ControlsBoardMode = () => {
   // that relies on the dispatch flipping the state if the mode is different.
   const handleModeChange = (event) => {
     // Only dispatch if the user clicks a mode that is not currently active
-    if (event.target.value !== currentMode) {
+    if (event.target.value !== currentGridMode) {
       dispatch(toggleBoardMode());
       dispatch(resetCells());
     }
@@ -37,7 +37,7 @@ const ControlsBoardMode = () => {
           id="mode-grid"
           name="board-mode-selection" // All radio buttons in a group must share the same name
           value={MODE_GRID}
-          checked={currentMode === MODE_GRID.toLocaleLowerCase()}
+          checked={currentGridMode === MODE_GRID.toLocaleLowerCase()}
           onChange={handleModeChange}
         />
         {/* Label for 'Grid' mode - must follow the input for the CSS adjacent selector (+) */}
@@ -49,12 +49,12 @@ const ControlsBoardMode = () => {
           id="mode-image"
           name="board-mode-selection" // Same name as above
           value={MODE_IMAGE}
-          checked={currentMode === MODE_IMAGE.toLocaleLowerCase()}
+          checked={currentGridMode === MODE_IMAGE.toLocaleLowerCase()}
           onChange={handleModeChange}
         />
         {/* Label for 'Image' mode */}
         <label htmlFor="mode-image">{MODE_IMAGE}</label>
-      </div>{" "}
+      </div>
     </div>
   );
 };
