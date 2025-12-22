@@ -1,8 +1,8 @@
-#board-workspace {
+/* #board-workspace {
   display: flex;
   justify-content: space-around;
   padding: 20px;
-}
+} */
 
 #shapes-container,
 #board-container {
