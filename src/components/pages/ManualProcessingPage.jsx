@@ -12,6 +12,8 @@ const ManualProcessingPage = () => {
   const [finalImage, setFinalImage] = useState(null);
   const [statusText, setStatusText] = useState("Please load an image to begin.");
   const canvasRef = useRef(null);
+  const magnifierRef = useRef(null);
+  const imgRef = useRef(null);
 
   const [originalDimensions, setOriginalDimensions] = useState(null);
   const [lastPoint, setLastPoint] = useState(null);
@@ -21,14 +23,35 @@ const ManualProcessingPage = () => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setImageSrc(e.target.result);
-        setStage("perspective");
-        setStatusText("Step 1 of 1: Mark four points on the grid to fix perspective.");
-        setPerspectivePoints([]);
-        setFinalImage(null);
-        setLastPoint(null);
-        setProcessedDimensions(null);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX_PIXELS = 2_000_000;
+          const currentPixels = img.width * img.height;
+          let finalImageSrc = img.src;
+
+          if (currentPixels > MAX_PIXELS) {
+            const scaleRatio = Math.sqrt(MAX_PIXELS / currentPixels);
+            const newWidth = Math.floor(img.width * scaleRatio);
+            const newHeight = Math.floor(img.height * scaleRatio);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+            finalImageSrc = canvas.toDataURL();
+          }
+
+          setImageSrc(finalImageSrc);
+          setStage("perspective");
+          setStatusText("Step 1 of 1: Mark four points on the grid to fix perspective.");
+          setPerspectivePoints([]);
+          setFinalImage(null);
+          setLastPoint(null);
+          setProcessedDimensions(null);
+        };
+        img.src = event.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -50,10 +73,34 @@ const ManualProcessingPage = () => {
     }
   };
 
+  const handleMouseMove = (e) => {
+    if (!canvasRef.current || !magnifierRef.current) return;
+    const canvas = canvasRef.current;
+    const magnifier = magnifierRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    magnifier.style.display = "block";
+    magnifier.style.left = e.clientX + 10 + "px";
+    magnifier.style.top = e.clientY + 10 + "px";
+
+    magnifier.style.backgroundImage = `url(${canvas.toDataURL()})`;
+    const zoom = 2;
+    magnifier.style.backgroundSize = `${canvas.width * zoom}px ${canvas.height * zoom}px`;
+    magnifier.style.backgroundPosition = `-${x * zoom - 75}px -${y * zoom - 75}px`;
+  };
+
+  const handleMouseLeave = () => {
+    if (magnifierRef.current) {
+      magnifierRef.current.style.display = "none";
+    }
+  };
+
   const handlePerspectiveConfirm = () => {
-    if (!window.cv || !canvasRef.current) return;
+    if (!window.cv || !imgRef.current) return;
     setStatusText("Correcting perspective...");
-    const final = fix_perspective(canvasRef.current, perspectivePoints, window.cv);
+    const final = fix_perspective(imgRef.current, perspectivePoints, window.cv);
     setFinalImage(final);
     setStage("done");
     setStatusText("Processing complete.");
@@ -80,13 +127,19 @@ const ManualProcessingPage = () => {
     if (stage === "perspective") {
         return (
           <div className="manual-stage">
-            <InteractiveCanvas
-              ref={canvasRef}
-              imageSrc={imageSrc}
-              points={perspectivePoints}
-              onCanvasClick={handleCanvasClick}
-              onImageLoaded={handleImageLoaded}
-            />
+            <div className="interactive-canvas-container">
+              <InteractiveCanvas
+                ref={canvasRef}
+                imgRef={imgRef}
+                imageSrc={imageSrc}
+                points={perspectivePoints}
+                onCanvasClick={handleCanvasClick}
+                onImageLoaded={handleImageLoaded}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              />
+              <div ref={magnifierRef} className="magnifier"></div>
+            </div>
             <p>Points selected: {perspectivePoints.length} / 4</p>
             <button 
                 onClick={handlePerspectiveConfirm} 
