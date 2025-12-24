@@ -1,6 +1,6 @@
 import React, { useEffect, forwardRef } from "react";
 
-export const InteractiveCanvas = forwardRef(({ imageSrc, points, onCanvasClick, onImageLoaded, imgRef }, ref) => {
+export const InteractiveCanvas = forwardRef(({ imageSrc, points, onCanvasClick, onImageLoaded, imgRef, onMouseMove, onMouseLeave, stage }, ref) => {
 
   useEffect(() => {
     if (!ref.current) return;
@@ -22,23 +22,44 @@ export const InteractiveCanvas = forwardRef(({ imageSrc, points, onCanvasClick, 
         ctx.fill();
       });
 
-      // Draw lines between points
-      if (points.length > 1) {
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length; i++) {
-          ctx.lineTo(points[i].x, points[i].y);
-        }
-        if (points.length === 4) {
-            ctx.closePath();
-        }
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
-        ctx.stroke();
+      // Draw lines based on the stage
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+
+      switch (stage) {
+        case 'perspective':
+          if (points.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+              ctx.lineTo(points[i].x, points[i].y);
+            }
+            if (points.length === 4) {
+              ctx.closePath();
+            }
+            ctx.stroke();
+          }
+          break;
+        case 'trimming':
+          points.forEach((point, index) => {
+            ctx.beginPath();
+            if (index === 0 || index === 2) { // Top and Bottom
+              ctx.moveTo(0, point.y);
+              ctx.lineTo(canvas.width, point.y);
+            } else { // Left and Right
+              ctx.moveTo(point.x, 0);
+              ctx.lineTo(point.x, canvas.height);
+            }
+            ctx.stroke();
+          });
+          break;
+        default:
+          break;
       }
+
       if(onImageLoaded) onImageLoaded({width: img.naturalWidth, height: img.naturalHeight});
     };
-  }, [imageSrc, points, onImageLoaded, imgRef, ref]);
+  }, [imageSrc, points, onImageLoaded, imgRef, ref, stage]);
 
-  return <canvas ref={ref} onClick={onCanvasClick} />;
+  return <canvas ref={ref} onClick={onCanvasClick} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave} />;
 });

@@ -1,14 +1,15 @@
 import { useState, useRef } from "react";
 import useScript from "../../hooks/useScript";
 import { InteractiveCanvas } from "../common/InteractiveCanvas";
-import { fix_perspective } from "../../features/opencv/manualProcessing";
+import { fix_perspective, trim_image } from "../../features/opencv/manualProcessing";
 import "../../styles/ManualProcessingPage.css";
 
 const ManualProcessingPage = () => {
   const openCVLoaded = useScript("https://docs.opencv.org/4.5.4/opencv.js");
   const [imageSrc, setImageSrc] = useState(null);
-  const [stage, setStage] = useState("load"); // 'load', 'perspective', 'done'
+  const [stage, setStage] = useState("load"); // 'load', 'perspective', 'trimming', 'done'
   const [perspectivePoints, setPerspectivePoints] = useState([]);
+  const [trimmingPoints, setTrimmingPoints] = useState([]);
   const [finalImage, setFinalImage] = useState(null);
   const [statusText, setStatusText] = useState("Please load an image to begin.");
   const canvasRef = useRef(null);
@@ -45,8 +46,9 @@ const ManualProcessingPage = () => {
 
           setImageSrc(finalImageSrc);
           setStage("perspective");
-          setStatusText("Step 1 of 1: Mark four points on the grid to fix perspective.");
+          setStatusText("Step 1 of 2: Mark four points on the grid to fix perspective.");
           setPerspectivePoints([]);
+          setTrimmingPoints([]);
           setFinalImage(null);
           setLastPoint(null);
           setProcessedDimensions(null);
@@ -62,15 +64,18 @@ const ManualProcessingPage = () => {
   };
 
   const handleCanvasClick = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.round(e.clientX - rect.left);
+    const y = Math.round(e.clientY - rect.top);
+    const newPoint = { x, y };
+
     if (stage === "perspective" && perspectivePoints.length < 4) {
-      const canvas = canvasRef.current;
-      const rect = canvas.getBoundingClientRect();
-      const x = Math.round(e.clientX - rect.left);
-      const y = Math.round(e.clientY - rect.top);
-      const newPoint = { x, y };
       setPerspectivePoints([...perspectivePoints, newPoint]);
-      setLastPoint(newPoint);
+    } else if (stage === "trimming" && trimmingPoints.length < 4) {
+      setTrimmingPoints([...trimmingPoints, newPoint]);
     }
+    setLastPoint(newPoint);
   };
 
   const handleMouseMove = (e) => {
@@ -100,23 +105,33 @@ const ManualProcessingPage = () => {
   const handlePerspectiveConfirm = () => {
     if (!window.cv || !imgRef.current) return;
     setStatusText("Correcting perspective...");
-    const final = fix_perspective(imgRef.current, perspectivePoints, window.cv);
-    setFinalImage(final);
-    setStage("done");
-    setStatusText("Processing complete.");
-
-    const img = new Image();
-    img.onload = () => {
-        setProcessedDimensions({width: img.width, height: img.height});
-    }
-    img.src = final;
+    const result = fix_perspective(imgRef.current, perspectivePoints, window.cv);
+    setFinalImage(result);
+    setStage("trimming");
+    setStatusText("Step 2 of 2: Mark top, right, bottom, and left edges to trim.");
   };
+
+  const handleTrimConfirm = () => {
+      if (!window.cv || !imgRef.current) return;
+      setStatusText("Trimming image...");
+      const result = trim_image(imgRef.current, trimmingPoints, window.cv);
+      setFinalImage(result);
+      setStage("done");
+      setStatusText("Processing complete.");
+
+      const img = new Image();
+      img.onload = () => {
+        setProcessedDimensions({width: img.width, height: img.height});
+      }
+      img.src = result;
+  }
 
   const handleReset = () => {
     setImageSrc(null);
     setStage("load");
     setStatusText("Please load an image to begin.");
     setPerspectivePoints([]);
+    setTrimmingPoints([]);
     setFinalImage(null);
     setOriginalDimensions(null);
     setLastPoint(null);
@@ -133,6 +148,7 @@ const ManualProcessingPage = () => {
                 imgRef={imgRef}
                 imageSrc={imageSrc}
                 points={perspectivePoints}
+                stage={stage}
                 onCanvasClick={handleCanvasClick}
                 onImageLoaded={handleImageLoaded}
                 onMouseMove={handleMouseMove}
@@ -149,6 +165,32 @@ const ManualProcessingPage = () => {
             </button>
           </div>
         );
+    } else if (stage === "trimming") {
+        return (
+            <div className="manual-stage">
+              <div className="interactive-canvas-container">
+                <InteractiveCanvas
+                  ref={canvasRef}
+                  imgRef={imgRef} // This ref is now for the perspective-corrected image
+                  imageSrc={finalImage} // Display the result from the last step
+                  points={trimmingPoints}
+                  stage={stage}
+                  onCanvasClick={handleCanvasClick}
+                  onImageLoaded={() => {}} // Dimensions are already known
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                />
+                <div ref={magnifierRef} className="magnifier"></div>
+              </div>
+              <p>Points selected: {trimmingPoints.length} / 4 (Top, Right, Bottom, Left)</p>
+              <button 
+                  onClick={handleTrimConfirm} 
+                  disabled={trimmingPoints.length !== 4}
+              >
+                {'Trim Image'}
+              </button>
+            </div>
+          );
     } else if (stage === "done") {
         return (
           <div className="manual-stage">

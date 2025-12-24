@@ -87,3 +87,30 @@ export const fix_perspective = (imgEl, perspectivePoints, cv) => {
 
     return dataUrl;
 };
+
+export const trim_image = (imgEl, trimPoints, cv) => {
+    const src = cv.imread(imgEl);
+
+    // Points are in order: top, right, bottom, left
+    const [top, right, bottom, left] = trimPoints;
+
+    const x = left.x;
+    const y = top.y;
+    const width = right.x - x;
+    const height = bottom.y - y;
+
+    if (width <= 0 || height <= 0) {
+        src.delete();
+        throw new Error("Trim dimensions must be positive.");
+    }
+
+    const rect = new cv.Rect(x, y, width, height);
+    const trimmed = src.roi(rect);
+
+    const dataUrl = matToDataUrl(trimmed);
+
+    src.delete();
+    trimmed.delete();
+
+    return dataUrl;
+};
