@@ -2,9 +2,9 @@
 #controlPanel {
   display: flex;
   flex-direction: column; /* Changed to column for better layout control */
-  background-color: var(--background-content);
-  border-top: 1px solid var(--border-color);
-  color: var(--text-color-primary);
+  background-color: var(--control-panel-background);
+  border-top: 1px solid var(--control-panel-border-color);
+  color: var(--control-panel-text-primary);
   position: relative;
   transition: max-height 0.5s ease-in-out;
   overflow: hidden; /* Hide the content when collapsed */
@@ -43,11 +43,11 @@
 
 /* --- Fieldset Styling --- */
 #controlPanel fieldset {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--control-panel-border-color);
   border-radius: 6px;
   padding: 8px 10px;
   margin: 0;
-  background-color: var(--background-content-alt);
+  background-color: var(--control-panel-background-alt);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
@@ -59,7 +59,7 @@
 #controlPanel legend {
   font-weight: 600;
   padding: 0 5px;
-  color: var(--text-color-primary);
+  color: var(--control-panel-text-primary);
   font-size: 0.95em;
 }
 
@@ -69,7 +69,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.85em;
-  color: var(--text-color-secondary);
+  color: var(--control-panel-text-secondary);
   gap: 4px;
 }
 
@@ -78,7 +78,7 @@
 #controlPanel input[type="number"] {
   width: 50px; /* A fixed width for number inputs looks tidy */
   padding: 4px 5px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--control-panel-border-color);
   border-radius: 3px;
   font-size: 0.85em;
   text-align: right;
@@ -99,7 +99,7 @@
 .radio-group-segmented {
   display: flex;
   width: 100%;
-  border: 1px solid var(--border-color); /* This is the only border for the group */
+  border: 1px solid var(--control-panel-border-color); /* This is the only border for the group */
   border-radius: 4px;
   overflow: hidden;
   margin: 4px 0;
@@ -128,8 +128,8 @@
   padding: 6px 12px;
   font-size: 0.85em;
   font-weight: 600;
-  color: var(--text-color-secondary);
-  background-color: var(--background-content-alt);
+  color: var(--control-panel-text-secondary);
+  background-color: var(--control-panel-background-alt);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -186,11 +186,11 @@
 /* --- General Info/Status Div Styling --- */
 #controlPanel fieldset div {
   font-size: 0.85em;
-  color: var(--text-color-secondary);
+  color: var(--control-panel-text-secondary);
 }
 
 #controlPanel fieldset div strong {
-  color: var(--text-color-primary);
+  color: var(--control-panel-text-primary);
   font-weight: 600;
 }
 
@@ -200,20 +200,20 @@
   align-items: center;
   padding: 4px 2px;
   font-size: 0.85em;
-  color: var(--text-color-secondary);
+  color: var(--control-panel-text-secondary);
 }
 
 .label-row strong {
-  color: var(--text-color-primary);
+  color: var(--control-panel-text-primary);
   font-weight: 600;
 }
 
 .control-section {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--control-panel-border-color);
   border-radius: 6px;
   padding: 8px 10px;
   margin: 0;
-  background-color: var(--background-content-alt);
+  background-color: var(--control-panel-background-alt);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
@@ -222,11 +222,11 @@
 }
 
 .control-subsection {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--control-panel-border-color);
   border-radius: 6px;
   padding: 8px 10px;
   margin: 0;
-  background-color: var(--background-content-alt);
+  background-color: var(--control-panel-background-alt);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: row;

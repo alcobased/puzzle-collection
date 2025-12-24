@@ -13,13 +13,44 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.control-group {
+.control-groups-wrapper {
+  display: flex;
+  justify-content: space-around;
   margin-top: 15px;
+}
+
+.control-group {
+  position: relative; /* Add this to position the tooltip correctly */
+  flex: 1;
+  margin: 0 10px;
 }
 
 .control-group label {
   display: block;
   margin-bottom: 5px;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -110px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.control-group input:hover + .tooltip,
+.control-group input:focus + .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 .control-panel button {

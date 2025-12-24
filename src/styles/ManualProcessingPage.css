@@ -1,0 +1,116 @@
+.manual-processing-page {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center; /* Center content horizontally */
+}
+
+.manual-controls {
+    background-color: var(--background-content);
+    color: var(--text-color-primary);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: 800px; /* Max width for controls */
+}
+
+.status-info {
+    background-color: var(--background-content-secondary);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.status-info h4 {
+    margin-top: 0;
+    color: var(--text-color-secondary);
+}
+
+.status-info p {
+    margin: 0.5rem 0;
+    font-family: monospace;
+}
+
+.manual-stage {
+    width: 100%;
+    max-width: 800px; /* Match control panel width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.interactive-canvas-container {
+    position: relative; /* Needed for magnifier positioning */
+    max-width: 100%;
+    cursor: default; /* Use default cursor instead of hiding it */
+}
+
+.magnifier {
+    display: none;
+    position: fixed; /* Use fixed to position relative to viewport */
+    width: 150px;
+    height: 150px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    pointer-events: none; /* Make it unclickable */
+    z-index: 100;
+    background-color: #fff; /* Fallback color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    /* Add a crosshair for precise aiming */
+    --crosshair-color: rgba(0, 0, 0, 0.5);
+    --crosshair-width: 1px;
+}
+
+/* Horizontal line of the crosshair */
+.magnifier::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: var(--crosshair-width);
+    background: var(--crosshair-color);
+    transform: translateY(-50%);
+}
+
+/* Vertical line of the crosshair */
+.magnifier::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: var(--crosshair-width);
+    background: var(--crosshair-color);
+    transform: translateX(-50%);
+}
+
+.manual-stage button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #007bff;
+    color: white;
+}
+
+.manual-stage button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+.manual-stage img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}

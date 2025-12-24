@@ -6,6 +6,7 @@ import DominoPage from "../puzzles/domino/DominoPage";
 import TextrisPage from "../puzzles/textris/TextrisPage";
 import AboutPage from "../pages/AboutPage";
 import ImageProcessingPage from "../pages/ImageProcessingPage";
+import ManualProcessingPage from "../pages/ManualProcessingPage";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path="/domino" element={<DominoPage />} />
         <Route path="/textris" element={<TextrisPage />} />
         <Route path="/image-processing" element={<ImageProcessingPage />} />
+        <Route path="/manual-processing" element={<ManualProcessingPage />} />
         <Route path="/about" element={<AboutPage />} />
       </Routes>
     </div>
