@@ -28,7 +28,7 @@ export const orderPoints = (points) => {
 
 
 // imgEl is the <img> element with the original image
-export const fix_perspective = (imgEl, perspectivePoints, cv) => {
+export const fix_perspective = (imgEl, perspectivePoints, cv, sizeMultiplier = 2) => {
     const src = cv.imread(imgEl);
 
     // Order the points robustly, ensuring we know which corner is which.
@@ -48,11 +48,11 @@ export const fix_perspective = (imgEl, perspectivePoints, cv) => {
         throw new Error("Perspective dimensions must be positive.");
     }
 
-    // 2. Setup a large canvas to prevent clipping (3x the original size)
+    // 2. Setup a large canvas to prevent clipping
     const srcW = src.size().width;
     const srcH = src.size().height;
-    const outW = srcW * 3;
-    const outH = srcH * 3;
+    const outW = srcW * sizeMultiplier;
+    const outH = srcH * sizeMultiplier;
     const dsize = new cv.Size(outW, outH);
 
     // 3. Center the result in the large canvas

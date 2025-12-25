@@ -19,6 +19,7 @@ const ManualProcessingPage = () => {
   const [originalDimensions, setOriginalDimensions] = useState(null);
   const [lastPoint, setLastPoint] = useState(null);
   const [processedDimensions, setProcessedDimensions] = useState(null);
+  const [sizeMultiplier, setSizeMultiplier] = useState(2);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -105,7 +106,7 @@ const ManualProcessingPage = () => {
   const handlePerspectiveConfirm = () => {
     if (!window.cv || !imgRef.current) return;
     setStatusText("Correcting perspective...");
-    const result = fix_perspective(imgRef.current, perspectivePoints, window.cv);
+    const result = fix_perspective(imgRef.current, perspectivePoints, window.cv, sizeMultiplier);
     setFinalImage(result);
     setStage("trimming");
     setStatusText("Step 2 of 2: Mark top, right, bottom, and left edges to trim.");
@@ -157,6 +158,17 @@ const ManualProcessingPage = () => {
               <div ref={magnifierRef} className="magnifier"></div>
             </div>
             <p>Points selected: {perspectivePoints.length} / 4</p>
+            <div className="perspective-controls">
+                <label htmlFor="size-multiplier">Canvas Size Multiplier:</label>
+                <input
+                    type="number"
+                    id="size-multiplier"
+                    value={sizeMultiplier}
+                    onChange={(e) => setSizeMultiplier(parseFloat(e.target.value))}
+                    min="1"
+                    step="0.1"
+                />
+            </div>
             <button 
                 onClick={handlePerspectiveConfirm} 
                 disabled={perspectivePoints.length !== 4}
