@@ -3,7 +3,8 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    align-items: center; /* Center content horizontally */
+    align-items: center;
+    /* Center content horizontally */
 }
 
 .manual-controls {
@@ -16,7 +17,8 @@
     flex-direction: column;
     gap: 0.8rem;
     width: 100%;
-    max-width: 800px; /* Max width for controls */
+    max-width: 800px;
+    /* Max width for controls */
 }
 
 .status-info {
@@ -39,7 +41,8 @@
 
 .manual-stage {
     width: 100%;
-    max-width: 800px; /* Match control panel width */
+    max-width: 800px;
+    /* Match control panel width */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,22 +50,27 @@
 }
 
 .interactive-canvas-container {
-    position: relative; /* Needed for magnifier positioning */
+    position: relative;
+    /* Needed for magnifier positioning */
     max-width: 100%;
-    cursor: default; /* Use default cursor instead of hiding it */
+    cursor: default;
+    /* Use default cursor instead of hiding it */
 }
 
 .magnifier {
     display: none;
-    position: fixed; /* Use fixed to position relative to viewport */
+    position: fixed;
+    /* Use fixed to position relative to viewport */
     width: 150px;
     height: 150px;
     border: 2px solid var(--primary-color);
     border-radius: 50%;
     background-repeat: no-repeat;
-    pointer-events: none; /* Make it unclickable */
+    pointer-events: none;
+    /* Make it unclickable */
     z-index: 100;
-    background-color: #fff; /* Fallback color */
+    background-color: #fff;
+    /* Fallback color */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     /* Add a crosshair for precise aiming */
     --crosshair-color: rgba(0, 0, 0, 0.5);
@@ -113,4 +121,53 @@
     height: auto;
     border: 1px solid #ddd;
     border-radius: 4px;
+}
+
+/* Grid Detection Controls */
+.grid-controls {
+    background-color: var(--background-content);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+}
+
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.95rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
 }
