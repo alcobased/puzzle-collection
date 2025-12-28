@@ -158,6 +158,13 @@ const ManualProcessingPage = () => {
     setStage("extraction");
     setStatusText("AI Classification complete.");
   };
+  const handleRevert = () => {
+    if (stage === "perspective") {
+      setPerspectivePoints([]);
+    } else if (stage === "trimming") {
+      setTrimmingPoints([]);
+    }
+  };
 
   const renderCurrentStage = () => {
     switch (stage) {
@@ -190,12 +197,17 @@ const ManualProcessingPage = () => {
                 step="0.1"
               />
             </div>
-            <button
-              onClick={handlePerspectiveConfirm}
-              disabled={perspectivePoints.length !== 4}
-            >
-              {'Fix Perspective'}
-            </button>
+            <div className="manual-stage-controls">
+              <button
+                onClick={handlePerspectiveConfirm}
+                disabled={perspectivePoints.length !== 4}
+              >
+                {'Fix Perspective'}
+              </button>
+              <button onClick={handleRevert}>
+                Revert
+              </button>
+            </div>
           </div>
         );
       case "trimming":
@@ -209,19 +221,24 @@ const ManualProcessingPage = () => {
                 points={trimmingPoints}
                 stage={stage}
                 onCanvasClick={handleCanvasClick}
-                onImageLoaded={() => { }} // Dimensions are already known
+                onImageLoaded={() => {}} // Dimensions are already known
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               />
               <div ref={magnifierRef} className="magnifier"></div>
             </div>
             <p>Points selected: {trimmingPoints.length} / 4 (Top, Right, Bottom, Left)</p>
-            <button
-              onClick={handleTrimConfirm}
-              disabled={trimmingPoints.length !== 4}
-            >
-              {'Trim Image'}
-            </button>
+            <div className="manual-stage-controls">
+              <button
+                onClick={handleTrimConfirm}
+                disabled={trimmingPoints.length !== 4}
+              >
+                {'Trim Image'}
+              </button>
+              <button onClick={handleRevert}>
+                Revert
+              </button>
+            </div>
           </div>
         );
       case "grid-detection":
