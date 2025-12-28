@@ -12,6 +12,7 @@ import {
   overlayGrid,
 } from "../../features/opencv/gridProcessing";
 import "../../styles/ManualProcessingPage.css";
+import { AppConfig } from "../../config";
 
 const ManualProcessingPage = () => {
   const openCVLoaded = useScript("https://docs.opencv.org/4.5.4/opencv.js");
@@ -51,12 +52,11 @@ const ManualProcessingPage = () => {
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
-          const MAX_PIXELS = 2_000_000;
           const currentPixels = img.width * img.height;
           let finalImageSrc = img.src;
 
-          if (currentPixels > MAX_PIXELS) {
-            const scaleRatio = Math.sqrt(MAX_PIXELS / currentPixels);
+          if (currentPixels > AppConfig.MAX_IMAGE_PIXELS) {
+            const scaleRatio = Math.sqrt(AppConfig.MAX_IMAGE_PIXELS / currentPixels);
             const newWidth = Math.floor(img.width * scaleRatio);
             const newHeight = Math.floor(img.height * scaleRatio);
             const canvas = document.createElement("canvas");
@@ -164,22 +164,63 @@ const ManualProcessingPage = () => {
       case "perspective":
         return (
           <div className="manual-stage">
-            <InteractiveCanvas
-              ref={canvasRef}
-              imgRef={imgRef}
-              imageSrc={imageSrc}
-              points={perspectivePoints}
-              stage={stage}
-              onCanvasClick={handleCanvasClick}
-              onImageLoaded={handleImageLoaded}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-            />
+            <div className="interactive-canvas-container">
+              <InteractiveCanvas
+                ref={canvasRef}
+                imgRef={imgRef}
+                imageSrc={imageSrc}
+                points={perspectivePoints}
+                stage={stage}
+                onCanvasClick={handleCanvasClick}
+                onImageLoaded={handleImageLoaded}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              />
+              <div ref={magnifierRef} className="magnifier"></div>
+            </div>
+            <p>Points selected: {perspectivePoints.length} / 4</p>
+            <div className="perspective-controls">
+              <label htmlFor="size-multiplier">Canvas Size Multiplier:</label>
+              <input
+                type="number"
+                id="size-multiplier"
+                value={sizeMultiplier}
+                onChange={(e) => setSizeMultiplier(parseFloat(e.target.value))}
+                min="1"
+                step="0.1"
+              />
+            </div>
             <button
               onClick={handlePerspectiveConfirm}
               disabled={perspectivePoints.length !== 4}
             >
-              Fix Perspective
+              {'Fix Perspective'}
+            </button>
+          </div>
+        );
+      case "trimming":
+        return (
+          <div className="manual-stage">
+            <div className="interactive-canvas-container">
+              <InteractiveCanvas
+                ref={canvasRef}
+                imgRef={imgRef} // This ref is now for the perspective-corrected image
+                imageSrc={finalImage} // Display the result from the last step
+                points={trimmingPoints}
+                stage={stage}
+                onCanvasClick={handleCanvasClick}
+                onImageLoaded={() => { }} // Dimensions are already known
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              />
+              <div ref={magnifierRef} className="magnifier"></div>
+            </div>
+            <p>Points selected: {trimmingPoints.length} / 4 (Top, Right, Bottom, Left)</p>
+            <button
+              onClick={handleTrimConfirm}
+              disabled={trimmingPoints.length !== 4}
+            >
+              {'Trim Image'}
             </button>
           </div>
         );
@@ -268,10 +309,35 @@ const ManualProcessingPage = () => {
 
   // Helper functions for UI interaction
   const handleCanvasClick = (e) => {
-    /* ... same as original ... */
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.round(e.clientX - rect.left);
+    const y = Math.round(e.clientY - rect.top);
+    const newPoint = { x, y };
+
+    if (stage === "perspective" && perspectivePoints.length < 4) {
+      setPerspectivePoints([...perspectivePoints, newPoint]);
+    } else if (stage === "trimming" && trimmingPoints.length < 4) {
+      setTrimmingPoints([...trimmingPoints, newPoint]);
+    }
+    setLastPoint(newPoint);
   };
   const handleMouseMove = (e) => {
-    /* ... same as original ... */
+    if (!canvasRef.current || !magnifierRef.current) return;
+    const canvas = canvasRef.current;
+    const magnifier = magnifierRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    magnifier.style.display = "block";
+    magnifier.style.left = e.clientX + 10 + "px";
+    magnifier.style.top = e.clientY + 10 + "px";
+
+    magnifier.style.backgroundImage = `url(${canvas.toDataURL()})`;
+    const zoom = 2;
+    magnifier.style.backgroundSize = `${canvas.width * zoom}px ${canvas.height * zoom}px`;
+    magnifier.style.backgroundPosition = `-${x * zoom - 75}px -${y * zoom - 75}px`;
   };
   const handleMouseLeave = () => {
     if (magnifierRef.current) {
@@ -279,11 +345,24 @@ const ManualProcessingPage = () => {
     }
   };
   const handlePerspectiveConfirm = () => {
-    /* ... same as original ... */
+    if (!window.cv || !imgRef.current) return;
+    setStatusText("Correcting perspective...");
+    const result = fix_perspective(imgRef.current, perspectivePoints, window.cv, sizeMultiplier);
+    setFinalImage(result);
+    setStage("trimming");
+    setStatusText("Step 2 of 2: Mark top, right, bottom, and left edges to trim.");
   };
   const handleTrimConfirm = async () => {
-    /* ... same as original ... */
-  };
+    if (!window.cv || !imgRef.current) return;
+    setStatusText("Trimming image...");
+    const result = trim_image(imgRef.current, trimmingPoints, window.cv);
+    setFinalImage(result);
+
+    // Initialize grid detection
+    setStage("grid-detection");
+    setStatusText("Step 3 of 3: Adjust grid detection settings.");
+    await performGridDetection(result, bias);
+  }
   const handleImageLoaded = ({ width, height }) =>
     setOriginalDimensions({ width, height });
 
