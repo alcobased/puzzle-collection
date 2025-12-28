@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const useScript = (src) => {
   const [loaded, setLoaded] = useState(false);
@@ -9,7 +9,7 @@ const useScript = (src) => {
       return;
     }
 
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src = src;
     script.async = true;
     script.onload = () => setLoaded(true);
