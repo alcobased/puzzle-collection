@@ -1,7 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import useScript from "../../hooks/useScript";
 import useClassifier from "../../hooks/useClassifier";
-import { InteractiveCanvas } from "../common/InteractiveCanvas";
+import ImageUpload from "./stages/ImageUpload";
+import PerspectiveCorrection from "./stages/PerspectiveCorrection";
+import Trimming from "./stages/Trimming";
+import GridDimensionDetector from "./stages/GridDimensionDetector";
+import CellClassifier from "./stages/CellClassifier";
 import {
   fix_perspective,
   trim_image,
@@ -9,12 +14,17 @@ import {
 import {
   detectAndOverlayGrid,
   extractGridStructure,
-  overlayGrid,
 } from "../../features/opencv/gridProcessing";
+import {
+  setBoardMode,
+  setGridSize,
+  setCells,
+} from "../../features/pathfinder/pathfinderSlice";
 import "../../styles/ManualProcessingPage.css";
 import { AppConfig } from "../../config";
 
-const ManualProcessingPage = () => {
+const ImageProcessingPage = () => {
+  const dispatch = useDispatch();
   const openCVLoaded = useScript("https://docs.opencv.org/4.5.4/opencv.js");
   const { predictCanvas, loading: modelLoading } = useClassifier();
 
@@ -30,9 +40,6 @@ const ManualProcessingPage = () => {
   const magnifierRef = useRef(null);
   const imgRef = useRef(null);
 
-  const [originalDimensions, setOriginalDimensions] = useState(null);
-  const [lastPoint, setLastPoint] = useState(null);
-  const [processedDimensions, setProcessedDimensions] = useState(null);
   const [sizeMultiplier, setSizeMultiplier] = useState(2);
 
   // Grid Detection State
@@ -56,7 +63,9 @@ const ManualProcessingPage = () => {
           let finalImageSrc = img.src;
 
           if (currentPixels > AppConfig.MAX_IMAGE_PIXELS) {
-            const scaleRatio = Math.sqrt(AppConfig.MAX_IMAGE_PIXELS / currentPixels);
+            const scaleRatio = Math.sqrt(
+              AppConfig.MAX_IMAGE_PIXELS / currentPixels
+            );
             const newWidth = Math.floor(img.width * scaleRatio);
             const newHeight = Math.floor(img.height * scaleRatio);
             const canvas = document.createElement("canvas");
@@ -70,7 +79,6 @@ const ManualProcessingPage = () => {
           if (skipPreprocessing) {
             setFinalImage(finalImageSrc);
             setStage("grid-detection");
-            // Reset relevant states
             setPerspectivePoints([]);
             setTrimmingPoints([]);
             setGridImage(null);
@@ -106,11 +114,7 @@ const ManualProcessingPage = () => {
     }
 
     setStatusText("AI is analyzing segments...");
-    const { cells } = await extractGridStructure(
-      finalImage,
-      rowCount,
-      colCount
-    );
+    const { cells } = await extractGridStructure(finalImage, rowCount, colCount);
 
     const img = new Image();
     img.src = finalImage;
@@ -158,6 +162,7 @@ const ManualProcessingPage = () => {
     setStage("extraction");
     setStatusText("AI Classification complete.");
   };
+
   const handleRevert = () => {
     if (stage === "perspective") {
       setPerspectivePoints([]);
@@ -166,158 +171,89 @@ const ManualProcessingPage = () => {
     }
   };
 
+  const handleFinish = () => {
+    const newCells = {};
+    extractedCells.forEach((cell) => {
+      if (cell.active) {
+        const id = `${cell.col},${cell.row}`;
+        newCells[id] = {
+          id,
+          gridPosition: { x: cell.col, y: cell.row },
+          char: null,
+          solutionChar: null,
+        };
+      }
+    });
+
+    dispatch(setBoardMode("grid"));
+    dispatch(setGridSize({ width: colCount, height: rowCount }));
+    dispatch(setCells(newCells));
+    setStage("done");
+    setStatusText("Grid data sent to Pathfinder puzzle.");
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = finalImage;
+    link.download = "corrected-image.png";
+    link.click();
+  };
+
   const renderCurrentStage = () => {
     switch (stage) {
       case "perspective":
         return (
-          <div className="manual-stage">
-            <div className="interactive-canvas-container">
-              <InteractiveCanvas
-                ref={canvasRef}
-                imgRef={imgRef}
-                imageSrc={imageSrc}
-                points={perspectivePoints}
-                stage={stage}
-                onCanvasClick={handleCanvasClick}
-                onImageLoaded={handleImageLoaded}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-              />
-              <div ref={magnifierRef} className="magnifier"></div>
-            </div>
-            <p>Points selected: {perspectivePoints.length} / 4</p>
-            <div className="perspective-controls">
-              <label htmlFor="size-multiplier">Canvas Size Multiplier:</label>
-              <input
-                type="number"
-                id="size-multiplier"
-                value={sizeMultiplier}
-                onChange={(e) => setSizeMultiplier(parseFloat(e.target.value))}
-                min="1"
-                step="0.1"
-              />
-            </div>
-            <div className="manual-stage-controls">
-              <button
-                onClick={handlePerspectiveConfirm}
-                disabled={perspectivePoints.length !== 4}
-              >
-                {'Fix Perspective'}
-              </button>
-              <button onClick={handleRevert}>
-                Revert
-              </button>
-            </div>
-          </div>
+          <PerspectiveCorrection
+            canvasRef={canvasRef}
+            imgRef={imgRef}
+            imageSrc={imageSrc}
+            points={perspectivePoints}
+            onCanvasClick={handleCanvasClick}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            magnifierRef={magnifierRef}
+            sizeMultiplier={sizeMultiplier}
+            setSizeMultiplier={setSizeMultiplier}
+            handlePerspectiveConfirm={handlePerspectiveConfirm}
+          />
         );
       case "trimming":
         return (
-          <div className="manual-stage">
-            <div className="interactive-canvas-container">
-              <InteractiveCanvas
-                ref={canvasRef}
-                imgRef={imgRef} // This ref is now for the perspective-corrected image
-                imageSrc={finalImage} // Display the result from the last step
-                points={trimmingPoints}
-                stage={stage}
-                onCanvasClick={handleCanvasClick}
-                onImageLoaded={() => {}} // Dimensions are already known
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-              />
-              <div ref={magnifierRef} className="magnifier"></div>
-            </div>
-            <p>Points selected: {trimmingPoints.length} / 4 (Top, Right, Bottom, Left)</p>
-            <div className="manual-stage-controls">
-              <button
-                onClick={handleTrimConfirm}
-                disabled={trimmingPoints.length !== 4}
-              >
-                {'Trim Image'}
-              </button>
-              <button onClick={handleRevert}>
-                Revert
-              </button>
-            </div>
-          </div>
+          <Trimming
+            canvasRef={canvasRef}
+            imgRef={imgRef}
+            imageSrc={finalImage}
+            points={trimmingPoints}
+            onCanvasClick={handleCanvasClick}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            magnifierRef={magnifierRef}
+            handleTrimConfirm={handleTrimConfirm}
+          />
         );
       case "grid-detection":
         return (
-          <div className="manual-stage">
-            <img
-              src={gridImage || finalImage}
-              alt="Grid"
-              style={{ maxWidth: "100%" }}
-            />
-            <div className="grid-controls">
-              <input
-                type="range"
-                min="0.5"
-                max="1.5"
-                step="0.05"
-                value={bias}
-                onChange={(e) => {
-                  setBias(parseFloat(e.target.value));
-                  performGridDetection(finalImage, parseFloat(e.target.value));
-                }}
-              />
-              <button onClick={handleGridConfirm}>AI Classify</button>
-            </div>
-          </div>
+          <GridDimensionDetector
+            gridImage={gridImage}
+            finalImage={finalImage}
+            bias={bias}
+            setBias={setBias}
+            performGridDetection={performGridDetection}
+            handleGridConfirm={handleGridConfirm}
+            handleDownload={handleDownload}
+          />
         );
       case "extraction":
         return (
-          <div className="manual-stage">
-            <div
-              className="extraction-container"
-              style={{ position: "relative" }}
-            >
-              <img
-                src={finalImage}
-                alt="Base"
-                style={{ display: "block", maxWidth: "100%" }}
-              />
-              <div
-                className="extraction-overlay"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  display: "grid",
-                  gridTemplateRows: `repeat(${rowCount}, 1fr)`,
-                  gridTemplateColumns: `repeat(${colCount}, 1fr)`,
-                }}
-              >
-                {extractedCells.map((cell, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => {
-                      setExtractedCells((prev) =>
-                        prev.map((c) =>
-                          c.row === cell.row && c.col === cell.col
-                            ? { ...c, active: !c.active }
-                            : c
-                        )
-                      );
-                    }}
-                    style={{
-                      border:
-                        cell.confidence < 80
-                          ? "2px solid orange"
-                          : "1px solid rgba(255, 255, 255, 0.1)",
-                      backgroundColor: cell.active
-                        ? "rgba(0, 255, 0, 0.35)"
-                        : "rgba(255, 0, 0, 0.15)",
-                      cursor: "pointer",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-            <button onClick={() => setStage("done")}>Finish</button>
-          </div>
+          <CellClassifier
+            finalImage={finalImage}
+            rowCount={rowCount}
+            colCount={colCount}
+            extractedCells={extractedCells}
+            setExtractedCells={setExtractedCells}
+            handleFinish={handleFinish}
+            handleDownload={handleDownload}
+          />
         );
       default:
         return null;
@@ -327,6 +263,7 @@ const ManualProcessingPage = () => {
   // Helper functions for UI interaction
   const handleCanvasClick = (e) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const x = Math.round(e.clientX - rect.left);
     const y = Math.round(e.clientY - rect.top);
@@ -337,8 +274,8 @@ const ManualProcessingPage = () => {
     } else if (stage === "trimming" && trimmingPoints.length < 4) {
       setTrimmingPoints([...trimmingPoints, newPoint]);
     }
-    setLastPoint(newPoint);
   };
+
   const handleMouseMove = (e) => {
     if (!canvasRef.current || !magnifierRef.current) return;
     const canvas = canvasRef.current;
@@ -353,22 +290,34 @@ const ManualProcessingPage = () => {
 
     magnifier.style.backgroundImage = `url(${canvas.toDataURL()})`;
     const zoom = 2;
-    magnifier.style.backgroundSize = `${canvas.width * zoom}px ${canvas.height * zoom}px`;
+    magnifier.style.backgroundSize = `${canvas.width * zoom}px ${
+      canvas.height * zoom
+    }px`;
     magnifier.style.backgroundPosition = `-${x * zoom - 75}px -${y * zoom - 75}px`;
   };
+
   const handleMouseLeave = () => {
     if (magnifierRef.current) {
       magnifierRef.current.style.display = "none";
     }
   };
+
   const handlePerspectiveConfirm = () => {
     if (!window.cv || !imgRef.current) return;
     setStatusText("Correcting perspective...");
-    const result = fix_perspective(imgRef.current, perspectivePoints, window.cv, sizeMultiplier);
+    const result = fix_perspective(
+      imgRef.current,
+      perspectivePoints,
+      window.cv,
+      sizeMultiplier
+    );
     setFinalImage(result);
     setStage("trimming");
-    setStatusText("Step 2 of 2: Mark top, right, bottom, and left edges to trim.");
+    setStatusText(
+      "Step 2 of 2: Mark top, right, bottom, and left edges to trim."
+    );
   };
+
   const handleTrimConfirm = async () => {
     if (!window.cv || !imgRef.current) return;
     setStatusText("Trimming image...");
@@ -379,35 +328,28 @@ const ManualProcessingPage = () => {
     setStage("grid-detection");
     setStatusText("Step 3 of 3: Adjust grid detection settings.");
     await performGridDetection(result, bias);
-  }
-  const handleImageLoaded = ({ width, height }) =>
-    setOriginalDimensions({ width, height });
+  };
 
   return (
     <div className="manual-processing-page">
-      <h2>Manual Image Processor</h2>
+      <h2>Image Processor</h2>
       <div className="manual-controls">
         <p>
           OpenCV: {openCVLoaded ? "🟢" : "🔴"} | AI:{" "}
           {modelLoading ? "⏳" : "🟢"}
         </p>
         {stage === "load" && (
-          <div className="upload-section">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={skipPreprocessing}
-                onChange={(e) => setSkipPreprocessing(e.target.checked)}
-              />
-              Skip Preprocessing
-            </label>
-            <input type="file" onChange={handleImageChange} accept="image/*" />
-          </div>
+          <ImageUpload
+            handleImageChange={handleImageChange}
+            skipPreprocessing={skipPreprocessing}
+            setSkipPreprocessing={setSkipPreprocessing}
+          />
         )}
       </div>
+      {statusText && <p className="status-text">{statusText}</p>}
       {renderCurrentStage()}
     </div>
   );
 };
 
-export default ManualProcessingPage;
+export default ImageProcessingPage;

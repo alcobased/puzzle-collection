@@ -48,6 +48,15 @@ const pathfinderSlice = createSlice({
     setPathfinderState(state, action) {
       return action.payload;
     },
+    // Reducer for setting a board mode
+    setBoardMode(state, action) {
+      state.boardMode = action.payload;
+    },
+    setGridSize(state, action) {
+      const { width, height } = action.payload;
+      state.grid.width = width;
+      state.grid.height = height;
+    },
     // Reducer for toggling the board type
     toggleBoardMode(state) {
       state.boardMode = state.boardMode === "image" ? "grid" : "image";
@@ -267,6 +276,8 @@ const pathfinderSlice = createSlice({
 
 export const {
   setPathfinderState,
+  setBoardMode,
+  setGridSize,
   toggleBoardMode,
   addCell,
   setCells,
