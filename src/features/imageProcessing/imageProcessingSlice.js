@@ -11,8 +11,8 @@ const initialState = {
   statusText: 'Please load an image to begin.',
   sizeMultiplier: AppConfig.imageProcessingDefaults.sizeMultiplier,
   gridImage: null,
-  rowCount: 0,
-  colCount: 0,
+  rowCount: AppConfig.imageProcessingDefaults.rowCount,
+  colCount: AppConfig.imageProcessingDefaults.colCount,
   bias: AppConfig.imageProcessingDefaults.bias,
   extractedCells: [],
   skipPreprocessing: AppConfig.imageProcessingDefaults.skipPreprocessing,
@@ -82,8 +82,8 @@ export const imageProcessingSlice = createSlice({
       state.statusText = 'Please load an image to begin.';
       state.sizeMultiplier = AppConfig.imageProcessingDefaults.sizeMultiplier;
       state.gridImage = null;
-      state.rowCount = 0;
-      state.colCount = 0;
+      state.rowCount = AppConfig.imageProcessingDefaults.rowCount;
+      state.colCount = AppConfig.imageProcessingDefaults.colCount;
       state.bias = AppConfig.imageProcessingDefaults.bias;
       state.extractedCells = [];
       state.skipPreprocessing = AppConfig.imageProcessingDefaults.skipPreprocessing;

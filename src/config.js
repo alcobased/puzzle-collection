@@ -11,5 +11,7 @@ export const AppConfig = {
     sizeMultiplier: 1,
     bias: 0.9,
     skipPreprocessing: false,
+    rowCount: 10,
+    colCount: 10,
   },
 };
