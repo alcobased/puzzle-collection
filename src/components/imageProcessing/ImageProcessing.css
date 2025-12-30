@@ -12,11 +12,13 @@
   background-color: var(--background-content);
   color: var(--text-color-primary);
   border: 1px solid var(--border-color);
-  padding: 1rem; /* Reduced padding */
+  padding: 1rem;
+  /* Reduced padding */
   border-radius: 12px;
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Reduced gap */
+  gap: 1rem;
+  /* Reduced gap */
   width: 100%;
   max-width: 900px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -30,7 +32,8 @@
 
 .image-processing-header h2 {
   margin: 0;
-  font-size: 1.5rem; /* Reduced font size */
+  font-size: 1.5rem;
+  /* Reduced font size */
   color: var(--text-color-primary);
 }
 
@@ -55,7 +58,8 @@
   display: flex;
   justify-content: center;
   gap: 0.8rem;
-  flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+  flex-wrap: wrap;
+  /* Allows buttons to wrap on smaller screens */
 }
 
 .stage-button {
@@ -79,4 +83,46 @@
   color: white;
   border-color: var(--primary-color);
   font-weight: bold;
+}
+
+/* Debug View Styles */
+.debug-view {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 900px;
+  background-color: var(--background-content);
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.debug-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.debug-cell {
+  border: 1px solid var(--border-color);
+  padding: 4px;
+  text-align: center;
+  width: 74px;
+  /* 64px image + padding/border */
+}
+
+.debug-cell img {
+  width: 64px;
+  height: 64px;
+  display: block;
+}
+
+.debug-cell-info {
+  font-size: 0.7rem;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

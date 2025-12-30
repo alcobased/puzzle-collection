@@ -93,8 +93,8 @@ const PathfinderWorkspaceGrid = () => {
   };
 
   const cells = [];
-  for (let y = 0; y < width; y++) {
-    for (let x = 0; x < height; x++) {
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
       const key = `${x},${y}`;
       const char = cellSet[key] ? cellSet[key].char : null;
       const solutionChar = cellSet[key] ? cellSet[key].solutionChar : null;
@@ -109,13 +109,13 @@ const PathfinderWorkspaceGrid = () => {
           additionalClassList={[
             "cell-grid",
             selectionStartCell &&
-            x === selectionStartCell.x &&
-            y === selectionStartCell.y
+              x === selectionStartCell.x &&
+              y === selectionStartCell.y
               ? "selected-start"
               : "",
             selectionEndCell &&
-            x === selectionEndCell.x &&
-            y === selectionEndCell.y
+              x === selectionEndCell.x &&
+              y === selectionEndCell.y
               ? "selected-end"
               : "",
             isSelectedCell({ x, y }, selectionStartCell, selectionEndCell)
@@ -126,11 +126,11 @@ const PathfinderWorkspaceGrid = () => {
               ? "queue-start"
               : "",
             queueFlashing &&
-            queueFlashing.currentQueue &&
-            queueFlashing.currentCellIndex !== null &&
-            queueSet[queueFlashing.currentQueue][
+              queueFlashing.currentQueue &&
+              queueFlashing.currentCellIndex !== null &&
+              queueSet[queueFlashing.currentQueue][
               queueFlashing.currentCellIndex
-            ] === key
+              ] === key
               ? "flashing"
               : "",
           ]}

@@ -1,7 +1,7 @@
 const matToDataUrl = (mat) => {
-  const canvas = document.createElement('canvas');
-  cv.imshow(canvas, mat);
-  return canvas.toDataURL('image/png');
+    const canvas = document.createElement('canvas');
+    cv.imshow(canvas, mat);
+    return canvas.toDataURL('image/png');
 };
 
 export const warpPerspective = (imgSrc, perspectivePoints, sizeMultiplier = 1) => {
@@ -18,12 +18,12 @@ export const warpPerspective = (imgSrc, perspectivePoints, sizeMultiplier = 1) =
 
             try {
                 src = cv.imread(img);
-                
+
                 // A robust way to order the 4 points: tl, tr, br, bl
                 const pts = [...perspectivePoints].map(p => ({ x: p.x, y: p.y }));
                 const sums = pts.map(p => p.x + p.y);
                 const diffs = pts.map(p => p.y - p.x);
-                
+
                 const tl = pts[sums.indexOf(Math.min(...sums))];
                 const br = pts[sums.indexOf(Math.max(...sums))];
                 const tr = pts[diffs.indexOf(Math.min(...diffs))];
@@ -41,7 +41,7 @@ export const warpPerspective = (imgSrc, perspectivePoints, sizeMultiplier = 1) =
                 if (maxWidth <= 0 || maxHeight <= 0) {
                     throw new Error('Perspective dimensions must be positive.');
                 }
-                
+
                 const w = Math.floor(maxWidth * sizeMultiplier);
                 const h = Math.floor(maxHeight * sizeMultiplier);
 
@@ -82,7 +82,7 @@ export const warpPerspective = (imgSrc, perspectivePoints, sizeMultiplier = 1) =
 
                 resolve(result);
 
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 reject(e);
             } finally {
@@ -146,37 +146,90 @@ export const trimImage = (imgSrc, trimmingPoints) => {
     });
 };
 
-export const extractGridStructure = (imgSrc, rowCount, colCount, bias) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = imgSrc;
-    img.onload = () => {
-      let src;
-      try {
-        src = cv.imread(img);
-        const cells = [];
-        const cellWidth = src.cols / colCount;
-        const cellHeight = src.rows / rowCount;
+export const extractGridStructure = (imgSrc, rowCount, colCount, cellPadding) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = imgSrc;
+        img.onload = () => {
+            let src;
+            try {
+                src = cv.imread(img);
+                const cells = [];
+                const cellWidth = src.cols / colCount;
+                const cellHeight = src.rows / rowCount;
 
-        for (let r = 0; r < rowCount; r++) {
-          for (let c = 0; c < colCount; c++) {
-            const x = c * cellWidth;
-            const y = r * cellHeight;
-            const rect = new cv.Rect(x, y, cellWidth, cellHeight);
-            const cell = src.roi(rect);
-            cells.push(matToDataUrl(cell));
-            cell.delete();
-          }
+                for (let r = 0; r < rowCount; r++) {
+                    for (let c = 0; c < colCount; c++) {
+                        const baseX = c * cellWidth;
+                        const baseY = r * cellHeight;
+
+                        // Calculate expansion
+                        const expansionX = cellWidth * cellPadding;
+                        const expansionY = cellHeight * cellPadding;
+
+                        // Center align the expansion
+                        let x = baseX - (expansionX / 2);
+                        let y = baseY - (expansionY / 2);
+                        let w = cellWidth + expansionX;
+                        let h = cellHeight + expansionY;
+
+                        // Clamp to image boundaries (ensure ROI is within the image)
+                        if (x < 0) {
+                            w += x; // reduce width by the amount we shifted x back to 0
+                            x = 0;
+                        }
+                        if (y < 0) {
+                            h += y; // reduce height by the amount we shifted y back to 0
+                            y = 0;
+                        }
+                        if (x + w > src.cols) {
+                            w = src.cols - x;
+                        }
+                        if (y + h > src.rows) {
+                            h = src.rows - y;
+                        }
+
+                        // Ensure integers for cv.Rect
+                        x = Math.floor(x);
+                        y = Math.floor(y);
+                        w = Math.floor(w);
+                        h = Math.floor(h);
+
+                        // Safety check
+                        if (w <= 0 || h <= 0) {
+                            // Fallback to strict grid if expansion fails completely (should cover edge cases)
+                            x = Math.floor(baseX);
+                            y = Math.floor(baseY);
+                            w = Math.floor(cellWidth);
+                            h = Math.floor(cellHeight);
+                            // Minimal clamp for fallback
+                            if (x + w > src.cols) w = src.cols - x;
+                            if (y + h > src.rows) h = src.rows - y;
+                        }
+
+                        const rect = new cv.Rect(x, y, w, h);
+                        const cell = src.roi(rect);
+
+                        // Resize to 64x64 to match model training data
+                        const resized = new cv.Mat();
+                        const dsize = new cv.Size(64, 64);
+                        cv.resize(cell, resized, dsize, 0, 0, cv.INTER_LINEAR);
+
+                        cells.push(matToDataUrl(resized));
+
+                        cell.delete();
+                        resized.delete();
+                    }
+                }
+                resolve(cells);
+            } catch (e) {
+                reject(e);
+            } finally {
+                if (src) src.delete();
+            }
+        };
+        img.onerror = (err) => {
+            reject(new Error("Failed to load image for grid extraction."));
         }
-        resolve(cells);
-      } catch (e) {
-        reject(e);
-      } finally {
-        if (src) src.delete();
-      }
-    };
-    img.onerror = (err) => {
-        reject(new Error("Failed to load image for grid extraction."));
-    }
-  });
+    });
 };

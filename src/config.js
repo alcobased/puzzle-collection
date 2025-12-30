@@ -9,10 +9,10 @@ export const AppConfig = {
   // Default values for the image processing feature.
   imageProcessingDefaults: {
     sizeMultiplier: 1,
-    bias: 0.9,
+    cellPadding: 0.2,
     skipPreprocessing: false,
-    rowCount: 10,
-    colCount: 10,
+    rowCount: 6,
+    colCount: 3,
     confidenceThreshold: 80,
   },
 };

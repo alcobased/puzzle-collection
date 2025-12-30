@@ -13,7 +13,7 @@ const initialState = {
   gridImage: null,
   rowCount: AppConfig.imageProcessingDefaults.rowCount,
   colCount: AppConfig.imageProcessingDefaults.colCount,
-  bias: AppConfig.imageProcessingDefaults.bias,
+  cellPadding: AppConfig.imageProcessingDefaults.cellPadding,
   extractedCells: {},
   skipPreprocessing: AppConfig.imageProcessingDefaults.skipPreprocessing,
 };
@@ -57,13 +57,13 @@ export const imageProcessingSlice = createSlice({
       state.gridImage = action.payload;
     },
     setRowCount: (state, action) => {
-        state.rowCount = action.payload;
+      state.rowCount = action.payload;
     },
     setColCount: (state, action) => {
-        state.colCount = action.payload;
+      state.colCount = action.payload;
     },
-    setBias: (state, action) => {
-      state.bias = action.payload;
+    setCellPadding: (state, action) => {
+      state.cellPadding = action.payload;
     },
     setExtractedCells: (state, action) => {
       state.extractedCells = action.payload;
@@ -98,7 +98,7 @@ export const {
   setGridImage,
   setRowCount,
   setColCount,
-  setBias,
+  setCellPadding,
   setExtractedCells,
   toggleCellActive,
   setSkipPreprocessing,
