@@ -13,5 +13,6 @@ export const AppConfig = {
     skipPreprocessing: false,
     rowCount: 10,
     colCount: 10,
+    confidenceThreshold: 80,
   },
 };

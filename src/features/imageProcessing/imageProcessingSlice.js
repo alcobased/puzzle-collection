@@ -14,7 +14,7 @@ const initialState = {
   rowCount: AppConfig.imageProcessingDefaults.rowCount,
   colCount: AppConfig.imageProcessingDefaults.colCount,
   bias: AppConfig.imageProcessingDefaults.bias,
-  extractedCells: [],
+  extractedCells: {},
   skipPreprocessing: AppConfig.imageProcessingDefaults.skipPreprocessing,
 };
 
@@ -28,20 +28,18 @@ export const imageProcessingSlice = createSlice({
     setStage: (state, action) => {
       state.stage = action.payload;
     },
-    setPerspectivePoints: (state, action) => {
-      state.perspectivePoints = action.payload;
-    },
     addPerspectivePoint: (state, action) => {
-      state.perspectivePoints.push(action.payload);
+      if (state.perspectivePoints.length < 4) {
+        state.perspectivePoints.push(action.payload);
+      }
     },
     clearPerspectivePoints: (state) => {
       state.perspectivePoints = [];
     },
-    setTrimmingPoints: (state, action) => {
-      state.trimmingPoints = action.payload;
-    },
     addTrimmingPoint: (state, action) => {
+      if (state.trimmingPoints.length < 4) {
         state.trimmingPoints.push(action.payload);
+      }
     },
     clearTrimmingPoints: (state) => {
       state.trimmingPoints = [];
@@ -59,10 +57,10 @@ export const imageProcessingSlice = createSlice({
       state.gridImage = action.payload;
     },
     setRowCount: (state, action) => {
-      state.rowCount = action.payload;
+        state.rowCount = action.payload;
     },
     setColCount: (state, action) => {
-      state.colCount = action.payload;
+        state.colCount = action.payload;
     },
     setBias: (state, action) => {
       state.bias = action.payload;
@@ -70,23 +68,19 @@ export const imageProcessingSlice = createSlice({
     setExtractedCells: (state, action) => {
       state.extractedCells = action.payload;
     },
+    toggleCellActive: (state, action) => {
+      const { row, col } = action.payload;
+      const cellKey = `${col}-${row}`;
+      const cell = state.extractedCells[cellKey];
+      if (cell) {
+        cell.active = !cell.active;
+      }
+    },
     setSkipPreprocessing: (state, action) => {
       state.skipPreprocessing = action.payload;
     },
     resetImageProcessingState: (state) => {
-      state.imageSrc = null;
-      state.stage = 'load';
-      state.perspectivePoints = [];
-      state.trimmingPoints = [];
-      state.finalImage = null;
-      state.statusText = 'Please load an image to begin.';
-      state.sizeMultiplier = AppConfig.imageProcessingDefaults.sizeMultiplier;
-      state.gridImage = null;
-      state.rowCount = AppConfig.imageProcessingDefaults.rowCount;
-      state.colCount = AppConfig.imageProcessingDefaults.colCount;
-      state.bias = AppConfig.imageProcessingDefaults.bias;
-      state.extractedCells = [];
-      state.skipPreprocessing = AppConfig.imageProcessingDefaults.skipPreprocessing;
+      return initialState;
     }
   },
 });
@@ -94,10 +88,8 @@ export const imageProcessingSlice = createSlice({
 export const {
   setImageSrc,
   setStage,
-  setPerspectivePoints,
   addPerspectivePoint,
   clearPerspectivePoints,
-  setTrimmingPoints,
   addTrimmingPoint,
   clearTrimmingPoints,
   setFinalImage,
@@ -108,6 +100,7 @@ export const {
   setColCount,
   setBias,
   setExtractedCells,
+  toggleCellActive,
   setSkipPreprocessing,
   resetImageProcessingState,
 } = imageProcessingSlice.actions;
