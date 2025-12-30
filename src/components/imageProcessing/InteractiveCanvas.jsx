@@ -9,7 +9,7 @@ export const InteractiveCanvas = () => {
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
 
-  const { imageSrc, finalImage, stage, perspectivePoints, trimmingPoints } =
+  const { imageSrc, finalImage, stage, perspectivePoints, trimmingPoints, rowCount, colCount } =
     useSelector((state) => state.imageProcessing);
 
   const getPointsForStage = () => {
@@ -64,7 +64,6 @@ export const InteractiveCanvas = () => {
         }
         ctx.stroke();
       } else if (stage === "trim") {
-        console.log(`Trimming points: ${JSON.stringify(points)}`);
 
         points.forEach((point, index) => {
           ctx.beginPath();
@@ -79,9 +78,30 @@ export const InteractiveCanvas = () => {
           }
           ctx.stroke();
         });
+      } else if (stage === "grid" && rowCount > 0 && colCount > 0) {
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        const cellWidth = canvas.width / colCount;
+        const cellHeight = canvas.height / rowCount;
+
+        for (let i = 1; i < rowCount; i++) {
+          const y = i * cellHeight;
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+        }
+
+        for (let i = 1; i < colCount; i++) {
+          const x = i * cellWidth;
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvas.height);
+        }
+        ctx.stroke();
+
       }
     };
-  }, [imageSrc, finalImage, stage, perspectivePoints, trimmingPoints]);
+  }, [imageSrc, finalImage, stage, perspectivePoints, trimmingPoints, rowCount, colCount]);
 
   const handleCanvasClick = (e) => {
     const canvas = canvasRef.current;
@@ -98,7 +118,6 @@ export const InteractiveCanvas = () => {
     const x = (e.clientX - rect.left) * scaleX;
     const y = (e.clientY - rect.top) * scaleY;
 
-    console.log(`Clicked at (${x}, ${y})`);
 
     switch (stage) {
       case "perspective":
@@ -108,7 +127,6 @@ export const InteractiveCanvas = () => {
         dispatch(addTrimmingPoint({ x, y }));
         break;
       default:
-        console.log("Unknown stage, should never happen");
         break;
     }
   };
