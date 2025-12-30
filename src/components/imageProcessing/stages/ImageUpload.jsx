@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setImageSrc,
+  setFinalImage,
   setSkipPreprocessing,
   setStage,
 } from "../../../features/imageProcessing/imageProcessingSlice";
@@ -18,10 +19,11 @@ const ImageUpload = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        dispatch(setImageSrc(e.target.result));
         if (skipPreprocessing) {
+          dispatch(setFinalImage(e.target.result));
           dispatch(setStage("grid"));
         } else {
+          dispatch(setImageSrc(e.target.result));
           dispatch(setStage("perspective"));
         }
       };
