@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import ControlSection from "./ControlSection";
 
 const ControlsStatus = () => {
     const { data: imageData, dimensions } = useSelector((state) => state.image);
@@ -10,8 +11,7 @@ const ControlsStatus = () => {
     const totalLists = Object.keys(lists).length;
 
     return (
-        <div className="control-section">
-            <h4>Status</h4>
+        <ControlSection title="Status">
             <div>
                 Image: {imageData ? `${dimensions.width}x${dimensions.height}` : "Not Loaded"}
             </div>
@@ -30,7 +30,7 @@ const ControlsStatus = () => {
             <div>
                 Active List: <strong>{activeList || 'None'}</strong>
             </div>
-        </div>
+        </ControlSection>
     );
 };
 

@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { updateBoardDimensions } from "../../../features/textris/textrisSlice";
+import ControlSection from "../../common/Controls/ControlSection";
 
 const BoardControls = ({ boardName }) => {
   const dispatch = useDispatch();
@@ -21,11 +22,7 @@ const BoardControls = ({ boardName }) => {
   };
 
   return (
-    <div className="control-section">
-      <h4>
-        {boardName === "solutionBoard" ? "Solution Board" : "Puzzle Board"}{" "}
-        Controls
-      </h4>
+    <ControlSection title={boardName === "solutionBoard" ? "Solution Board" : "Puzzle Board"}>
       <div className="control-subsection">
         <label htmlFor="width">Width</label>
         <input
@@ -46,7 +43,7 @@ const BoardControls = ({ boardName }) => {
           min="1"
         />
       </div>
-    </div>
+    </ControlSection>
   );
 };
 

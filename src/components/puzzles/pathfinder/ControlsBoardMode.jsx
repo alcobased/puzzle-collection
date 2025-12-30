@@ -5,6 +5,7 @@ import {
   toggleBoardMode,
   resetCells,
 } from "../../../features/pathfinder/pathfinderSlice.js";
+import ControlSection from "../../common/Controls/ControlSection";
 
 const MODE_GRID = "Grid";
 const MODE_IMAGE = "Image";
@@ -27,8 +28,7 @@ const ControlsBoardMode = () => {
     }
   };
   return (
-    <div className="control-section">
-      <h4>Board Mode Toggle</h4>
+    <ControlSection title="Board Mode Toggle">
       {/* NEW: Container for the segmented button group */}
       <div className="radio-group-segmented">
         {/* Radio Button for 'Grid' */}
@@ -55,7 +55,7 @@ const ControlsBoardMode = () => {
         {/* Label for 'Image' mode */}
         <label htmlFor="mode-image">{MODE_IMAGE}</label>
       </div>
-    </div>
+    </ControlSection>
   );
 };
 

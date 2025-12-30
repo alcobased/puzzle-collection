@@ -7,6 +7,7 @@ import {
   setActiveQueue,
 } from "../../../features/pathfinder/pathfinderSlice.js";
 import { showModal } from "../../../features/ui/uiSlice.js";
+import ControlSection from "../../common/Controls/ControlSection";
 
 const ControlsCells = () => {
   const dispatch = useDispatch();
@@ -19,9 +20,8 @@ const ControlsCells = () => {
       if (
         // should try maintain the same direction
         cellSet[
-          `${cell.gridPosition.x + prevDirection.x},${
-            cell.gridPosition.y + prevDirection.y
-          }`
+        `${cell.gridPosition.x + prevDirection.x},${cell.gridPosition.y + prevDirection.y
+        }`
         ]
       ) {
         return prevDirection;
@@ -111,9 +111,8 @@ const ControlsCells = () => {
         previousDirection = nextCellDirections;
         previousCell =
           cellSet[
-            `${previousCell.gridPosition.x + nextCellDirections.x},${
-              previousCell.gridPosition.y + nextCellDirections.y
-            }`
+          `${previousCell.gridPosition.x + nextCellDirections.x},${previousCell.gridPosition.y + nextCellDirections.y
+          }`
           ];
         queue.push(previousCell.id);
       }
@@ -131,9 +130,8 @@ const ControlsCells = () => {
       while (true) {
         const nextCell =
           cellSet[
-            `${startCell.gridPosition.x + direction.x},${
-              startCell.gridPosition.y + direction.y
-            }`
+          `${startCell.gridPosition.x + direction.x},${startCell.gridPosition.y + direction.y
+          }`
           ];
         if (!nextCell) {
           return queue;
@@ -205,8 +203,7 @@ const ControlsCells = () => {
   };
 
   return (
-    <div className="control-section">
-      <h4>Cells</h4>
+    <ControlSection title="Cells">
       <label>
         <div className="label-row">
           <span>Size:</span>
@@ -231,7 +228,7 @@ const ControlsCells = () => {
         <span>Queue start cell</span>
         <button onClick={handleToggleMarkingStartCell}>Mark Cell</button>
       </div>
-    </div>
+    </ControlSection>
   );
 };
 

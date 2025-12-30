@@ -4,13 +4,16 @@ import { setDominoState } from "../../../features/domino/dominoSlice.js";
 import { setTextrisState } from "../../../features/textris/textrisSlice.js";
 import { setWordsState } from "../../../features/words/wordsSlice.js";
 import { setImageState } from "../../../features/image/imageSlice.js";
+import { setCodewordsState } from "../../../features/codewords/codewordsSlice.js";
 import { setNotification } from "../../../features/ui/uiSlice.js";
+import ControlSection from "./ControlSection";
 
 // Map puzzle names to their corresponding state setter actions
 const puzzleStateSetters = {
   pathfinder: setPathfinderState,
   domino: setDominoState,
   textris: setTextrisState,
+  codewords: setCodewordsState,
 };
 
 const ControlsStorage = ({ puzzleName, saveWords, saveImage }) => {
@@ -109,8 +112,7 @@ const ControlsStorage = ({ puzzleName, saveWords, saveImage }) => {
   };
 
   return (
-    <div className="control-section">
-      <h4>Storage</h4>
+    <ControlSection title="Storage">
       <button onClick={handleSaveToLocalStorage}>Save to Local Storage</button>
       <button onClick={handleLoadFromLocalStorage}>
         Load from Local Storage
@@ -125,7 +127,7 @@ const ControlsStorage = ({ puzzleName, saveWords, saveImage }) => {
           style={{ display: "none" }}
         />
       </label>
-    </div>
+    </ControlSection>
   );
 };
 

@@ -1,0 +1,111 @@
+.letter-tracker {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--cw-bg-card);
+    /* Changed from secondary to card */
+    border: 1px solid var(--cw-border);
+    /* Changed from cell-border to border */
+    border-radius: 8px;
+    margin-left: 1rem;
+    width: 240px;
+    height: fit-content;
+}
+
+.letter-tracker-header {
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--cw-border);
+    padding-bottom: 0.5rem;
+}
+
+.letter-tracker-header h3 {
+    margin: 0;
+    font-family: var(--cw-font);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--palette-grey-300);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.letter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.letter-tile {
+    position: relative;
+    aspect-ratio: 1/1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--cw-bg-tile);
+    /* Changed from bg-primary to bg-tile */
+    border: 1px solid var(--cw-border);
+    border-radius: 4px;
+    cursor: default;
+    user-select: none;
+    transition: border-color 0.15s ease;
+}
+
+.letter-tracker.setup-mode .letter-tile {
+    cursor: pointer;
+}
+
+.letter-tracker.setup-mode .letter-tile:hover {
+    border-color: var(--cw-clr-accent);
+}
+
+.letter-tile.used {
+    background: #eef2ff;
+    /* Light indigo */
+    border-color: var(--cw-clr-accent);
+}
+
+.letter-tile.unused .char {
+    color: var(--palette-grey-600);
+    opacity: 0.5;
+}
+
+.letter-tile.used .char {
+    color: var(--palette-grey-800);
+    font-weight: 700;
+    transform: translateY(-3px);
+}
+
+.letter-tile.disabled {
+    opacity: 0.3;
+    background: var(--cw-bg-main);
+    border-style: dashed;
+}
+
+.char {
+    font-family: var(--cw-font);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.usage-badges {
+    position: absolute;
+    bottom: 3px;
+    display: flex;
+    gap: 1px;
+}
+
+.num-badge {
+    font-size: 0.55rem;
+    font-weight: 700;
+    background: var(--cw-clr-accent);
+    color: #fff;
+    padding: 0 3px;
+    border-radius: 2px;
+}
+
+.disabled-icon {
+    position: absolute;
+    font-size: 1rem;
+    color: #f87171;
+}

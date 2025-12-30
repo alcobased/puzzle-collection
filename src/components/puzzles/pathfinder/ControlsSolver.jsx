@@ -14,6 +14,7 @@ import {
   nextSolution,
   previousSolution,
 } from "../../../features/pathfinder/pathfinderSlice.js";
+import ControlSection from "../../common/Controls/ControlSection";
 
 const ControlsSolver = () => {
   const dispatch = useDispatch();
@@ -100,8 +101,7 @@ const ControlsSolver = () => {
   };
 
   return (
-    <div className="control-section">
-      <h4>Solver</h4>
+    <ControlSection title="Solver">
       <button onClick={handleGenerateConnections}>Generate Connections</button>
       <button onClick={handleFindPaths} disabled={!activeQueue}>
         Find Paths for Active Queue
@@ -134,7 +134,7 @@ const ControlsSolver = () => {
           )}
         </div>
       )}
-    </div>
+    </ControlSection>
   );
 };
 

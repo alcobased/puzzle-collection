@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setSrc, unloadImage } from "../../../features/image/imageSlice.js";
+import ControlSection from "./ControlSection";
 
 const ControlsImage = () => {
   const dispatch = useDispatch();
@@ -26,8 +27,7 @@ const ControlsImage = () => {
   };
 
   return (
-    <div className="control-section">
-      <h4>Image</h4>
+    <ControlSection title="Image">
       <label className="file-upload-label">
         Load Image
         <input
@@ -38,7 +38,7 @@ const ControlsImage = () => {
         />
       </label>
       <button onClick={handleUnloadImage}>Unload Image</button>
-    </div>
+    </ControlSection>
   );
 };
 

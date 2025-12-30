@@ -15,4 +15,9 @@ export const AppConfig = {
     colCount: 3,
     confidenceThreshold: 80,
   },
+
+  codewordsDefaults: {
+    width: 15, // Default board width
+    height: 15, // Default board height
+  }
 };

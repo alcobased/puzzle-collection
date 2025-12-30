@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../../../features/ui/uiSlice";
 import { toggleSingleWordList } from "../../../features/words/wordsSlice";
+import ControlSection from "./ControlSection";
 
 const ControlsWords = () => {
   const dispatch = useDispatch();
@@ -20,8 +21,7 @@ const ControlsWords = () => {
   };
 
   return (
-    <div className="control-section">
-      <h4>Word Lists</h4>
+    <ControlSection title="Word Lists">
       <button onClick={openWordManager}>Manage Words</button>
       <div className="radio-group-segmented">
         <input
@@ -44,7 +44,7 @@ const ControlsWords = () => {
         {/* Label for 'Image' mode */}
         <label htmlFor="mode-multi-word-list">{MODE_MULTI_WORD_LIST}</label>
       </div>
-    </div>
+    </ControlSection>
   );
 };
 

@@ -19,6 +19,9 @@ const NavigationBar = () => {
           <NavLink to="/textris" className={({ isActive }) => (isActive ? 'active' : '')}>Textris</NavLink>
         </li>
         <li>
+          <NavLink to="/codewords" className={({ isActive }) => (isActive ? 'active' : '')}>Codewords</NavLink>
+        </li>
+        <li>
           <NavLink to="/image-processing" className={({ isActive }) => (isActive ? 'active' : '')}>Image Processing</NavLink>
         </li>
         <li>
