@@ -1,43 +1,44 @@
-import React from 'react';
-import { InteractiveCanvas } from '../../common/InteractiveCanvas';
-
-const PerspectiveCorrection = ({ 
-  canvasRef, 
-  imgRef, 
-  imageSrc, 
-  points, 
-  onCanvasClick, 
-  onMouseMove, 
-  onMouseLeave, 
-  magnifierRef,
-  sizeMultiplier,
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { InteractiveCanvas } from "../InteractiveCanvas";
+import {
   setSizeMultiplier,
-  handlePerspectiveConfirm 
-}) => {
+  setStage,
+  setFinalImage,
+  clearPerspectivePoints,
+} from "../../../features/imageProcessing/imageProcessingSlice";
+import { warpPerspective } from "../../../features/imageProcessing/imageProcessing";
+
+const PerspectiveCorrection = () => {
+  const dispatch = useDispatch();
+  const { imageSrc, perspectivePoints, sizeMultiplier } = useSelector(
+    (state) => state.imageProcessing
+  );
+
+  const handlePerspectiveConfirm = () => {
+    warpPerspective(imageSrc, perspectivePoints, sizeMultiplier).then(
+      (result) => {
+        dispatch(setFinalImage(result.image));
+        dispatch(setStage("trim"));
+      }
+    );
+  };
+
   return (
     <div className="manual-stage">
       <div className="interactive-canvas-container">
-        <InteractiveCanvas
-          ref={canvasRef}
-          imgRef={imgRef}
-          imageSrc={imageSrc}
-          points={points}
-          stage="perspective"
-          onCanvasClick={onCanvasClick}
-          onImageLoaded={() => {}}
-          onMouseMove={onMouseMove}
-          onMouseLeave={onMouseLeave}
-        />
-        <div ref={magnifierRef} className="magnifier"></div>
+        <InteractiveCanvas />
       </div>
-      <p>Points selected: {points.length} / 4</p>
+      <p>Points selected: {perspectivePoints.length} / 4</p>
       <div className="perspective-controls">
         <label htmlFor="size-multiplier">Canvas Size Multiplier:</label>
         <input
           type="number"
           id="size-multiplier"
           value={sizeMultiplier}
-          onChange={(e) => setSizeMultiplier(parseFloat(e.target.value))}
+          onChange={(e) =>
+            dispatch(setSizeMultiplier(parseFloat(e.target.value)))
+          }
           min="1"
           step="0.1"
         />
@@ -45,11 +46,17 @@ const PerspectiveCorrection = ({
       <div className="manual-stage-controls">
         <button
           onClick={handlePerspectiveConfirm}
-          disabled={points.length !== 4}
+          disabled={perspectivePoints.length !== 4}
         >
           {"Fix Perspective"}
         </button>
-        <button onClick={() => { /* handleRevert */ }}>Revert</button>
+        <button
+          onClick={() => {
+            dispatch(clearPerspectivePoints());
+          }}
+        >
+          Revert
+        </button>
       </div>
     </div>
   );

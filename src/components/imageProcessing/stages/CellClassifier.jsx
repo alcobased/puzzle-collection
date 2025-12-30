@@ -1,14 +1,39 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setExtractedCells, resetImageProcessingState } from '../../../features/imageProcessing/imageProcessingSlice';
 
-const CellClassifier = ({ 
-  finalImage, 
-  rowCount, 
-  colCount, 
-  extractedCells, 
-  setExtractedCells, 
-  handleFinish, 
-  handleDownload 
-}) => {
+const CellClassifier = () => {
+  const dispatch = useDispatch();
+  const { finalImage, rowCount, colCount, extractedCells } = useSelector((state) => state.imageProcessing);
+
+  const handleCellClick = (clickedCell) => {
+    const newCells = extractedCells.map((cell) =>
+      cell.row === clickedCell.row && cell.col === clickedCell.col
+        ? { ...cell, active: !cell.active }
+        : cell
+    );
+    dispatch(setExtractedCells(newCells));
+  };
+
+  const handleFinish = () => {
+    // Here you would typically save the data or move to another part of the app
+    console.log('Finished classification:', extractedCells.filter(c => c.active));
+    dispatch(resetImageProcessingState());
+
+  };
+
+  const handleDownload = () => {
+    const dataStr = JSON.stringify(extractedCells, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+    const link = document.createElement('a');
+    link.setAttribute('href', dataUri);
+    link.setAttribute('download', 'cell_data.json');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="manual-stage">
       <div
@@ -36,15 +61,7 @@ const CellClassifier = ({
           {extractedCells.map((cell, idx) => (
             <div
               key={idx}
-              onClick={() => {
-                setExtractedCells((prev) =>
-                  prev.map((c) =>
-                    c.row === cell.row && c.col === cell.col
-                      ? { ...c, active: !c.active }
-                      : c
-                  )
-                );
-              }}
+              onClick={() => handleCellClick(cell)}
               style={{
                 border:
                   cell.confidence < 80
@@ -60,7 +77,7 @@ const CellClassifier = ({
         </div>
       </div>
       <button onClick={handleFinish}>Finish</button>
-      <button onClick={handleDownload}>Download Image</button>
+      <button onClick={handleDownload}>Download JSON</button>
     </div>
   );
 };

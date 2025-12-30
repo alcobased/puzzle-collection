@@ -1,13 +1,45 @@
-import React from 'react';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setImageSrc,
+  setSkipPreprocessing,
+  setStage,
+} from "../../../features/imageProcessing/imageProcessingSlice";
+import { AppConfig } from "../../../config";
 
-const ImageUpload = ({ handleImageChange, skipPreprocessing, setSkipPreprocessing }) => {
+const ImageUpload = () => {
+  const dispatch = useDispatch();
+  const skipPreprocessing = useSelector(
+    (state) => state.imageProcessing.skipPreprocessing
+  );
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        dispatch(setImageSrc(e.target.result));
+        if (skipPreprocessing) {
+          dispatch(setStage("grid"));
+        } else {
+          dispatch(setStage("perspective"));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSkipChange = (e) => {
+    dispatch(setSkipPreprocessing(e.target.checked));
+  };
+
   return (
     <div className="upload-section">
       <label className="checkbox-label">
         <input
           type="checkbox"
           checked={skipPreprocessing}
-          onChange={(e) => setSkipPreprocessing(e.target.checked)}
+          onChange={handleSkipChange}
         />
         Skip Preprocessing
       </label>

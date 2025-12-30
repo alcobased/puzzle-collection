@@ -7,6 +7,7 @@ import uiReducer from "./features/ui/uiSlice.js";
 import wordReducer from "./features/words/wordsSlice.js";
 import dominoReducer from "./features/domino/dominoSlice.js";
 import textrisReducer from "./features/textris/textrisSlice.js";
+import imageProcessingReducer from "./features/imageProcessing/imageProcessingSlice.js";
 
 import { listenerMiddleware } from "./middleware/listenerMiddleware.js";
 
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   image: imageReducer,
   words: wordReducer,
   puzzles: puzzlesReducer,
+  imageProcessing: imageProcessingReducer,
   ui: uiReducer,
 });
 

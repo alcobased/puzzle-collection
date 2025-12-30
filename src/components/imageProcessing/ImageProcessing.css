@@ -1,0 +1,82 @@
+/* General page layout */
+.manual-processing-page {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+/* Header styles */
+.image-processing-header {
+  background-color: var(--background-content);
+  color: var(--text-color-primary);
+  border: 1px solid var(--border-color);
+  padding: 1rem; /* Reduced padding */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Reduced gap */
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.image-processing-header h2 {
+  margin: 0;
+  font-size: 1.5rem; /* Reduced font size */
+  color: var(--text-color-primary);
+}
+
+/* OpenCV and model status indicator */
+.status-indicators {
+  display: flex;
+  gap: 1rem;
+  font-size: 1rem;
+  color: var(--text-color-secondary);
+}
+
+.status-indicators p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+/* Stage selector styles */
+.stage-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+}
+
+.stage-button {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-content-secondary);
+  color: var(--text-color-primary);
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.stage-button:hover {
+  background-color: var(--primary-color-light);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+.stage-button.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  font-weight: bold;
+}
