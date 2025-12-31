@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { initializeGrid, setMapping, clearMapping, setCellNumber, ALPHABETS } from '../../../features/codewords/codewordsSlice';
+import { setMapping, clearMapping, setCellNumber, setBoardSize, ALPHABETS } from '../../../features/codewords/codewordsSlice';
 import CodewordsBoard from './CodewordsBoard';
 import './Codewords.css';
 import ControlPanel from '../../common/Controls/ControlPanel';
@@ -13,28 +13,18 @@ import ControlsStorage from '../../common/Controls/ControlsStorage';
 
 const CodewordsPage = () => {
     const dispatch = useDispatch();
-    const { mode, cells, selectedCell, alphabetType, disabledLetters } = useSelector(state => state.puzzles.codewords);
+    const { mode, cells, grid, selectedCell, alphabetType, disabledLetters } = useSelector(state => state.puzzles.codewords);
     const currentAlphabet = ALPHABETS[alphabetType] || ALPHABETS.EN;
 
     // Track partial numeric input for setup mode
     const [numInput, setNumInput] = React.useState("");
 
     useEffect(() => {
-        // Temporary test grid initialization
-        // 0 = black, 1-26 = numbers
-        const testGrid = [
-            [1, 2, 3, 0, 4, 5, 6, 7],
-            [8, 0, 9, 0, 10, 0, 11, 0],
-            [1, 12, 1, 13, 1, 14, 1, 0],
-            [0, 0, 15, 0, 0, 0, 16, 0],
-            [17, 18, 19, 20, 21, 22, 23, 24]
-        ];
-
-        dispatch(initializeGrid({
-            grid: testGrid,
-            mappings: { 1: 'A', 2: 'B' } // Test initial mappings
-        }));
-    }, [dispatch]);
+        // Initialize with a blank grid if none exists
+        if (!cells || Object.keys(cells).length === 0) {
+            dispatch(setBoardSize({ width: grid.width, height: grid.height }));
+        }
+    }, [dispatch, cells, grid.width, grid.height]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {

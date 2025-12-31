@@ -12,6 +12,7 @@ const initialState = {
     selectedCell: null,
     errors: [],
     disabledLetters: [], // Array of letters that are disabled
+    cellSize: AppConfig.codewordsDefaults.cellSize,
 };
 
 const ALPHABETS = {
@@ -46,10 +47,19 @@ const codewordsSlice = createSlice({
         setCodewordsState: (state, action) => {
             return { ...state, ...action.payload };
         },
+        /**
+         * Initializes the codeword grid from a 2D array.
+         * @param {Object} action.payload - Contains grid data.
+         * @param {number[][]} action.payload.grid - 2D array where 0 is a black cell, 
+         * and any other number is a white cell with that codeword number.
+         * @param {Object} [action.payload.mappings] - Optional mapping of numbers to letters.
+         */
         initializeGrid: (state, action) => {
             const gridData = action.payload.grid;
             state.mappings = action.payload.mappings || {};
             state.cells = {};
+
+            console.log(gridData);
 
             state.grid.height = gridData.length;
             state.grid.width = gridData[0].length;
@@ -67,6 +77,7 @@ const codewordsSlice = createSlice({
                     };
                 }
             }
+            console.log(state.cells);
         },
         setBoardSize: (state, action) => {
             const { width, height } = action.payload;
@@ -114,6 +125,9 @@ const codewordsSlice = createSlice({
         clearMapping: (state, action) => {
             const { number } = action.payload;
             delete state.mappings[number];
+        },
+        setCellSize: (state, action) => {
+            state.cellSize = action.payload;
         }
     },
 });
@@ -130,7 +144,8 @@ export const {
     setBoardMode,
     selectCell,
     setMapping,
-    clearMapping
+    clearMapping,
+    setCellSize
 } = codewordsSlice.actions;
 
 export { ALPHABETS };

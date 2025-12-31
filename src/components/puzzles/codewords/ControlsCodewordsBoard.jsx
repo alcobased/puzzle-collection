@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setBoardSize } from "../../../features/codewords/codewordsSlice";
+import { setBoardSize, setCellSize } from "../../../features/codewords/codewordsSlice";
 import ControlSection from "../../common/Controls/ControlSection";
 
 const ControlsCodewordsBoard = () => {
     const dispatch = useDispatch();
-    const { grid } = useSelector(state => state.puzzles.codewords);
+    const { grid, cellSize } = useSelector(state => state.puzzles.codewords);
 
     const handleWidthChange = (e) => {
         const width = parseInt(e.target.value, 10) || 1;
@@ -14,6 +14,11 @@ const ControlsCodewordsBoard = () => {
     const handleHeightChange = (e) => {
         const height = parseInt(e.target.value, 10) || 1;
         dispatch(setBoardSize({ width: grid.width, height }));
+    };
+
+    const handleCellSizeChange = (e) => {
+        const size = parseInt(e.target.value, 10);
+        dispatch(setCellSize(size));
     };
 
     return (
@@ -28,6 +33,19 @@ const ControlsCodewordsBoard = () => {
                 <label>
                     Height:
                     <input type="number" value={grid.height} onChange={handleHeightChange} min="1" max="50" />
+                </label>
+            </div>
+            <div className="control-subsection">
+                <label>
+                    Cell Size: {cellSize}px
+                    <input
+                        type="range"
+                        value={cellSize}
+                        onChange={handleCellSizeChange}
+                        min="20"
+                        max="80"
+                        step="2"
+                    />
                 </label>
             </div>
         </ControlSection>

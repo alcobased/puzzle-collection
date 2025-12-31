@@ -76,6 +76,14 @@ export const imageProcessingSlice = createSlice({
         cell.active = !cell.active;
       }
     },
+    setCellsActive: (state, action) => {
+      // action.payload: { [cellKey]: isActive }
+      Object.entries(action.payload).forEach(([key, isActive]) => {
+        if (state.extractedCells[key]) {
+          state.extractedCells[key].active = isActive;
+        }
+      });
+    },
     setSkipPreprocessing: (state, action) => {
       state.skipPreprocessing = action.payload;
     },
@@ -101,6 +109,7 @@ export const {
   setCellPadding,
   setExtractedCells,
   toggleCellActive,
+  setCellsActive,
   setSkipPreprocessing,
   resetImageProcessingState,
 } = imageProcessingSlice.actions;

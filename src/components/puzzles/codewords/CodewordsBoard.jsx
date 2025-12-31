@@ -5,7 +5,7 @@ import "../../common/Cell.css"; // Reuse common styles
 import "./Codewords.css"; // App specific styles
 
 const CodewordsBoard = () => {
-    const { mode, cells, grid, mappings, selectedCell } = useSelector(state => state.puzzles.codewords);
+    const { mode, cells, grid, mappings, selectedCell, cellSize } = useSelector(state => state.puzzles.codewords);
     const dispatch = useDispatch();
 
     // We need dimensions to render a grid
@@ -62,6 +62,7 @@ const CodewordsBoard = () => {
 
     return (
         <div className="codewords-board" style={{
+            '--cw-cell-size': `${cellSize}px`,
             display: 'grid',
             gridTemplateColumns: `repeat(${width}, var(--cw-cell-size))`,
             gap: 'var(--cw-cell-gap)'

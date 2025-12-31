@@ -19,5 +19,6 @@ export const AppConfig = {
   codewordsDefaults: {
     width: 15, // Default board width
     height: 15, // Default board height
+    cellSize: 42, // Default cell size in pixels
   }
 };

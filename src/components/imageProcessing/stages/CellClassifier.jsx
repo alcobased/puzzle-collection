@@ -4,13 +4,18 @@ import { InteractiveCanvas } from '../InteractiveCanvas';
 import {
   resetImageProcessingState,
   toggleCellActive,
+  setCellsActive,
 } from '../../../features/imageProcessing/imageProcessingSlice';
 import useClassifier from '../../../hooks/useClassifier';
 import {
-  setBoardMode,
-  setGridSize,
-  setCells,
+  setBoardMode as setPathfinderBoardMode,
+  setGridSize as setPathfinderGridSize,
+  setCells as setPathfinderCells,
 } from '../../../features/pathfinder/pathfinderSlice';
+import {
+  setBoardMode as setCodewordsBoardMode,
+  initializeGrid as initializeCodewordsGrid,
+} from '../../../features/codewords/codewordsSlice';
 
 const CellClassifier = () => {
   const dispatch = useDispatch();
@@ -21,12 +26,13 @@ const CellClassifier = () => {
 
   const handlePredict = async () => {
     setIsPredicting(true);
-    const cells = Object.values(extractedCells);
+    const cells = Object.entries(extractedCells);
+    const updates = {};
 
     // Create a temporary image element for prediction
     const img = new Image();
 
-    for (const cell of cells) {
+    for (const [key, cell] of cells) {
       if (!cell.image) continue;
 
       await new Promise((resolve) => {
@@ -35,19 +41,12 @@ const CellClassifier = () => {
       });
 
       const prediction = await predictCanvas(img);
-
-      if (prediction && prediction.isActive) {
-        // Dispatch an action to set the cell as active
-        // We reuse toggleCellActive but ideally we'd have a specific setCellActive action
-        if (!cell.active) {
-          dispatch(toggleCellActive({ row: cell.y, col: cell.x }));
-        }
-      } else if (prediction && !prediction.isActive) {
-        if (cell.active) {
-          dispatch(toggleCellActive({ row: cell.y, col: cell.x }));
-        }
+      if (prediction) {
+        updates[key] = prediction.isActive;
       }
     }
+
+    dispatch(setCellsActive(updates));
     setIsPredicting(false);
   };
 
@@ -58,7 +57,7 @@ const CellClassifier = () => {
     dispatch(resetImageProcessingState());
   };
 
-  const handleTransfer = () => {
+  const handleTransferPathfinder = () => {
     // 1. Calculate active cells
     const activeCellsList = Object.values(extractedCells).filter((c) => c.active);
 
@@ -100,12 +99,47 @@ const CellClassifier = () => {
     });
 
     // 4. Dispatch actions to Pathfinder slice
-    dispatch(setBoardMode("grid"));
-    dispatch(setGridSize({ width: gridW, height: gridH }));
-    dispatch(setCells(newCellSet));
+    dispatch(setPathfinderBoardMode("grid"));
+    dispatch(setPathfinderGridSize({ width: gridW, height: gridH }));
+    dispatch(setPathfinderCells(newCellSet));
 
     // 5. Navigate to Pathfinder or give feedback
     alert(`Transferred ${activeCellsList.length} cells to Pathfinder!`);
+    dispatch(resetImageProcessingState());
+  };
+
+  const handleTransferCodewords = () => {
+    // 1. Calculate dimensions
+    const allCells = Object.values(extractedCells);
+    if (allCells.length === 0) {
+      alert("No cells detected to transfer.");
+      return;
+    }
+
+    let gridW = 0;
+    let gridH = 0;
+    allCells.forEach(cell => {
+      if (cell.x >= gridW) gridW = cell.x + 1;
+      if (cell.y >= gridH) gridH = cell.y + 1;
+    });
+
+    // 2. Build 2D grid data
+    // 1 = white cell, 0 = black cell
+    const gridData = Array.from({ length: gridH }, () => Array(gridW).fill(0));
+    allCells.forEach(cell => {
+      if (cell.active) {
+        gridData[cell.y][cell.x] = 1;
+      } else {
+        gridData[cell.y][cell.x] = 0;
+      }
+    });
+
+    // 3. Dispatch to Codewords
+    dispatch(setCodewordsBoardMode("grid"));
+    dispatch(initializeCodewordsGrid({ grid: gridData }));
+
+    // 4. Feedback
+    alert(`Transferred grid structure to Codewords!`);
     dispatch(resetImageProcessingState());
   };
 
@@ -133,7 +167,8 @@ const CellClassifier = () => {
           {isPredicting ? "Predicting..." : "Predict All"}
         </button>
         <button onClick={handleFinish}>Finish</button>
-        <button onClick={handleTransfer}>Transfer to Pathfinder</button>
+        <button onClick={handleTransferPathfinder}>Transfer to Pathfinder</button>
+        <button onClick={handleTransferCodewords}>Transfer to Codewords</button>
         <button onClick={handleDownload}>Download JSON</button>
         <button onClick={() => {
           if (finalImage) {
