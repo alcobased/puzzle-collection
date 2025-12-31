@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setMapping, clearMapping, setCellNumber, setBoardSize, ALPHABETS } from '../../../features/codewords/codewordsSlice';
+import { setMapping, clearMapping, setCellNumber, setBoardSize, selectCell, ALPHABETS } from '../../../features/codewords/codewordsSlice';
 import CodewordsBoard from './CodewordsBoard';
 import './Codewords.css';
 import ControlPanel from '../../common/Controls/ControlPanel';
@@ -59,6 +59,24 @@ const CodewordsPage = () => {
                 } else if (e.key === 'Backspace' || e.key === 'Delete') {
                     setNumInput("");
                     dispatch(setCellNumber({ id: selectedCell, number: 1 }));
+                } else if (e.key === 'Enter') {
+                    // Find next white cell
+                    const [currX, currY] = selectedCell.split(',').map(Number);
+                    const { width, height } = grid;
+                    const totalCells = width * height;
+                    const startIdx = currY * width + currX;
+
+                    for (let i = 1; i <= totalCells; i++) {
+                        const nextIdx = (startIdx + i) % totalCells;
+                        const nx = nextIdx % width;
+                        const ny = Math.floor(nextIdx / width);
+                        const nextId = `${nx},${ny}`;
+
+                        if (cells[nextId] && !cells[nextId].isBlack) {
+                            dispatch(selectCell(nextId));
+                            break;
+                        }
+                    }
                 }
             }
         };

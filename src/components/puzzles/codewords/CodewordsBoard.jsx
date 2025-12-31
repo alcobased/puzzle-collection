@@ -61,7 +61,7 @@ const CodewordsBoard = () => {
     }
 
     return (
-        <div className="codewords-board" style={{
+        <div className={`codewords-board mode-${mode}`} style={{
             '--cw-cell-size': `${cellSize}px`,
             display: 'grid',
             gridTemplateColumns: `repeat(${width}, var(--cw-cell-size))`,

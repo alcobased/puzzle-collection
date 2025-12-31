@@ -97,12 +97,16 @@ const codewordsSlice = createSlice({
         toggleCell: (state, action) => {
             const { id } = action.payload;
             if (state.cells[id]) {
-                state.cells[id].isBlack = !state.cells[id].isBlack;
-                // If we toggled to white, ensure it has a valid number
-                if (!state.cells[id].isBlack && !state.cells[id].number) {
-                    state.cells[id].number = 1;
+                if (state.selectedCell === id) {
+                    state.selectedCell = null;
+                } else {
+                    state.cells[id].isBlack = !state.cells[id].isBlack;
+                    // If we toggled to white, ensure it has a valid number
+                    if (!state.cells[id].isBlack && !state.cells[id].number) {
+                        state.cells[id].number = 1;
+                    }
+                    state.selectedCell = id;
                 }
-                state.selectedCell = id;
             }
         },
         setCellNumber: (state, action) => {
@@ -116,7 +120,7 @@ const codewordsSlice = createSlice({
             state.boardMode = action.payload;
         },
         selectCell: (state, action) => {
-            state.selectedCell = action.payload;
+            state.selectedCell = state.selectedCell === action.payload ? null : action.payload;
         },
         setMapping: (state, action) => {
             const { number, letter } = action.payload;
