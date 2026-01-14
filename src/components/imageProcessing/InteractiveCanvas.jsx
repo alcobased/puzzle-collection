@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addPerspectivePoint,
@@ -9,6 +9,7 @@ import {
 export const InteractiveCanvas = () => {
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
+  const [mousePos, setMousePos] = useState(null);
 
   const {
     imageSrc,
@@ -43,17 +44,22 @@ export const InteractiveCanvas = () => {
     const img = new Image();
     const currentImage = getImageForStage();
 
-    img.src = currentImage;
-    img.onload = () => {
+    const redrawCanvasContents = () => {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       ctx.drawImage(img, 0, 0);
       drawOverlays(ctx, canvas.width, canvas.height);
+      drawMagnifier(ctx);
     };
 
+    img.src = currentImage;
+
     if (img.complete && !img.src.startsWith("data:,")) {
-      ctx.drawImage(img, 0, 0);
-      drawOverlays(ctx, canvas.width, canvas.height);
+      redrawCanvasContents();
+    } else {
+      img.onload = () => {
+        redrawCanvasContents();
+      };
     }
   };
 
@@ -141,6 +147,85 @@ export const InteractiveCanvas = () => {
     }
   };
 
+  const drawMagnifier = (ctx) => {
+    if (!mousePos || (stage !== "perspective" && stage !== "trim")) return;
+
+    const radius = 50;
+    const magnifierSize = radius * 2;
+    const zoomFactor = 2;
+
+    const sourceWidth = magnifierSize / zoomFactor;
+    const sourceHeight = magnifierSize / zoomFactor;
+    const sourceX = mousePos.x - sourceWidth / 2;
+    const sourceY = mousePos.y - sourceHeight / 2;
+
+    const canvas = canvasRef.current;
+
+    // Center of the magnifier circle
+    let centerX = mousePos.x;
+    let centerY = mousePos.y - radius - 20; // 20px buffer above cursor
+
+    // Adjust if the magnifier goes off the edges
+    if (centerY - radius < 0) {
+      centerY = mousePos.y + radius + 20;
+    }
+    if (centerX - radius < 0) {
+      centerX = radius;
+    }
+    if (centerX + radius > canvas.width) {
+      centerX = canvas.width - radius;
+    }
+
+    // Top-left corner for drawing the magnified image
+    const destX = centerX - radius;
+    const destY = centerY - radius;
+
+    // 1. Save state
+    ctx.save();
+
+    // 2. Create circular clipping path
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+
+    // 3. Clip to the path
+    ctx.clip();
+
+    // 4. Draw the magnified image
+    ctx.drawImage(
+      canvas,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      destX,
+      destY,
+      magnifierSize,
+      magnifierSize
+    );
+
+    // 5. Restore the canvas state (to remove the clipping path)
+    ctx.restore();
+
+    // 6. Draw the circular border
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 7. Draw crosshair in the center
+    ctx.beginPath();
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1;
+    // Horizontal line
+    ctx.moveTo(centerX - 10, centerY);
+    ctx.lineTo(centerX + 10, centerY);
+    // Vertical line
+    ctx.moveTo(centerX, centerY - 10);
+    ctx.lineTo(centerX, centerY + 10);
+    ctx.stroke();
+  };
+
   useEffect(() => {
     drawCanvas();
   }, [
@@ -152,6 +237,7 @@ export const InteractiveCanvas = () => {
     rowCount,
     colCount,
     extractedCells,
+    mousePos,
   ]);
 
   const handleCanvasClick = (e) => {
@@ -184,11 +270,34 @@ export const InteractiveCanvas = () => {
     }
   };
 
+  const handleMouseMove = (e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    setMousePos({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setMousePos(null);
+  };
+
   return (
     <canvas
       ref={canvasRef}
       onClick={handleCanvasClick}
-      style={{ width: "100%", height: "auto" }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        width: "100%",
+        height: "auto",
+        cursor: stage === "perspective" || stage === "trim" ? "crosshair" : "default",
+      }}
     />
   );
 };
